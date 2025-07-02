@@ -1,0 +1,6 @@
+dependencies {
+    // Additional dependencies specific to OOP core module
+    // Reflection examples, record handling - using Jackson BOM
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.19.1')
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+}

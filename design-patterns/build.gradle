@@ -1,0 +1,5 @@
+dependencies {
+    // Additional dependencies specific to design patterns module
+    // Pattern implementations and examples
+    implementation 'com.h2database:h2:2.3.232'
+}

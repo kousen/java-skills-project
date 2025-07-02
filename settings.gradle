@@ -1,0 +1,10 @@
+rootProject.name = 'java-skills-project'
+
+include 'foundations'
+include 'oop-core'
+include 'design-patterns'
+include 'solid-principles'
+include 'web-services'
+include 'security'
+include 'advanced-systems'
+include 'final-project'

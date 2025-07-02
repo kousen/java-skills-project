@@ -1,0 +1,27 @@
+﻿Videos for the O'Reilly Java Skills Project
+1. Apply standard naming conventions and formatting style to write readable Java code.
+2. Use escape characters (e.g., \n, \t) in String output to control formatting.
+3. Combine multiple expressions using correct operator precedence.
+4. Capture user input from the console using the Scanner class.
+5. Implement nested loops to process multi-dimensional data.
+6. Create and manipulate two-dimensional arrays.
+7. Write content to a file using FileWriter or BufferedWriter.
+8. Apply access modifiers (public, private, protected, package-private) to control visibility.
+9. Use object composition to model "has-a" relationships between classes.
+10. Use the "var" reserved type name for local variable type inference.
+11. Create and use record classes for immutable data carriers.
+12. Use the Reflection API to inspect and invoke classes, methods, and fields at runtime.
+13. Implement the Singleton pattern to ensure a class has only one instance.
+14. Apply the Strategy pattern to encapsulate algorithms and make them interchangeable.
+15. Use the Factory pattern to create objects without specifying their concrete classes.
+16. Apply the Single Responsibility Principle by ensuring each class has one reason to change.
+17. Implement the Open/Closed Principle by designing classes open for extension but closed for modification.
+18. Refactor legacy code to improve performance or reduce duplication and technical debt.
+19. Configure and use logging frameworks (Log4j, SLF4J, java.util.logging) for application diagnostics.
+20. Consume REST APIs using built-in HTTP clients (HttpClient).
+21. Create REST-like services using lightweight frameworks or libraries (e.g., Spring Boot, Quarkus, Micronaut).
+22. Implement input validation to prevent SQL injection and cross-site scripting attacks.
+23. Use cryptographic APIs to encrypt sensitive data and authenticate users.
+24. Use Git to collaborate on a Java-based software project using branches and merge requests.
+25. Build distributed or microservice-based systems using Spring Boot, REST, and messaging.
+26. Implement reactive programming constructs using Project Reactor or RxJava for async operations.

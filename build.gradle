@@ -1,0 +1,76 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.3' apply false
+    id 'io.spring.dependency-management' version '1.1.6' apply false
+}
+
+// Configure all subprojects
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    
+    group = 'com.oreilly.java.skills'
+    version = '1.0.0'
+    
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+    
+    repositories {
+        mavenCentral()
+    }
+    
+    dependencies {
+        // Basic logging for video 19
+        implementation 'org.slf4j:slf4j-api:2.0.17'
+        implementation 'ch.qos.logback:logback-classic:1.5.18'
+        
+        // Testing dependencies - using BOMs for version management
+        testImplementation platform('org.junit:junit-bom:5.11.0')
+        testImplementation platform('org.mockito:mockito-bom:5.18.0')
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testImplementation 'org.assertj:assertj-core:3.26.3'
+        testImplementation 'org.mockito:mockito-core'
+        testImplementation 'org.mockito:mockito-junit-jupiter'
+    }
+    
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+            exceptionFormat "full"
+        }
+    }
+}
+
+// Only add Spring Boot to specific modules that actually need it
+configure(subprojects.findAll { it.name in ['web-services', 'advanced-systems'] }) {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+}
+
+// Custom task to run examples
+task runExample(type: JavaExec) {
+    description = 'Run a specific example: gradle runExample -Pmodule=foundations -PmainClass=NamingConventions'
+    group = 'application'
+    
+    doFirst {
+        if (!project.hasProperty('module') || !project.hasProperty('mainClass')) {
+            throw new GradleException("Usage: gradle runExample -Pmodule=<module-name> -PmainClass=<ClassName>")
+        }
+        
+        def moduleProject = project.findProject(":${module}")
+        classpath = moduleProject.sourceSets.main.runtimeClasspath
+        mainClass = project.property('mainClass')
+    }
+}
+
+wrapper {
+    gradleVersion = '8.14.2'
+}

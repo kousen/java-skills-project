@@ -1,0 +1,13 @@
+dependencies {
+    // Final project may integrate concepts from all modules
+    // Include dependencies from other modules as needed
+    implementation project(':foundations')
+    implementation project(':oop-core')
+    implementation project(':design-patterns')
+    implementation project(':solid-principles')
+    
+    // JSON processing for data exchange - using Jackson BOM
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.19.1')
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'commons-io:commons-io:2.19.0'
+}

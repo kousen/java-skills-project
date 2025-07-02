@@ -1,0 +1,5 @@
+dependencies {
+    // Additional dependencies specific to foundations module
+    // Scanner examples, file I/O demonstrations
+    implementation 'commons-io:commons-io:2.19.0'
+}

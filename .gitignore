@@ -1,0 +1,299 @@
+# Java Skills Project .gitignore
+
+###################
+# Build Artifacts
+###################
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+gradle-app.setting
+!gradle-wrapper.properties
+
+# Maven (in case it's used)
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+###################
+# Java
+###################
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+###################
+# IDEs
+###################
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+###################
+# Operating System
+###################
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+###################
+# Application Specific
+###################
+
+# Project-specific data directories
+employee-data/
+data/
+temp/
+tmp/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.h2.db
+*.h2.mv.db
+*.h2.trace.db
+
+# Spring Boot
+spring.log
+
+# Test output
+/test-output/
+/test-results/
+/coverage/
+
+# Logs and reports
+logs/
+reports/
+*.log.*
+
+# Generated documentation
+docs/build/
+docs/generated/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+*.save
+
+###################
+# Security & Secrets
+###################
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# API keys and secrets
+secrets.properties
+application-secrets.yml
+application-secrets.yaml
+
+# Certificate files
+*.p12
+*.jks
+*.keystore
+*.truststore
+
+###################
+# Development Tools
+###################
+
+# Node.js (in case frontend is added)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.yarn-integrity
+.npm
+
+# Docker
+docker-compose.override.yml
+.dockerignore.generated
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+###################
+# Generated Content
+###################
+
+# Auto-generated files
+generated/
+gen/
+build-generated/
+
+# Coverage reports
+.jacoco/
+jacoco.exec
+*.lcov
+
+# Dependency analysis
+dependency-check-report.html
+dependency-reduced-pom.xml
+
+# Performance test results
+jmeter.log
+*.jtl
+
+###################
+# Temporary Files
+###################
+
+# System temporary files
+*.tmp
+*.temp
+temp*
+tmp*
+
+# Editor temporary files
+*~
+.#*
+\#*#
+.*.swp
+.*.swo
+
+# JVM temporary files
+replay_pid*
+
+###################
+# Cache Directories
+###################
+
+# Gradle cache
+.gradle/
+
+# Maven local repository cache
+.m2/repository/
+
+# SBT cache
+.sbt/
+.ivy2/
+.cache-main
+.cache-tests
+
+###################
+# IDE Configuration
+###################
+
+# IntelliJ run configurations
+.idea/runConfigurations/
+
+# Eclipse launch configurations
+*.launch
+
+# Project-specific ignore patterns
+# Add any project-specific patterns below this line
