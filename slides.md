@@ -2126,20 +2126,17 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
 
 <v-clicks>
 
-## **Buffer Size Guidelines**
+## **Buffer Guidelines**
 - **Default buffer size** - Usually 8KB, good for most cases
-- **Large files** - Consider streaming approaches
 - **Small frequent writes** - BufferedWriter is essential
 
-## **When to Use Each Approach**
-- **Single write operations** - FileWriter is fine
+## **When to Use Each**
+- **Single write** - FileWriter is fine
 - **Multiple writes** - Always use BufferedWriter
-- **Large datasets** - Consider streaming with Files.lines()
 
-## **Key Rules**
-- **Always buffer** when writing more than once
-- **Close properly** to ensure buffer is flushed
-- **Performance impact**: Unbuffered = 1000 disk ops, Buffered = ~10-20 ops
+## **Key Impact**
+- **Unbuffered**: 1000 disk operations
+- **Buffered**: ~10-20 disk operations
 
 </v-clicks>
 
@@ -2149,19 +2146,17 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
 
 <v-clicks>
 
-## **Modern Approach (Recommended)**
+## **Modern (Recommended)**
 - **Files.newBufferedWriter()** - Preferred for new code
 - **Path objects** - More flexible than File objects
-- **Better exception handling** - Clearer error messages
 
-## **Traditional Approach (Legacy)**
+## **Traditional (Legacy)**
 - **FileWriter** - Simple cases, legacy compatibility
-- **PrintWriter** - When you need formatted output methods
+- **PrintWriter** - When you need formatted output
 
-## **Quick Decision Guide**
-- **New projects** → Use java.nio (Files, Paths)
-- **Legacy projects** → May need java.io for consistency
-- **Multiple writes** → Always use buffering
+## **Decision Guide**
+- **New projects** → Use java.nio
+- **Legacy projects** → Use java.io for consistency
 
 </v-clicks>
 
@@ -2174,13 +2169,11 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
 ## **Essential Guidelines**
 - **Always use try-with-resources** for automatic cleanup
 - **Create directories first** using Files.createDirectories()
-- **Handle specific exceptions** for better error reporting
-- **Use BufferedWriter** for multiple writes to same file
+- **Use BufferedWriter** for multiple writes
 
-## **Modern Java Patterns**
+## **Modern Patterns**
 - **java.nio.file.Files** over java.io.File
 - **Path objects** over String file paths
-- **Streaming for large files** to manage memory
 
 ## **Key Rules**
 - **Buffer your writes** - Don't write directly to disk
