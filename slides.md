@@ -1969,11 +1969,11 @@ try (FileWriter writer = new FileWriter("data.txt")) {
 
 ---
 
-# Writing Different File Formats
+# Writing CSV Files
 
 <v-clicks>
 
-## **CSV Format**
+## **CSV Format - Comma-Separated Values**
 ```java
 try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("employees.csv"))) {
     writer.write("ID,Name,Salary,HireDate");
@@ -1986,6 +1986,20 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("employees.csv"))
     }
 }
 ```
+
+## **Why CSV is Popular**
+- **Universal support** - Excel, databases, analytics tools
+- **Simple format** - Easy to parse and generate
+- **Lightweight** - Minimal overhead compared to XML/JSON
+- **Human readable** - Can be viewed in any text editor
+
+</v-clicks>
+
+---
+
+# Writing JSON Files
+
+<v-clicks>
 
 ## **JSON-like Format**
 ```java
@@ -2004,6 +2018,12 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("employees.json")
     writer.write("]");
 }
 ```
+
+## **JSON Advantages**
+- **Structured data** - Nested objects and arrays
+- **Web-friendly** - Native JavaScript support
+- **Self-describing** - Field names included in data
+- **Industry standard** - REST APIs, configuration files
 
 </v-clicks>
 
@@ -2074,56 +2094,109 @@ if (Files.exists(file) && !Files.isWritable(file)) {
 
 ---
 
-# Performance Considerations
+# Buffered vs Unbuffered Writing
 
 <v-clicks>
 
-## **Buffered vs Unbuffered**
+## **Unbuffered Writing - Slower**
 ```java
-// Slower - writes directly to disk
+// Each write goes directly to disk
 try (FileWriter writer = new FileWriter("data.txt")) {
     for (int i = 0; i < 1000; i++) {
-        writer.write("Line " + i + "\n");  // Each write hits disk
-    }
-}
-
-// Faster - uses internal buffer
-try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
-    for (int i = 0; i < 1000; i++) {
-        writer.write("Line " + i);
-        writer.newLine();  // Buffered writes
+        writer.write("Line " + i + "\n");  // Disk I/O on every write!
     }
 }
 ```
 
-## **Buffer Size Considerations**
-- **Default buffer size** - Usually 8KB, good for most cases
-- **Large files** - Consider larger buffers or streaming
-- **Small frequent writes** - BufferedWriter is essential
+## **Buffered Writing - Faster**
+```java
+// Writes are collected in memory buffer first
+try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
+    for (int i = 0; i < 1000; i++) {
+        writer.write("Line " + i);
+        writer.newLine();  // Written to buffer, not disk
+    }
+}  // Buffer flushed to disk when closed
+```
+
+## **Performance Impact**
+- **Unbuffered**: 1000 disk operations
+- **Buffered**: ~10-20 disk operations (depending on buffer size)
 
 </v-clicks>
 
 ---
 
-# Best Practices Summary
+# Buffer Size and Performance Tips
 
 <v-clicks>
 
-## **Choose the Right Tool**
-- **Files.newBufferedWriter()** - Modern, preferred approach
+## **Buffer Size Considerations**
+- **Default buffer size** - Usually 8KB, good for most cases
+- **Large files** - Consider larger buffers or streaming approaches
+- **Small frequent writes** - BufferedWriter is essential
+- **Memory constraints** - Larger buffers use more memory
+
+## **When to Use Each Approach**
+- **Single write operations** - FileWriter is fine
+- **Multiple writes** - Always use BufferedWriter
+- **Large datasets** - Consider streaming with Files.lines()
+- **Real-time logging** - BufferedWriter with regular flush()
+
+## **Performance Rules of Thumb**
+- **Always buffer** when writing more than once
+- **Close properly** to ensure buffer is flushed
+- **Consider charset** for international text
+
+</v-clicks>
+
+---
+
+# Choosing the Right File I/O Tool
+
+<v-clicks>
+
+## **Modern Approach (Recommended)**
+- **Files.newBufferedWriter()** - Preferred for new code
+- **Path objects** - More flexible than File objects
+- **Better exception handling** - Clearer error messages
+- **Utility methods** - Files.exists(), Files.copy(), Files.size()
+
+## **Traditional Approach (Legacy)**
 - **FileWriter** - Simple cases, legacy compatibility
+- **BufferedWriter** - When you need buffering with FileWriter
 - **PrintWriter** - When you need formatted output methods
 
-## **Key Guidelines**
+## **Decision Guidelines**
+- **New projects** → Use java.nio (Files, Paths)
+- **Legacy projects** → May need java.io for consistency
+- **Simple one-off writes** → FileWriter acceptable
+- **Multiple writes** → Always use buffering
+
+</v-clicks>
+
+---
+
+# File I/O Best Practices
+
+<v-clicks>
+
+## **Essential Guidelines**
 - **Always use try-with-resources** for automatic cleanup
 - **Create directories first** using Files.createDirectories()
 - **Handle specific exceptions** for better error reporting
 - **Use BufferedWriter** for multiple writes to same file
 - **Consider charset encoding** for international text
 
-## **Modern Java Approach**
+## **Modern Java Patterns**
 - **java.nio.file.Files** over java.io.File
 - **Path objects** over String file paths
 - **Streaming for large files** to manage memory
+- **Validation before operations** to prevent errors
+
+## **Performance Best Practices**
+- **Buffer your writes** - Don't write directly to disk
+- **Close resources properly** - Use try-with-resources
+- **Handle exceptions gracefully** - Provide meaningful error messages
 
 </v-clicks>
