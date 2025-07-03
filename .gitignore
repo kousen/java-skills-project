@@ -305,3 +305,6 @@ replay_pid*
 
 # Project-specific ignore patterns
 # Add any project-specific patterns below this line
+
+# Claude Code settings
+.claude/settings.local.json
