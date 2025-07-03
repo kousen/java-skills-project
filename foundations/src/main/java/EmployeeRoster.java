@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.util.Arrays;
 
 public class EmployeeRoster {
@@ -112,9 +111,9 @@ public class EmployeeRoster {
         
         // Count total employees
         int totalEmployees = 0;
-        for (int dept = 0; dept < roster.length; dept++) {
-            for (int emp = 0; emp < roster[dept].length; emp++) {
-                if (roster[dept][emp] != null) {
+        for (String[] strings : roster) {
+            for (String string : strings) {
+                if (string != null) {
                     totalEmployees++;
                 }
             }
@@ -136,10 +135,10 @@ public class EmployeeRoster {
         // Create flattened array of all employees
         String[] allEmployees = new String[totalEmployees];
         int index = 0;
-        for (int dept = 0; dept < roster.length; dept++) {
-            for (int emp = 0; emp < roster[dept].length; emp++) {
-                if (roster[dept][emp] != null) {
-                    allEmployees[index++] = roster[dept][emp];
+        for (String[] strings : roster) {
+            for (String string : strings) {
+                if (string != null) {
+                    allEmployees[index++] = string;
                 }
             }
         }

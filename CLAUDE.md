@@ -196,8 +196,8 @@ testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 ### 📊 Slidev Presentations Available
 - **slides.md** - Interactive presentations with naming conventions, string formatting, operator precedence, and Scanner input sections  
-- **38+ slides total** - Ready for video recording with progressive disclosure and section dividers
-- **Complete coverage** - Naming conventions, string formatting (String.format(), printf(), text blocks, StringBuilder, String.join(), StringJoiner, SLF4J logging), operator precedence (arithmetic, boolean, assignment, ternary, increment/decrement, modulus, Math.pow()), Scanner input (validation patterns, error handling, try-with-resources)
+- **40+ slides total** - Ready for video recording with progressive disclosure and section dividers
+- **Complete coverage** - Naming conventions, string formatting (String.format(), printf(), text blocks, StringBuilder, String.join(), StringJoiner, escape characters, SLF4J logging), operator precedence (arithmetic, boolean, assignment, ternary, increment/decrement, modulus, Math.pow()), Scanner input (validation patterns, error handling, try-with-resources)
 - **Commands**: `npm run dev` (development), `npm run build` (production), `npm run export` (PDF)
 
 ### ✅ Ready to Record (100% Working)

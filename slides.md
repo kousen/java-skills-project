@@ -765,6 +765,55 @@ String date = hireDate.format(formatter);
 
 ---
 
+# Escape Characters in Strings
+
+<v-clicks>
+
+## **Common Escape Sequences**
+```java
+String newline = "First line\nSecond line";
+String tab = "Name:\tAlice Johnson";
+String quotes = "She said, \"Hello there!\"";
+String backslash = "File path: C:\\Users\\Alice\\Documents";
+```
+
+## **Special Cases**
+```java
+String singleQuote = "It\'s a beautiful day";
+String unicode = "Trademark: \u2122";  // ™ symbol
+```
+
+</v-clicks>
+
+---
+
+# Text Blocks vs Escape Characters
+
+<v-clicks>
+
+## **Before Text Blocks (Escape Heavy)**
+```java
+String oldWay = "Employee data:\n\tName: \"Alice\"\n\tSalary: $75000";
+String jsonLike = "{\n\t\"name\": \"Alice\",\n\t\"active\": true\n}";
+```
+
+## **With Text Blocks (Clean)**
+```java
+String newWay = """
+    Employee data:
+        Name: "Alice"
+        Salary: $75000
+    """;
+```
+
+## **Best Practice: Choose Based on Complexity**
+- **Simple formatting** → Escape characters
+- **Multi-line content** → Text blocks
+
+</v-clicks>
+
+---
+
 # Best Practices Summary
 
 <v-clicks>

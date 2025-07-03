@@ -80,6 +80,17 @@ public class StringFormatting {
         listFormat.add("Alice").add("Bob").add("Charlie");
         System.out.println("List format: " + listFormat);
         
+        // Escape characters demonstration
+        System.out.println("\n=== Escape Characters ===");
+        String escaped = "Employee data:\n\tName: \"" + employeeName + "\"\n\tSalary: $" + salary;
+        System.out.println(escaped);
+        
+        String pathExample = "File path: C:\\Users\\Alice\\Documents\\employee.txt";
+        System.out.println(pathExample);
+        
+        String quotesExample = "He said, \"Hello there!\" and waved.";
+        System.out.println(quotesExample);
+        
         // SLF4J parameterized logging (modern best practice)
         Logger logger = LoggerFactory.getLogger(StringFormatting.class);
         logger.info("Employee {} (ID: {}) hired on {} with salary ${}", 
