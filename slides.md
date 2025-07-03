@@ -443,391 +443,9 @@ List<String> names;     // Simple
 layout: section
 ---
 
-# String Formatting
+# From Naming to Operations
 
-Working with text in Java
-
----
-
-# String Formatting in Java
-
-## From Basic to Modern
-
-<v-clicks>
-
-- **Basic concatenation** - Simple but inefficient
-- **String.format()** - C-style formatting with type safety
-- **printf()** - Direct output formatting
-- **Text blocks** - Modern Java 15+ multiline strings
-- **StringBuilder** - Efficient for complex building
-- **SLF4J logging** - Industry-standard parameterized messaging
-
-</v-clicks>
-
-<div class="mt-8">
-<v-click>
-
-**Goal**: Choose the right tool for each situation
-
-</v-click>
-</div>
-
----
-
-# Basic String Concatenation
-
-<div class="grid grid-cols-2 gap-8">
-
-<div>
-
-## ❌ **Avoid in Production**
-
-```java
-String basic = "Employee: " + employeeName + 
-               " (ID: " + employeeId + ")";
-```
-
-**Problems:**
-- Creates multiple intermediate String objects
-- Inefficient for loops
-- Hard to read with complex data
-
-</div>
-
-<div>
-
-## ✅ **When It's OK**
-
-```java
-String welcome = "Hello, " + name + "!";
-```
-
-**Acceptable for:**
-- Simple, one-time concatenations
-- Small strings
-- Quick prototyping
-- Learning examples
-
-</div>
-
-</div>
-
----
-
-# String.format() - C-Style Formatting
-
-<v-clicks>
-
-## **Format Specifiers**
-
-```java
-String.format("Employee: %s (ID: %05d) - Salary: $%.2f", 
-             employeeName, employeeId, salary);
-```
-
-## **Common Patterns**
-- `%s` - String, `%d` - Integer, `%.2f` - Float (2 decimals)
-- `%05d` - Zero-padded integers, `%,.2f` - Thousands separator
-
-## **Benefits**
-- Type safety and readable format strings
-- Reusable patterns across your application
-
-</v-clicks>
-
----
-
-# printf() vs String.format()
-
-<div class="grid grid-cols-2 gap-8">
-
-<div>
-
-## **String.format()**
-```java
-String formatted = String.format(
-    "Employee: %s (ID: %05d)", 
-    name, id);
-System.out.println(formatted);
-```
-
-**Use when:**
-- Need to store the formatted string
-- Building strings for further processing
-- Creating reusable formatted values
-
-</div>
-
-<div>
-
-## **System.out.printf()**
-```java
-System.out.printf(
-    "Employee: %s (ID: %05d)%n", 
-    name, id);
-```
-
-**Use when:**
-- Direct output to console
-- One-time formatting
-- Slightly more efficient (no intermediate String)
-
-**Note:** Use `%n` for platform-independent newlines
-
-</div>
-
-</div>
-
----
-
-# Text Blocks - Modern Java (15+)
-
-<div class="grid grid-cols-2 gap-6">
-
-<div>
-
-## **Before**
-```java
-String html = "<html>\n" +
-  "  <body>\n" +
-  "    <h1>" + name + "</h1>\n" +
-  "  </body>\n" +
-  "</html>";
-```
-
-</div>
-
-<div>
-
-## **With Text Blocks**
-```java
-String html = """
-    <html>
-      <body>
-        <h1>%s</h1>
-      </body>
-    </html>
-    """.formatted(name);
-```
-
-</div>
-
-</div>
-
-<v-clicks>
-
-## **Benefits**
-- Natural multiline strings
-- Preserves formatting and indentation
-- Works with `.formatted()` method
-- Much more readable
-
-</v-clicks>
-
----
-
-# StringBuilder - When Efficiency Matters
-
-<v-clicks>
-
-## **Perfect for Complex Building**
-```java
-StringBuilder sb = new StringBuilder();
-sb.append("Employee Summary: ")
-  .append(employeeName)
-  .append(" (").append(employeeId).append(")")
-  .append(" earning ").append(salary);
-```
-
-## **Use StringBuilder When:**
-- Building strings in loops
-- Conditional string construction
-- Complex multi-step assembly
-- Performance is critical
-
-</v-clicks>
-
----
-
-# String.join() - Simple and Convenient
-
-<v-clicks>
-
-## **Static Method for Quick Joining**
-```java
-String departments = String.join(", ", "Engineering", "Marketing", "Sales");
-// Result: Engineering, Marketing, Sales
-
-// With Collections too
-String result = String.join(", ", namesList);
-```
-
-## **When to Use**
-- Simple delimiter-separated strings
-- No prefix/suffix needed
-- Most common joining scenario
-
-</v-clicks>
-
----
-
-# StringJoiner - For Delimited Strings
-
-<v-clicks>
-
-## **Clean Delimiter Handling**
-```java
-StringJoiner joiner = new StringJoiner(", ", "[", "]");
-joiner.add("Alice").add("Bob").add("Charlie");
-// Result: [Alice, Bob, Charlie]
-```
-
-## **Real-World Example**
-```java
-StringJoiner csvLine = new StringJoiner(",");
-csvLine.add(employee.getName())
-       .add(String.valueOf(employee.getId()))
-       .add(employee.getDepartment());
-// Result: Alice Johnson,67890,Engineering
-```
-
-## **When to Use StringJoiner**
-- Creating CSV or delimited data
-- Building lists with separators
-- Need prefix/suffix around entire string
-
-</v-clicks>
-
----
-
-# SLF4J Logging - Industry Standard
-
-<v-clicks>
-
-## **Parameterized Logging**
-```java
-Logger logger = LoggerFactory.getLogger(MyClass.class);
-logger.info("Employee {} (ID: {}) hired on {} with salary ${}", 
-           employeeName, employeeId, hireDate, salary);
-```
-
-## **Why This Matters**
-- **Performance**: Only formats if logging level is enabled
-- **Ubiquitous**: Every Java project uses this pattern
-- **Safe**: No string concatenation, handles nulls gracefully
-
-## **Use `{}` placeholders - order matters left to right**
-
-</v-clicks>
-
----
-
-# Specialized Formatting
-
-<div class="grid grid-cols-2 gap-8">
-
-<div>
-
-## **Currency Formatting**
-```java
-NumberFormat currency = 
-    NumberFormat.getCurrencyInstance(Locale.US);
-String formatted = currency.format(82500.75);
-// Result: $82,500.75
-```
-
-## **Date Formatting**
-```java
-DateTimeFormatter formatter = 
-    DateTimeFormatter.ofPattern("MMMM dd, yyyy");
-String date = hireDate.format(formatter);
-// Result: March 15, 2020
-```
-
-</div>
-
-<div>
-
-## **Why Use Specialized Formatters?**
-
-<v-clicks>
-
-- **Locale-aware** - Automatic localization
-- **Type-safe** - Designed for specific data types
-- **Feature-rich** - Handle edge cases
-- **Standards-compliant** - Follow international conventions
-
-</v-clicks>
-
-</div>
-
-</div>
-
----
-
-# Escape Characters in Strings
-
-<v-clicks>
-
-## **Essential Escape Sequences**
-```java
-String newline = "First line\nSecond line";
-String tab = "Name:\tAlice Johnson";
-String quotes = "She said, \"Hello there!\"";
-String backslash = "File path: C:\\Users\\Alice\\Documents";
-String singleQuote = "It\'s a beautiful day";
-```
-
-## **Remember: Backslash Escapes Special Characters**
-
-</v-clicks>
-
----
-
-# Text Blocks vs Escape Characters
-
-<v-clicks>
-
-## **Before Text Blocks (Escape Heavy)**
-```java
-String oldWay = "Employee data:\n\tName: \"Alice\"\n\tSalary: $75000";
-String jsonLike = "{\n\t\"name\": \"Alice\",\n\t\"active\": true\n}";
-```
-
-## **With Text Blocks (Clean)**
-```java
-String newWay = """
-    Employee data:
-        Name: "Alice"
-        Salary: $75000
-    """;
-```
-
-## **Best Practice: Choose Based on Complexity**
-- **Simple formatting** → Escape characters
-- **Multi-line content** → Text blocks
-
-</v-clicks>
-
----
-
-# Best Practices Summary
-
-<v-clicks>
-
-## **Choose the Right Tool**
-- **`String.format()`** - Complex formatting, reusable patterns
-- **Text blocks** - Multiline strings (Java 15+)
-- **`StringBuilder`** - Loops and conditional building
-- **`String.join()`** - Simple delimiter joining
-- **SLF4J logging** - All logging statements
-
-## **Key Guidelines**
-- `StringBuilder` for loops, avoid concatenation in hot paths
-- Format strings are self-documenting
-- Use parameterized logging for performance
-
-</v-clicks>
+Now that we understand naming conventions, let's explore how Java evaluates expressions and operators.
 
 ---
 layout: section
@@ -1148,6 +766,423 @@ if (eligible) { }
 layout: section
 ---
 
+# From Operations to Formatting
+
+Now that we understand how Java evaluates expressions, let's explore how to format and display our data effectively.
+
+---
+layout: section
+---
+
+# String Formatting - Part 1
+
+Basic text formatting techniques
+
+---
+
+# String Formatting in Java
+
+## From Basic to Modern
+
+<v-clicks>
+
+- **Basic concatenation** - Simple but inefficient
+- **String.format()** - C-style formatting with type safety
+- **printf()** - Direct output formatting
+- **Text blocks** - Modern Java 15+ multiline strings
+
+</v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+**Goal**: Choose the right tool for each situation
+
+</v-click>
+</div>
+
+---
+
+# Basic String Concatenation
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## ❌ **Avoid in Production**
+
+```java
+String basic = "Employee: " + employeeName + 
+               " (ID: " + employeeId + ")";
+```
+
+**Problems:**
+- Creates multiple intermediate String objects
+- Inefficient for loops
+- Hard to read with complex data
+
+</div>
+
+<div>
+
+## ✅ **When It's OK**
+
+```java
+String welcome = "Hello, " + name + "!";
+```
+
+**Acceptable for:**
+- Simple, one-time concatenations
+- Small strings
+- Quick prototyping
+- Learning examples
+
+</div>
+
+</div>
+
+---
+
+# String.format() - C-Style Formatting
+
+<v-clicks>
+
+## **Format Specifiers**
+
+```java
+String.format("Employee: %s (ID: %05d) - Salary: $%.2f", 
+             employeeName, employeeId, salary);
+```
+
+## **Common Patterns**
+- `%s` - String, `%d` - Integer, `%.2f` - Float (2 decimals)
+- `%05d` - Zero-padded integers, `%,.2f` - Thousands separator
+
+## **Benefits**
+- Type safety and readable format strings
+- Reusable patterns across your application
+
+</v-clicks>
+
+---
+
+# printf() vs String.format()
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **String.format()**
+```java
+String formatted = String.format(
+    "Employee: %s (ID: %05d)", 
+    name, id);
+System.out.println(formatted);
+```
+
+**Use when:**
+- Need to store the formatted string
+- Building strings for further processing
+- Creating reusable formatted values
+
+</div>
+
+<div>
+
+## **System.out.printf()**
+```java
+System.out.printf(
+    "Employee: %s (ID: %05d)%n", 
+    name, id);
+```
+
+**Use when:**
+- Direct output to console
+- One-time formatting
+- Slightly more efficient (no intermediate String)
+
+**Note:** Use `%n` for platform-independent newlines
+
+</div>
+
+</div>
+
+---
+
+# Text Blocks - Modern Java (15+)
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+## **Before**
+```java
+String html = "<html>\n" +
+  "  <body>\n" +
+  "    <h1>" + name + "</h1>\n" +
+  "  </body>\n" +
+  "</html>";
+```
+
+</div>
+
+<div>
+
+## **With Text Blocks**
+```java
+String html = """
+    <html>
+      <body>
+        <h1>%s</h1>
+      </body>
+    </html>
+    """.formatted(name);
+```
+
+</div>
+
+</div>
+
+<v-clicks>
+
+## **Benefits**
+- Natural multiline strings
+- Preserves formatting and indentation
+- Works with `.formatted()` method
+
+</v-clicks>
+
+---
+
+# Escape Characters in Strings
+
+<v-clicks>
+
+## **Essential Escape Sequences**
+```java
+String newline = "First line\nSecond line";
+String tab = "Name:\tAlice Johnson";
+String quotes = "She said, \"Hello there!\"";
+String backslash = "File path: C:\\Users\\Alice\\Documents";
+String singleQuote = "It\'s a beautiful day";
+```
+
+## **Remember: Backslash Escapes Special Characters**
+
+</v-clicks>
+
+---
+
+# Text Blocks vs Escape Characters
+
+<v-clicks>
+
+## **Before Text Blocks (Escape Heavy)**
+```java
+String oldWay = "Employee data:\n\tName: \"Alice\"\n\tSalary: $75000";
+```
+
+## **With Text Blocks (Clean)**
+```java
+String newWay = """
+    Employee data:
+        Name: "Alice"
+        Salary: $75000
+    """;
+```
+
+## **Best Practice: Choose Based on Complexity**
+- **Simple formatting** → Escape characters
+- **Multi-line content** → Text blocks
+
+</v-clicks>
+
+---
+layout: section
+---
+
+# From Basic to Advanced Formatting
+
+Let's explore more sophisticated string manipulation techniques.
+
+---
+layout: section
+---
+
+# String Formatting - Part 2
+
+Advanced string manipulation and optimization
+
+---
+
+# StringBuilder - When Efficiency Matters
+
+<v-clicks>
+
+## **Perfect for Complex Building**
+```java
+StringBuilder sb = new StringBuilder();
+sb.append("Employee Summary: ")
+  .append(employeeName)
+  .append(" (").append(employeeId).append(")")
+  .append(" earning ").append(salary);
+```
+
+## **Use StringBuilder When:**
+- Building strings in loops
+- Conditional string construction
+- Complex multi-step assembly
+- Performance is critical
+
+</v-clicks>
+
+---
+
+# String.join() - Simple and Convenient
+
+<v-clicks>
+
+## **Static Method for Quick Joining**
+```java
+String departments = String.join(", ", "Engineering", "Marketing", "Sales");
+// Result: Engineering, Marketing, Sales
+
+// With Collections too
+String result = String.join(", ", namesList);
+```
+
+## **When to Use**
+- Simple delimiter-separated strings
+- No prefix/suffix needed
+- Most common joining scenario
+
+</v-clicks>
+
+---
+
+# StringJoiner - For Delimited Strings
+
+<v-clicks>
+
+## **Clean Delimiter Handling**
+```java
+StringJoiner joiner = new StringJoiner(", ", "[", "]");
+joiner.add("Alice").add("Bob").add("Charlie");
+// Result: [Alice, Bob, Charlie]
+```
+
+## **Real-World Example**
+```java
+StringJoiner csvLine = new StringJoiner(",");
+csvLine.add(employee.getName())
+       .add(String.valueOf(employee.getId()))
+       .add(employee.getDepartment());
+// Result: Alice Johnson,67890,Engineering
+```
+
+## **When to Use StringJoiner**
+- Creating CSV or delimited data
+- Building lists with separators
+- Need prefix/suffix around entire string
+
+</v-clicks>
+
+---
+
+# SLF4J Logging - Industry Standard
+
+<v-clicks>
+
+## **Parameterized Logging**
+```java
+Logger logger = LoggerFactory.getLogger(MyClass.class);
+logger.info("Employee {} (ID: {}) hired on {} with salary ${}", 
+           employeeName, employeeId, hireDate, salary);
+```
+
+## **Why This Matters**
+- **Performance**: Only formats if logging level is enabled
+- **Ubiquitous**: Every Java project uses this pattern
+- **Safe**: No string concatenation, handles nulls gracefully
+
+## **Use `{}` placeholders - order matters left to right**
+
+</v-clicks>
+
+---
+
+# Specialized Formatting
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Currency Formatting**
+```java
+NumberFormat currency = 
+    NumberFormat.getCurrencyInstance(Locale.US);
+String formatted = currency.format(82500.75);
+// Result: $82,500.75
+```
+
+## **Date Formatting**
+```java
+DateTimeFormatter formatter = 
+    DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+String date = hireDate.format(formatter);
+// Result: March 15, 2020
+```
+
+</div>
+
+<div>
+
+## **Why Use Specialized Formatters?**
+
+<v-clicks>
+
+- **Locale-aware** - Automatic localization
+- **Type-safe** - Designed for specific data types
+- **Feature-rich** - Handle edge cases
+
+</v-clicks>
+
+</div>
+
+</div>
+
+---
+
+# String Formatting Best Practices
+
+<v-clicks>
+
+## **Choose the Right Tool**
+- **`String.format()`** - Complex formatting, reusable patterns
+- **Text blocks** - Multiline strings (Java 15+)
+- **`StringBuilder`** - Loops and conditional building
+- **`String.join()`** - Simple delimiter joining
+- **SLF4J logging** - All logging statements
+
+## **Key Guidelines**
+- `StringBuilder` for loops, avoid concatenation in hot paths
+- Format strings are self-documenting
+- Use parameterized logging for performance
+
+</v-clicks>
+
+---
+layout: section
+---
+
+# From Formatting to User Input
+
+Now that we can format data effectively, let's learn how to get input from users safely.
+
+---
+layout: section
+---
+
 # Scanner and User Input
 
 Reading data from the console safely
@@ -1416,6 +1451,14 @@ public static void main(String[] args) {
 **Demonstrates:** Validation, error handling, resource management
 
 </v-clicks>
+
+---
+layout: section
+---
+
+# From User Input to Data Structures
+
+Now that we can safely get input from users, let's explore how to organize and process complex data.
 
 ---
 layout: section
@@ -1769,6 +1812,14 @@ record Employee(String name, double salary) {}
 - **Minimize nested complexity** - O(n²) can get expensive
 
 </v-clicks>
+
+---
+layout: section
+---
+
+# From Data Processing to Persistence
+
+Now that we can organize and process complex data, let's learn how to save it permanently to files.
 
 ---
 layout: section
