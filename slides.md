@@ -1097,3 +1097,276 @@ if (eligible) { }
 ```
 
 </v-clicks>
+
+---
+layout: section
+---
+
+# Scanner and User Input
+
+Reading data from the console safely
+
+---
+
+# Working with Scanner
+
+## Essential for Interactive Programs
+
+<v-clicks>
+
+- **User interaction** - Get data from keyboard input
+- **File processing** - Read from files and other input sources  
+- **Data parsing** - Convert strings to appropriate types
+- **Validation** - Handle invalid input gracefully
+
+</v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+> Scanner is your gateway to making programs interactive and user-friendly
+
+</v-click>
+</div>
+
+---
+
+# Creating and Using Scanner
+
+<v-clicks>
+
+## **Basic Setup**
+```java
+import java.util.Scanner;
+
+Scanner scanner = new Scanner(System.in);
+```
+
+## **Reading Different Types**
+```java
+String name = scanner.nextLine();        // Read entire line
+int age = scanner.nextInt();             // Read integer  
+double salary = scanner.nextDouble();    // Read double
+boolean active = scanner.nextBoolean();  // Read boolean
+```
+
+## **Always Close Resources**
+```java
+scanner.close();  // Important: prevents resource leaks
+```
+
+</v-clicks>
+
+---
+
+# The nextLine() vs next() Pitfall
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## ❌ **Common Problem**
+```java
+Scanner scanner = new Scanner(System.in);
+
+System.out.print("Enter age: ");
+int age = scanner.nextInt();
+
+System.out.print("Enter name: ");
+String name = scanner.nextLine();
+// Problem: nextLine() reads empty string!
+```
+
+**Why it happens:**
+- `nextInt()` leaves newline in buffer
+- `nextLine()` reads that leftover newline
+
+</div>
+
+<div>
+
+## ✅ **Better Approach**
+```java
+Scanner scanner = new Scanner(System.in);
+
+System.out.print("Enter age: ");
+String ageInput = scanner.nextLine();
+int age = Integer.parseInt(ageInput);
+
+System.out.print("Enter name: ");
+String name = scanner.nextLine();
+// Works perfectly!
+```
+
+**Why it works:**
+- Always use `nextLine()` for input
+- Parse strings to needed types
+- No buffer issues
+
+</div>
+
+</div>
+
+---
+
+# Input Validation Patterns
+
+<v-clicks>
+
+## **The Validation Loop Pattern**
+```java
+private static int getIntInput(Scanner scanner) {
+    while (true) {
+        try {
+            String input = scanner.nextLine().trim();
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.print("Invalid number. Please try again: ");
+        }
+    }
+}
+```
+
+## **Why This Works**
+- **Infinite loop** until valid input received
+- **Exception handling** catches parsing errors
+- **User-friendly** prompts for retry
+- **Input trimming** handles whitespace
+
+</v-clicks>
+
+---
+
+# Handling Different Data Types
+
+<div class="grid grid-cols-2 gap-6">
+
+<div>
+
+## **Numeric Input**
+```java
+private static double getDoubleInput(Scanner scanner) {
+    while (true) {
+        try {
+            String input = scanner.nextLine().trim();
+            return Double.parseDouble(input);
+        } catch (NumberFormatException e) {
+            System.out.print("Invalid amount: $");
+        }
+    }
+}
+```
+
+</div>
+
+<div>
+
+## **Date Input**
+```java
+private static LocalDate getDateInput(Scanner scanner) {
+    DateTimeFormatter formatter = 
+        DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    while (true) {
+        try {
+            String input = scanner.nextLine().trim();
+            return LocalDate.parse(input, formatter);
+        } catch (DateTimeParseException e) {
+            System.out.print("Use yyyy-MM-dd format: ");
+        }
+    }
+}
+```
+
+</div>
+
+</div>
+
+---
+
+# Boolean Input - User Friendly
+
+<v-clicks>
+
+## **Accept Multiple Formats**
+```java
+private static boolean getBooleanInput(Scanner scanner) {
+    while (true) {
+        String input = scanner.nextLine().trim().toLowerCase();
+        
+        if ("true".equals(input) || "yes".equals(input) || "y".equals(input)) {
+            return true;
+        } else if ("false".equals(input) || "no".equals(input) || "n".equals(input)) {
+            return false;
+        } else {
+            System.out.print("Please enter true/false (or yes/no): ");
+        }
+    }
+}
+```
+
+## **User Experience Benefits**
+- Accepts `true`/`false`, `yes`/`no`, `y`/`n`
+- Case-insensitive input handling
+- Clear error messages with examples
+
+</v-clicks>
+
+---
+
+# Scanner Best Practices
+
+<v-clicks>
+
+## **Resource Management**
+```java
+try (Scanner scanner = new Scanner(System.in)) {
+    // Use scanner here
+} // Automatically closed
+```
+
+## **Consistent Input Strategy**
+- **Always use `nextLine()`** - avoids buffer issues
+- **Parse strings** to needed types with error handling
+- **Trim input** to handle user whitespace
+
+## **Validation Guidelines**
+- **Never trust user input** - always validate
+- **Provide clear prompts** - tell users what you expect
+- **Handle errors gracefully** - give users another chance
+- **Use specific error messages** - help users understand what went wrong
+
+</v-clicks>
+
+---
+
+# Real-World Scanner Example
+
+<v-clicks>
+
+## **Employee Data Entry System**
+```java
+public static void main(String[] args) {
+    try (Scanner scanner = new Scanner(System.in)) {
+        
+        System.out.print("Enter employee name: ");
+        String name = scanner.nextLine().trim();
+        
+        System.out.print("Enter employee ID: ");
+        int id = getIntInput(scanner);
+        
+        System.out.print("Enter salary: $");
+        double salary = getDoubleInput(scanner);
+        
+        Employee employee = new Employee(name, id, salary);
+        System.out.println("Created: " + employee);
+        
+    } catch (Exception e) {
+        System.err.println("Error: " + e.getMessage());
+    }
+}
+```
+
+**Demonstrates:** Validation, error handling, resource management
+
+</v-clicks>

@@ -5,42 +5,39 @@ import java.time.format.DateTimeParseException;
 
 public class EmployeeInput {
     
-    private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
     public static void main(String[] args) {
         System.out.println("=== Employee Data Entry System ===");
         
-        try {
-            Employee employee = collectEmployeeData();
+        try (Scanner scanner = new Scanner(System.in)) {
+            Employee employee = collectEmployeeData(scanner);
             displayEmployee(employee);
         } catch (Exception e) {
             System.err.println("Error collecting employee data: " + e.getMessage());
-        } finally {
-            scanner.close();
         }
     }
     
-    private static Employee collectEmployeeData() {
+    private static Employee collectEmployeeData(Scanner scanner) {
         System.out.print("Enter employee name: ");
         String name = scanner.nextLine().trim();
         
         System.out.print("Enter employee ID: ");
-        int id = getIntInput();
+        int id = getIntInput(scanner);
         
         System.out.print("Enter salary: $");
-        double salary = getDoubleInput();
+        double salary = getDoubleInput(scanner);
         
         System.out.print("Enter hire date (yyyy-MM-dd): ");
-        LocalDate hireDate = getDateInput();
+        LocalDate hireDate = getDateInput(scanner);
         
         System.out.print("Is employee active? (true/false): ");
-        boolean isActive = getBooleanInput();
+        boolean isActive = getBooleanInput(scanner);
         
         return new Employee(name, id, salary, hireDate, isActive);
     }
     
-    private static int getIntInput() {
+    private static int getIntInput(Scanner scanner) {
         while (true) {
             try {
                 String input = scanner.nextLine().trim();
@@ -51,7 +48,7 @@ public class EmployeeInput {
         }
     }
     
-    private static double getDoubleInput() {
+    private static double getDoubleInput(Scanner scanner) {
         while (true) {
             try {
                 String input = scanner.nextLine().trim();
@@ -62,7 +59,7 @@ public class EmployeeInput {
         }
     }
     
-    private static LocalDate getDateInput() {
+    private static LocalDate getDateInput(Scanner scanner) {
         while (true) {
             try {
                 String input = scanner.nextLine().trim();
@@ -73,7 +70,7 @@ public class EmployeeInput {
         }
     }
     
-    private static boolean getBooleanInput() {
+    private static boolean getBooleanInput(Scanner scanner) {
         while (true) {
             String input = scanner.nextLine().trim().toLowerCase();
             if ("true".equals(input) || "yes".equals(input) || "y".equals(input)) {
