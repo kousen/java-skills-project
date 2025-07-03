@@ -140,7 +140,7 @@ public class EmployeeFileWriter {
         List<Employee> employees = new ArrayList<>();
         
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(CSV_FILE))) {
-            String header = reader.readLine(); // Skip header
+            reader.readLine(); // Skip header
             String line;
             
             while ((line = reader.readLine()) != null) {

@@ -183,6 +183,9 @@ docs/generated/
 *.backup
 *.orig
 *.save
+slides_*.md
+*_backup.md
+*_old.md
 
 ###################
 # Security & Secrets
