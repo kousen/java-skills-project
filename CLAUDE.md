@@ -14,6 +14,11 @@ This is a multi-module Gradle project for creating Java skills teaching videos. 
 - **settings.gradle** includes all 8 submodules
 - **Gradle 9.0 Compatible** - All deprecation warnings resolved (see DEPENDENCY_UPDATES.md)
 
+### Slidev Presentations
+- **package.json** with Slidev dependencies for interactive slides
+- **slides.md** contains teaching presentations
+- **Commands**: `npm run dev` (development), `npm run build` (production), `npm run export` (PDF)
+
 ### Modern Dependency Management (BOMs)
 - **JUnit BOM**: `platform('org.junit:junit-bom:5.11.0')`
 - **Mockito BOM**: `platform('org.mockito:mockito-bom:5.18.0')`
@@ -189,8 +194,13 @@ testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 ## Video Production Ready Status (2025)
 
+### 📊 Slidev Presentations Available
+- **slides.md** - Interactive presentations with 14 slides covering Java naming conventions
+- **Java naming conventions slides** - Ready for video recording with progressive disclosure
+- **Commands**: `npm run dev` (development), `npm run build` (production), `npm run export` (PDF)
+
 ### ✅ Ready to Record (100% Working)
-- **foundations** - All 6 classes working with latest 2025 dependencies
+- **foundations** - All 6 classes working with latest 2025 dependencies, plus accompanying slides
 - **oop-core** - Complete OOP progression with modern Java 21 features
 - **design-patterns** - Three solid pattern implementations using current best practices
 

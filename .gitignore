@@ -208,7 +208,7 @@ application-secrets.yaml
 # Development Tools
 ###################
 
-# Node.js (in case frontend is added)
+# Node.js / Slidev
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -216,6 +216,11 @@ yarn-error.log*
 .pnpm-debug.log*
 .yarn-integrity
 .npm
+package-lock.json
+
+# Slidev
+dist/
+.slidev/
 
 # Docker
 docker-compose.override.yml

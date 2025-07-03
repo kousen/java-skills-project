@@ -6,6 +6,21 @@ A comprehensive multi-module Gradle project designed as the foundation for a Jav
 
 This project is structured as a Gradle multi-module build with Java 21, designed to teach 26 essential Java topics through connected, practical examples. Each module builds upon previous concepts while maintaining a cohesive narrative around employee management.
 
+## 📊 Slides and Presentations
+
+The project includes Slidev-powered slides for enhanced teaching:
+
+- **slides.md** - Interactive presentations for each topic
+- **package.json** - Slidev dependencies and build scripts
+
+### Running Slides
+```bash
+npm install          # Install Slidev dependencies
+npm run dev         # Start development server with hot reload
+npm run build       # Build static presentation
+npm run export      # Export to PDF
+```
+
 ## Module Structure
 
 ### 📚 **foundations** - Basic Java Concepts (Videos 1-7)
