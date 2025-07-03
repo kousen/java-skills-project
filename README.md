@@ -10,7 +10,7 @@ This project is structured as a Gradle multi-module build with Java 21, designed
 
 The project includes Slidev-powered slides for enhanced teaching:
 
-- **slides.md** - Interactive presentations covering naming conventions and string formatting
+- **slides.md** - Interactive presentations covering naming conventions, string formatting, and operator precedence
 - **package.json** - Slidev dependencies and build scripts
 
 ### Running Slides
@@ -28,7 +28,7 @@ npm run export      # Export to PDF
 
 - **NamingConventions.java** - Proper Java naming conventions with good/bad examples
 - **StringFormatting.java** - String concatenation, formatting, text blocks, StringBuilder, String.join(), StringJoiner, SLF4J logging
-- **OperatorPrecedence.java** - Operator precedence with salary calculation examples
+- **OperatorPrecedenceTest.java** - JUnit tests demonstrating operator precedence rules with arithmetic, boolean, assignment, ternary, increment/decrement, modulus, and Math.pow() examples
 - **EmployeeInput.java** - Scanner input with validation and error handling
 - **EmployeeRoster.java** - 2D arrays, nested loops, department management
 - **EmployeeFileWriter.java** - File I/O operations (CSV, JSON, Apache Commons IO)

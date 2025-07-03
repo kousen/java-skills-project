@@ -782,3 +782,318 @@ String date = hireDate.format(formatter);
 - Use parameterized logging for performance
 
 </v-clicks>
+
+---
+layout: section
+---
+
+# Operator Precedence
+
+Understanding the order of operations
+
+---
+
+# Operator Precedence in Java
+
+## Why It Matters
+
+<v-clicks>
+
+- **Order of operations** determines calculation results
+- **Unexpected behaviors** from incorrect assumptions
+- **Debugging nightmares** when precedence is unclear
+- **Financial calculations** must be precise and predictable
+
+</v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+> "Explicit is better than implicit" - Always use parentheses when in doubt!
+
+</v-click>
+</div>
+
+---
+
+# Java Operator Precedence (High to Low)
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Highest Precedence**
+- **Postfix**: `++`, `--`, `[]`, `.`, `()`
+- **Unary**: `++`, `--`, `+`, `-`, `!`, `~`
+- **Multiplicative**: `*`, `/`, `%`
+- **Additive**: `+`, `-`
+
+</div>
+
+<div>
+
+## **Lower Precedence**  
+- **Relational**: `<`, `>`, `<=`, `>=`
+- **Equality**: `==`, `!=`
+- **Logical AND**: `&&`
+- **Logical OR**: `||`
+- **Assignment**: `=`, `+=`, `-=`, etc.
+
+</div>
+
+</div>
+
+<v-clicks>
+
+**Key Rule:** When in doubt, use parentheses!
+
+</v-clicks>
+
+---
+
+# Arithmetic Precedence Gotchas
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## ❌ **Common Mistake**
+```java
+double baseSalary = 50000;
+int overtime = 20;
+double overtimeRate = 1.5;
+double hourlyRate = 25.0;
+
+// Multiplication happens first!
+double wrong = baseSalary + overtime * 
+               overtimeRate * hourlyRate;
+// Result: 50000 + 750 = 50750
+```
+
+</div>
+
+<div>
+
+## ✅ **Correct Approach**
+```java
+// Use parentheses for clarity
+double correct = baseSalary + 
+    (overtime * overtimeRate * hourlyRate);
+// Same result, but intent is clear
+
+// Or separate the calculation
+double overtimePay = overtime * 
+                    overtimeRate * hourlyRate;
+double total = baseSalary + overtimePay;
+```
+
+</div>
+
+</div>
+
+---
+
+# Boolean Operator Precedence
+
+<v-clicks>
+
+## **`&&` has higher precedence than `||`**
+
+```java
+boolean isFullTime = true;
+boolean hasBonus = true;
+int yearsOfService = 3;
+
+// This expression: isFullTime || hasBonus && yearsOfService > 2
+// Is evaluated as: isFullTime || (hasBonus && yearsOfService > 2)
+boolean eligible = isFullTime || hasBonus && yearsOfService > 2;
+```
+
+## **Always Be Explicit**
+```java
+// Clear intent - what you probably meant
+boolean eligibleClear = isFullTime || (hasBonus && yearsOfService > 2);
+
+// Different logic entirely  
+boolean eligibleDifferent = (isFullTime || hasBonus) && yearsOfService > 2;
+```
+
+</v-clicks>
+
+---
+
+# Assignment Operator Behavior
+
+<v-clicks>
+
+## **Right-to-Left Associativity**
+```java
+int a = 5, b = 10, c = 15;
+
+// Multiple assignments work right to left
+a = b = c = 20;
+// Equivalent to: a = (b = (c = 20));
+// Result: a=20, b=20, c=20
+```
+
+## **Compound Assignment Precedence**
+```java
+a = 5; b = 10;
+a += b *= 2;
+// Step 1: b *= 2  → b becomes 20
+// Step 2: a += b  → a becomes 5 + 20 = 25
+```
+
+## **Why This Matters**
+- Can create subtle bugs
+- Makes code harder to read
+- Better to split into separate statements
+
+</v-clicks>
+
+---
+
+# Ternary Operator (`? :`) Precedence
+
+<v-clicks>
+
+## **Lower Precedence Than Most Operators**
+```java
+int bonus = salary > 50000 ? 1000 : 0;
+// Equivalent to: int bonus = (salary > 50000) ? 1000 : 0;
+
+// But watch out for this:
+int result = a + b > 5 ? x * 2 : y + 1;
+// Parsed as: int result = ((a + b) > 5) ? (x * 2) : (y + 1);
+```
+
+## **Complex Expressions Need Parentheses**
+```java
+// Confusing precedence
+boolean eligible = isManager ? salary > 80000 && hasBonus : years > 5;
+
+// Clear intent
+boolean eligible = isManager ? (salary > 80000 && hasBonus) : (years > 5);
+```
+
+## **Best Practice: Always Parenthesize Complex Ternary Conditions**
+
+</v-clicks>
+
+---
+
+# Increment/Decrement Precedence
+
+<v-clicks>
+
+## **Pre vs. Post Increment in Expressions**
+```java
+int i = 5;
+int a = ++i * 2;  // Pre-increment: i becomes 6, then 6 * 2 = 12
+int b = i++ * 2;  // Post-increment: 5 * 2 = 10, then i becomes 6
+
+// Reset i
+i = 5;
+int x = 2 + ++i;  // i becomes 6, then 2 + 6 = 8  
+int y = 2 + i++;  // 2 + 5 = 7, then i becomes 6
+```
+
+## **In Real Code: Avoid Mixing**
+```java
+// Confusing - don't do this
+result = array[i++] + ++count * value--;
+
+// Clear and maintainable
+result = array[i] + (count + 1) * value;
+i++;
+count++;
+value--;
+```
+
+</v-clicks>
+
+---
+
+# Modulus (`%`) and Special Cases
+
+<v-clicks>
+
+## **Modulus Has Same Precedence as `*` and `/`**
+```java
+int result = 10 + 15 % 4;
+// Parsed as: 10 + (15 % 4) = 10 + 3 = 13
+
+// Salary calculations with modulus
+int totalHours = 45;
+int regularHours = totalHours % 40;  // Wrong! % has higher precedence
+int regularHoursCorrect = Math.min(totalHours, 40);
+```
+
+## **Common Uses**
+```java
+// Even/odd checking
+boolean isEven = (number % 2) == 0;
+
+// Cycling through array indices
+int index = (currentIndex + 1) % arrayLength;
+
+// Time calculations
+int minutes = totalSeconds % 60;
+int hours = (totalSeconds / 60) % 24;
+```
+
+</v-clicks>
+
+---
+
+# Java Has No Exponentiation Operator
+
+<v-clicks>
+
+## **Use `Math.pow()` Instead**
+```java
+// Other languages: base ** exponent
+// Java uses: Math.pow(base, exponent)
+double result = Math.pow(2, 3);  // Returns 8.0 (double)
+
+// Salary with compound interest
+double futureValue = presentValue * Math.pow(1 + rate, years);
+```
+
+## **Simple Alternatives**
+```java
+// For small powers, multiplication is clearer
+int squared = x * x;           // Instead of Math.pow(x, 2)
+int cubed = x * x * x;         // Instead of Math.pow(x, 3)
+
+// Cast when you need int result
+int result = (int) Math.pow(base, exponent);
+```
+
+</v-clicks>
+
+---
+
+# Operator Precedence Best Practices
+
+<v-clicks>
+
+## **The Golden Rules**
+
+1. **When in doubt, use parentheses** - Clarity beats cleverness
+2. **Break complex expressions** - Use intermediate variables  
+3. **Avoid mixing operators** - Especially `++`/`--` in expressions
+4. **Be explicit with ternary** - Parenthesize complex conditions
+
+## **Write for the Next Developer**
+```java
+// Clever but unclear
+if (isManager && salary > 80000 || hasBonus && years > 5) { }
+
+// Clear and maintainable
+boolean eligible = (isManager && salary > 80000) || 
+                  (hasBonus && years > 5);
+if (eligible) { }
+```
+
+</v-clicks>
