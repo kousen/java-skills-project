@@ -3,7 +3,7 @@
 2. Use escape characters (e.g., \n, \t) in String output to control formatting.
 3. Combine multiple expressions using correct operator precedence.
 4. Capture user input from the console using the Scanner class.
-5. Implement nested loops to process multi-dimensional data.
+5. Implement nested loops to process multidimensional data.
 6. Create and manipulate two-dimensional arrays.
 7. Write content to a file using FileWriter or BufferedWriter.
 8. Apply access modifiers (public, private, protected, package-private) to control visibility.

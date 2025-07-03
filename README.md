@@ -10,7 +10,7 @@ This project is structured as a Gradle multi-module build with Java 21, designed
 
 The project includes Slidev-powered slides for enhanced teaching:
 
-- **slides.md** - Interactive presentations covering naming conventions, string formatting (including escape characters), operator precedence, and Scanner input
+- **slides.md** - Interactive presentations covering naming conventions, string formatting (including escape characters), operator precedence, Scanner input, and multidimensional arrays with nested loops
 - **package.json** - Slidev dependencies and build scripts
 
 ### Running Slides
@@ -30,7 +30,7 @@ npm run export      # Export to PDF
 - **StringFormatting.java** - String concatenation, formatting, text blocks, StringBuilder, String.join(), StringJoiner, escape characters, SLF4J logging
 - **OperatorPrecedenceTest.java** - JUnit tests demonstrating operator precedence rules with arithmetic, boolean, assignment, ternary, increment/decrement, modulus, and Math.pow() examples
 - **EmployeeInput.java** - Scanner input with try-with-resources, robust validation loops, and user-friendly error handling for all data types
-- **EmployeeRoster.java** - 2D arrays, nested loops, department management
+- **EmployeeRoster.java** - Multidimensional arrays (2D), nested loops (indexed and enhanced), parallel arrays, statistics calculations, search operations
 - **EmployeeFileWriter.java** - File I/O operations (CSV, JSON, Apache Commons IO)
 
 ### 🏗️ **oop-core** - Object-Oriented Programming (Videos 8-12)

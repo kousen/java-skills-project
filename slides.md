@@ -769,19 +769,16 @@ String date = hireDate.format(formatter);
 
 <v-clicks>
 
-## **Common Escape Sequences**
+## **Essential Escape Sequences**
 ```java
 String newline = "First line\nSecond line";
 String tab = "Name:\tAlice Johnson";
 String quotes = "She said, \"Hello there!\"";
 String backslash = "File path: C:\\Users\\Alice\\Documents";
+String singleQuote = "It\'s a beautiful day";
 ```
 
-## **Special Cases**
-```java
-String singleQuote = "It\'s a beautiful day";
-String unicode = "Trademark: \u2122";  // ™ symbol
-```
+## **Remember: Backslash Escapes Special Characters**
 
 </v-clicks>
 
@@ -1417,5 +1414,358 @@ public static void main(String[] args) {
 ```
 
 **Demonstrates:** Validation, error handling, resource management
+
+</v-clicks>
+
+---
+layout: section
+---
+
+# Arrays and Nested Loops
+
+Working with multidimensional data structures
+
+---
+
+# Why Multidimensional Arrays?
+
+## Real-World Data is Often Tabular
+
+<v-clicks>
+
+- **Spreadsheet-like data** - Rows and columns of related information
+- **Matrix operations** - Mathematical computations, game boards
+- **Organizational structures** - Departments with employees, classes with students
+- **Time series data** - Multiple measurements over time periods
+
+</v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+> Think of 2D arrays as tables: rows represent one category, columns represent another
+
+</v-click>
+</div>
+
+---
+
+# 2D Array Fundamentals
+
+<v-clicks>
+
+## **Declaration and Creation**
+```java
+// Declare a 2D array
+String[][] employeeRoster;
+
+// Create with fixed dimensions
+employeeRoster = new String[5][10];  // 5 departments, 10 employees each
+
+// Or combine declaration and creation
+double[][] salaries = new double[5][10];
+```
+
+## **Understanding the Structure**
+```java
+// Array of arrays - think of it as:
+// roster[department][employee]
+// salaries[department][employee]
+
+roster[0][0] = "Alice Johnson";    // First employee in first department
+salaries[0][0] = 95000.0;          // Alice's salary
+```
+
+</v-clicks>
+
+---
+
+# Accessing 2D Array Elements
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Index-Based Access**
+```java
+String[][] roster = new String[3][5];
+
+// Set values
+roster[0][0] = "Alice";
+roster[0][1] = "Bob";
+roster[1][0] = "Carol";
+
+// Get values
+String employee = roster[0][0];
+System.out.println(employee); // "Alice"
+
+// Check boundaries
+if (roster[dept][emp] != null) {
+    System.out.println(roster[dept][emp]);
+}
+```
+
+</div>
+
+<div>
+
+## **Working with Dimensions**
+```java
+// Get array dimensions
+int departments = roster.length;        // 3
+int maxEmployees = roster[0].length;    // 5
+
+// Each row can have different lengths
+String[][] irregular = {
+    {"Alice", "Bob"},
+    {"Carol", "David", "Eve"},
+    {"Frank"}
+};
+
+System.out.println(irregular[1].length); // 3
+```
+
+</div>
+
+</div>
+
+---
+
+# Nested Loops - The Natural Partner
+
+<v-clicks>
+
+## **Why Nested Loops?**
+- **One loop per dimension** - outer loop for rows, inner loop for columns
+- **Complete traversal** - visit every element in the 2D structure
+- **Pattern processing** - apply operations to all elements
+
+## **Conceptual Flow**
+```
+Outer loop: Department 0 → Department 1 → Department 2 ...
+  Inner loop: Employee 0 → Employee 1 → Employee 2 ...
+  Inner loop: Employee 0 → Employee 1 → Employee 2 ...
+  Inner loop: Employee 0 → Employee 1 → Employee 2 ...
+```
+
+</v-clicks>
+
+---
+
+# Basic Nested Loop Pattern
+
+<v-clicks>
+
+## **Standard Template**
+```java
+for (int row = 0; row < array.length; row++) {
+    for (int col = 0; col < array[row].length; col++) {
+        // Process array[row][col]
+    }
+}
+```
+
+## **Employee Roster Example**
+```java
+for (int dept = 0; dept < roster.length; dept++) {
+    for (int emp = 0; emp < roster[dept].length; emp++) {
+        if (roster[dept][emp] != null) {
+            System.out.println(roster[dept][emp]);
+        }
+    }
+}
+```
+
+</v-clicks>
+
+---
+
+# Indexed vs Enhanced For Loops
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Use Indices When You Need Position**
+```java
+// Displaying with row/column info
+for (int dept = 0; dept < roster.length; dept++) {
+    System.out.println(departments[dept] + ":");
+    
+    for (int emp = 0; emp < roster[dept].length; emp++) {
+        if (roster[dept][emp] != null) {
+            System.out.printf("  %d. %s%n", 
+                emp + 1, roster[dept][emp]);
+        }
+    }
+}
+```
+
+</div>
+
+<div>
+
+## **Use Enhanced Loops for Simple Processing**
+```java
+// Just counting all employees
+int totalEmployees = 0;
+for (String[] department : roster) {
+    for (String employee : department) {
+        if (employee != null) {
+            totalEmployees++;
+        }
+    }
+}
+
+// Clean, readable, less error-prone
+```
+
+</div>
+
+</div>
+
+## **Choose Based on What You Need**
+- **Need indices** → Use traditional for loops
+- **Just processing elements** → Use enhanced for loops
+
+---
+
+# Setting Up 2D Data Structures
+
+<v-clicks>
+
+## **Employee Roster Management**
+```java
+String[][] roster = new String[5][10];  // 5 departments, up to 10 employees each
+double[][] salaries = new double[5][10]; // Parallel array for salaries
+
+// Populate departments
+roster[0][0] = "Alice Johnson"; salaries[0][0] = 95000;
+roster[0][1] = "Bob Smith";     salaries[0][1] = 87000;
+roster[1][0] = "Carol Davis";   salaries[1][0] = 68000;
+```
+
+## **Parallel Arrays Strategy**
+- **Related data** stays synchronized by using same indices
+- **roster[dept][emp]** corresponds to **salaries[dept][emp]**
+- **Simple and effective** for straightforward relationships
+
+</v-clicks>
+
+---
+
+# Processing 2D Data with Nested Loops
+
+<v-clicks>
+
+## **Statistics and Analysis**
+```java
+// Calculate department totals
+for (int dept = 0; dept < salaries.length; dept++) {
+    double total = 0;
+    int count = 0;
+    
+    for (int emp = 0; emp < salaries[dept].length; emp++) {
+        if (salaries[dept][emp] > 0) {
+            total += salaries[dept][emp];
+            count++;
+        }
+    }
+    
+    double average = total / count;
+    System.out.printf("Dept %d average: $%.2f%n", dept, average);
+}
+```
+
+</v-clicks>
+
+---
+
+# Common Patterns
+
+<v-clicks>
+
+## **Null Checking in Sparse Arrays**
+```java
+// Always check for null in partially filled arrays
+for (String[] department : roster) {
+    for (String employee : department) {
+        if (employee != null) {  // Important!
+            System.out.println(employee);
+        }
+    }
+}
+```
+
+## **Why Null Checking Matters**
+- **Sparse arrays** don't fill every position
+- **NullPointerException** if you forget to check
+- **Enhanced for loops** still visit null elements
+
+</v-clicks>
+
+---
+
+# Common Pitfalls
+
+<v-clicks>
+
+## **Array Bounds Awareness**
+```java
+// Be careful with nested array lengths
+for (int i = 0; i < array.length; i++) {
+    for (int j = 0; j < array[i].length; j++) {  // Use array[i].length!
+        // Process array[i][j]
+    }
+}
+```
+
+## **Parallel Array Synchronization**
+```java
+// Keep related arrays in sync
+roster[dept][emp] = "Alice Johnson";
+salaries[dept][emp] = 95000;  // Same indices!
+
+// Consider using objects for complex data
+record Employee(String name, double salary) {}
+```
+
+</v-clicks>
+
+---
+
+# Design Best Practices
+
+<v-clicks>
+
+## **When to Use 2D Arrays**
+- **Fixed dimensions** - departments × employees matrix
+- **Simple data types** - String, int, double
+- **Performance-critical** scenarios
+
+## **When to Consider Alternatives**
+- **Dynamic data** → Use Collections (ArrayList, etc.)
+- **Complex objects** → Use List of custom objects/records
+- **Many null values** → Consider sparse data structures
+
+## **Parallel Arrays Work Well For Simple Relationships**
+
+</v-clicks>
+
+---
+
+# Implementation Best Practices
+
+<v-clicks>
+
+## **Loop Strategy**
+- **Enhanced for loops** - simple element processing
+- **Indexed loops** - when you need position information
+- **Extract complex logic** into separate methods
+
+## **Performance Tips**
+- **Row-major order** - process by rows for better cache performance
+- **Early termination** - exit loops when you find what you need
+- **Minimize nested complexity** - O(n²) can get expensive
 
 </v-clicks>
