@@ -19,6 +19,36 @@ This is a multi-module Gradle project for creating Java skills teaching videos. 
 - **slides.md** contains teaching presentations
 - **Commands**: `npm run dev` (development), `npm run build` (production), `npm run export` (PDF)
 
+### 🚨 CRITICAL SLIDEV SLIDE CREATION RULES (READ EVERY TIME!)
+**ALWAYS follow these rules when creating slides to avoid overflow issues:**
+
+1. **MORE SHORTER SLIDES > FEWER LONGER SLIDES**
+   - Default to creating 2-3 slides instead of 1 packed slide
+   - These are for video teaching, not printed handouts
+   - Length is not a concern - readability and presentation are
+
+2. **MAXIMUM CONTENT PER SLIDE:**
+   - **2-3 bullet points maximum** per section
+   - **2-3 sections maximum** per slide (## headers)
+   - **One main concept per slide** - don't try to cover multiple related ideas
+
+3. **SPLIT EARLY AND OFTEN:**
+   - When in doubt, make it two slides
+   - Split by concept, not by arbitrary length
+   - Use section divider slides between major topics
+
+4. **SLIDE OVERFLOW TESTING:**
+   - Consider slide window constraints from the start
+   - If any slide feels "full", split it immediately
+   - Remember: better to have 20 short slides than 10 overflowing slides
+
+5. **CONTENT DENSITY GUIDELINES:**
+   - Concise phrases, not full explanations
+   - Avoid long code examples that push beyond window
+   - Use progressive disclosure with <v-clicks> for complex topics
+
+**Remember: The user has repeatedly had to ask for slide overflow fixes. This pattern must stop!**
+
 ### Modern Dependency Management (BOMs)
 - **JUnit BOM**: `platform('org.junit:junit-bom:5.11.0')`
 - **Mockito BOM**: `platform('org.mockito:mockito-bom:5.18.0')`
