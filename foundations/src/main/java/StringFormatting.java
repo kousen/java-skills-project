@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.StringJoiner;
 
 public class StringFormatting {
     
@@ -62,6 +63,22 @@ public class StringFormatting {
           .append(" since ")
           .append(hireDate.format(dateFormatter));
         System.out.println("StringBuilder: " + sb);
+        
+        // String.join() - simple and convenient (Java 8+)
+        String departments = String.join(", ", "Engineering", "Marketing", "Sales", "HR");
+        System.out.println("Departments: " + departments);
+        
+        // StringJoiner - more control with prefix/suffix
+        StringJoiner csvLine = new StringJoiner(",");
+        csvLine.add(employeeName)
+               .add(String.valueOf(employeeId))
+               .add(currencyFormat.format(salary))
+               .add(hireDate.toString());
+        System.out.println("CSV: " + csvLine);
+        
+        StringJoiner listFormat = new StringJoiner(", ", "[", "]");
+        listFormat.add("Alice").add("Bob").add("Charlie");
+        System.out.println("List format: " + listFormat);
         
         // SLF4J parameterized logging (modern best practice)
         Logger logger = LoggerFactory.getLogger(StringFormatting.class);

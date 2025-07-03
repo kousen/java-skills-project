@@ -195,8 +195,9 @@ testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 ## Video Production Ready Status (2025)
 
 ### 📊 Slidev Presentations Available
-- **slides.md** - Interactive presentations with 14 slides covering Java naming conventions
-- **Java naming conventions slides** - Ready for video recording with progressive disclosure
+- **slides.md** - Interactive presentations with naming conventions and string formatting sections
+- **22+ slides total** - Ready for video recording with progressive disclosure and section dividers
+- **String formatting coverage** - String.format(), printf(), text blocks, StringBuilder, String.join(), StringJoiner, SLF4J logging
 - **Commands**: `npm run dev` (development), `npm run build` (production), `npm run export` (PDF)
 
 ### ✅ Ready to Record (100% Working)
