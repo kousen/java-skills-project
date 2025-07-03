@@ -2153,17 +2153,14 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
 - **Files.newBufferedWriter()** - Preferred for new code
 - **Path objects** - More flexible than File objects
 - **Better exception handling** - Clearer error messages
-- **Utility methods** - Files.exists(), Files.copy(), Files.size()
 
 ## **Traditional Approach (Legacy)**
 - **FileWriter** - Simple cases, legacy compatibility
-- **BufferedWriter** - When you need buffering with FileWriter
 - **PrintWriter** - When you need formatted output methods
 
-## **Decision Guidelines**
+## **Quick Decision Guide**
 - **New projects** → Use java.nio (Files, Paths)
 - **Legacy projects** → May need java.io for consistency
-- **Simple one-off writes** → FileWriter acceptable
 - **Multiple writes** → Always use buffering
 
 </v-clicks>
@@ -2179,17 +2176,14 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
 - **Create directories first** using Files.createDirectories()
 - **Handle specific exceptions** for better error reporting
 - **Use BufferedWriter** for multiple writes to same file
-- **Consider charset encoding** for international text
 
 ## **Modern Java Patterns**
 - **java.nio.file.Files** over java.io.File
 - **Path objects** over String file paths
 - **Streaming for large files** to manage memory
-- **Validation before operations** to prevent errors
 
-## **Performance Best Practices**
+## **Key Rules**
 - **Buffer your writes** - Don't write directly to disk
 - **Close resources properly** - Use try-with-resources
-- **Handle exceptions gracefully** - Provide meaningful error messages
 
 </v-clicks>
