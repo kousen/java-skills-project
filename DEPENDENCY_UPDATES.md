@@ -153,6 +153,10 @@ Students will learn with the most current:
 testImplementation platform('org.junit:junit-bom:5.11.0')
 testImplementation 'org.junit.jupiter:junit-jupiter' // No version needed
 
+// Explicit test framework implementation (Gradle 9.0 compatibility)
+testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 // Mockito BOM - manages all Mockito dependencies  
 testImplementation platform('org.mockito:mockito-bom:5.18.0')
 testImplementation 'org.mockito:mockito-core' // No version needed
@@ -166,5 +170,34 @@ implementation 'com.fasterxml.jackson.core:jackson-databind' // No version neede
 - ✅ **All modules** - JUnit and Mockito BOMs  
 - ✅ **oop-core** - Jackson BOM
 - ✅ **final-project** - Jackson BOM
+
+## 🔧 **Gradle 9.0 Compatibility Fixes**
+
+### Resolved Deprecation Warnings
+The project has been updated to eliminate Gradle deprecation warnings:
+
+**1. Test Framework Implementation Dependencies**
+- **Issue**: Automatic loading of test framework dependencies deprecated in Gradle 9.0
+- **Solution**: Explicitly declared JUnit Platform dependencies
+```gradle
+testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+```
+
+**2. Property Assignment Syntax**
+- **Issue**: Old Groovy DSL syntax (`property value`) deprecated
+- **Solution**: Updated to assignment syntax (`property = value`)
+```gradle
+testLogging {
+    events = ["passed", "skipped", "failed"]  // Updated syntax
+    exceptionFormat = "full"                  // Updated syntax
+}
+```
+
+### Benefits
+- ✅ **Future-proof** - Ready for Gradle 9.0 when released
+- ✅ **No deprecation warnings** - Clean build output
+- ✅ **Explicit dependencies** - Better dependency management
+- ✅ **Educational value** - Students learn current best practices
 
 The updates ensure your video content remains relevant and teaches current industry standards with modern dependency management practices!

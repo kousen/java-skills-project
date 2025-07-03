@@ -33,13 +33,17 @@ subprojects {
         testImplementation 'org.assertj:assertj-core:3.26.3'
         testImplementation 'org.mockito:mockito-core'
         testImplementation 'org.mockito:mockito-junit-jupiter'
+        
+        // Explicit test framework implementation (Gradle 9.0 compatibility)
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
     
     test {
         useJUnitPlatform()
         testLogging {
-            events "passed", "skipped", "failed"
-            exceptionFormat "full"
+            events = ["passed", "skipped", "failed"]
+            exceptionFormat = "full"
         }
     }
 }

@@ -12,6 +12,7 @@ This is a multi-module Gradle project for creating Java skills teaching videos. 
 - **Root build.gradle** configures all submodules with common dependencies using BOMs
 - **Individual module build.gradle** files add module-specific dependencies
 - **settings.gradle** includes all 8 submodules
+- **Gradle 9.0 Compatible** - All deprecation warnings resolved (see DEPENDENCY_UPDATES.md)
 
 ### Modern Dependency Management (BOMs)
 - **JUnit BOM**: `platform('org.junit:junit-bom:5.11.0')`
@@ -82,6 +83,9 @@ gradle :design-patterns:test # 12/15 passing
 gradle runExample -Pmodule=foundations -PmainClass=NamingConventions
 gradle runExample -Pmodule=oop-core -PmainClass=ModernJavaFeatures
 gradle runExample -Pmodule=design-patterns -PmainClass=StrategyPatternDemo
+
+# Check for deprecation warnings (all resolved!)
+gradle build --warning-mode all
 ```
 
 ### Quick Status Check
@@ -167,7 +171,13 @@ testImplementation platform('org.mockito:mockito-bom:5.18.0')
 testImplementation 'org.junit.jupiter:junit-jupiter'
 testImplementation 'org.mockito:mockito-core'
 testImplementation 'org.mockito:mockito-junit-jupiter'
+
+// Gradle 9.0 compatibility (explicit test framework dependencies)
+testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 ```
+
+**Note**: See DEPENDENCY_UPDATES.md for complete dependency management details and Gradle 9.0 compatibility fixes.
 
 ### Module-specific Dependencies
 - **foundations**: Apache Commons IO 2.19.0
@@ -248,6 +258,7 @@ implementation 'com.fasterxml.jackson.core:jackson-databind' // No version neede
 - **Jakarta EE 11** - Current enterprise Java standards
 - **Java 21 features** - Records, pattern matching, sealed classes
 - **2025 testing practices** - JUnit 5.11, AssertJ, Mockito with BOMs
+- **Gradle 9.0 ready** - No deprecation warnings, future-proof build
 
 ### Video Content Highlights
 - Progressive complexity with consistent theme
@@ -255,3 +266,8 @@ implementation 'com.fasterxml.jackson.core:jackson-databind' // No version neede
 - Modern Java feature demonstrations
 - Enterprise-grade architecture patterns
 - Current industry best practices and tools
+
+## 📄 Related Documentation
+- **DEPENDENCY_UPDATES.md** - Complete details on all dependency versions, BOMs, and Gradle 9.0 compatibility fixes
+- **README.md** - Public-facing project documentation
+- **.gitignore** - Comprehensive Java project ignore patterns
