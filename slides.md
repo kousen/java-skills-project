@@ -1769,3 +1769,361 @@ record Employee(String name, double salary) {}
 - **Minimize nested complexity** - O(n²) can get expensive
 
 </v-clicks>
+
+---
+layout: section
+---
+
+# File I/O Operations
+
+Writing content to files using FileWriter and java.nio
+
+---
+
+# File I/O in Java
+
+## Why File Operations Matter
+
+<v-clicks>
+
+- **Data persistence** - Save program results beyond runtime
+- **Data exchange** - Share information between applications
+- **Configuration** - Store settings and preferences
+- **Logging** - Record application events and errors
+- **Backup and recovery** - Create data snapshots
+
+</v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+> **Two Main Approaches**: Traditional java.io and Modern java.nio
+
+</v-click>
+</div>
+
+---
+
+# Traditional java.io Approach
+
+<v-clicks>
+
+## **FileWriter - Basic Text Writing**
+```java
+try (FileWriter writer = new FileWriter("employees.txt")) {
+    writer.write("Alice Johnson,95000\n");
+    writer.write("Bob Smith,87000\n");
+}
+```
+
+## **BufferedWriter - Efficient Writing**
+```java
+try (BufferedWriter writer = new BufferedWriter(new FileWriter("data.txt"))) {
+    writer.write("Employee Data");
+    writer.newLine();
+    writer.write("============");
+}
+```
+
+## **PrintWriter - Formatted Writing**
+```java
+try (PrintWriter writer = new PrintWriter(new FileWriter("report.txt"))) {
+    writer.printf("Employee: %s, Salary: $%.2f%n", name, salary);
+}
+```
+
+</v-clicks>
+
+---
+
+# Modern java.nio Approach
+
+<v-clicks>
+
+## **Files.newBufferedWriter() - Preferred Method**
+```java
+try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("employees.csv"))) {
+    writer.write("ID,Name,Salary,HireDate");
+    writer.newLine();
+    writer.write("1001,Alice Johnson,95000,2020-03-15");
+}
+```
+
+## **Key Advantages**
+- **Path-based operations** - More flexible than File objects
+- **Better exception handling** - Clearer error messages
+- **Utility methods** - Files.exists(), Files.copy(), Files.size()
+- **Charset support** - Explicit encoding specification
+
+</v-clicks>
+
+---
+
+# Path Operations with java.nio
+
+<v-clicks>
+
+## **Creating Paths**
+```java
+Path dataPath = Paths.get("employee-data");
+Path csvFile = Paths.get("employee-data", "employees.csv");
+```
+
+## **Directory Operations**
+```java
+// Create directory if it doesn't exist
+if (!Files.exists(dataPath)) {
+    Files.createDirectories(dataPath);
+}
+```
+
+## **File Information**
+```java
+System.out.println("File exists: " + Files.exists(csvFile));
+System.out.println("File size: " + Files.size(csvFile) + " bytes");
+System.out.println("Last modified: " + Files.getLastModifiedTime(csvFile));
+```
+
+</v-clicks>
+
+---
+
+# Reading Files with java.nio
+
+<v-clicks>
+
+## **Reading with BufferedReader**
+```java
+List<String> lines = new ArrayList<>();
+try (BufferedReader reader = Files.newBufferedReader(Paths.get("employees.csv"))) {
+    String line;
+    while ((line = reader.readLine()) != null) {
+        lines.add(line);
+    }
+}
+```
+
+## **Reading All Lines at Once**
+```java
+// For small files
+List<String> allLines = Files.readAllLines(Paths.get("employees.csv"));
+
+// For large files - use streaming
+try (Stream<String> lines = Files.lines(Paths.get("employees.csv"))) {
+    lines.forEach(System.out::println);
+}
+```
+
+</v-clicks>
+
+---
+
+# Try-with-Resources Best Practice
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## ❌ **Manual Resource Management**
+```java
+FileWriter writer = null;
+try {
+    writer = new FileWriter("data.txt");
+    writer.write("Hello World");
+} catch (IOException e) {
+    // Handle error
+} finally {
+    if (writer != null) {
+        try {
+            writer.close();
+        } catch (IOException e) {
+            // Handle close error
+        }
+    }
+}
+```
+
+</div>
+
+<div>
+
+## ✅ **Try-with-Resources**
+```java
+try (FileWriter writer = new FileWriter("data.txt")) {
+    writer.write("Hello World");
+} catch (IOException e) {
+    // Handle error
+    // writer.close() called automatically
+}
+```
+
+**Benefits:**
+- **Automatic resource cleanup**
+- **No memory leaks**
+- **Cleaner, more readable code**
+- **Exception suppression handled**
+
+</div>
+
+</div>
+
+---
+
+# Writing Different File Formats
+
+<v-clicks>
+
+## **CSV Format**
+```java
+try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("employees.csv"))) {
+    writer.write("ID,Name,Salary,HireDate");
+    writer.newLine();
+    
+    for (Employee emp : employees) {
+        writer.write(String.format("%d,%s,%.2f,%s",
+                   emp.id(), emp.name(), emp.salary(), emp.hireDate()));
+        writer.newLine();
+    }
+}
+```
+
+## **JSON-like Format**
+```java
+try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("employees.json"))) {
+    writer.write("[");
+    writer.newLine();
+    
+    for (int i = 0; i < employees.size(); i++) {
+        Employee emp = employees.get(i);
+        writer.write(String.format("  {\"id\": %d, \"name\": \"%s\"}", 
+                                  emp.id(), emp.name()));
+        if (i < employees.size() - 1) writer.write(",");
+        writer.newLine();
+    }
+    
+    writer.write("]");
+}
+```
+
+</v-clicks>
+
+---
+
+# File Operations and Utilities
+
+<v-clicks>
+
+## **File Operations**
+```java
+Path source = Paths.get("employees.csv");
+Path backup = Paths.get("employees_backup.csv");
+
+// Copy file
+Files.copy(source, backup, StandardCopyOption.REPLACE_EXISTING);
+
+// Move file
+Files.move(source, Paths.get("archive/employees.csv"));
+
+// Delete file
+Files.deleteIfExists(backup);
+```
+
+## **File Attributes**
+```java
+Path file = Paths.get("employees.csv");
+System.out.println("Readable: " + Files.isReadable(file));
+System.out.println("Writable: " + Files.isWritable(file));
+System.out.println("Directory: " + Files.isDirectory(file));
+System.out.println("Hidden: " + Files.isHidden(file));
+```
+
+</v-clicks>
+
+---
+
+# Error Handling Strategies
+
+<v-clicks>
+
+## **Specific Exception Handling**
+```java
+try (BufferedWriter writer = Files.newBufferedWriter(path)) {
+    writer.write(data);
+} catch (NoSuchFileException e) {
+    System.err.println("File not found: " + e.getFile());
+} catch (AccessDeniedException e) {
+    System.err.println("Access denied: " + e.getFile());
+} catch (IOException e) {
+    System.err.println("I/O error: " + e.getMessage());
+}
+```
+
+## **Validation Before Operations**
+```java
+Path file = Paths.get("employees.csv");
+if (!Files.exists(file.getParent())) {
+    Files.createDirectories(file.getParent());
+}
+
+if (Files.exists(file) && !Files.isWritable(file)) {
+    throw new IOException("File is not writable: " + file);
+}
+```
+
+</v-clicks>
+
+---
+
+# Performance Considerations
+
+<v-clicks>
+
+## **Buffered vs Unbuffered**
+```java
+// Slower - writes directly to disk
+try (FileWriter writer = new FileWriter("data.txt")) {
+    for (int i = 0; i < 1000; i++) {
+        writer.write("Line " + i + "\n");  // Each write hits disk
+    }
+}
+
+// Faster - uses internal buffer
+try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
+    for (int i = 0; i < 1000; i++) {
+        writer.write("Line " + i);
+        writer.newLine();  // Buffered writes
+    }
+}
+```
+
+## **Buffer Size Considerations**
+- **Default buffer size** - Usually 8KB, good for most cases
+- **Large files** - Consider larger buffers or streaming
+- **Small frequent writes** - BufferedWriter is essential
+
+</v-clicks>
+
+---
+
+# Best Practices Summary
+
+<v-clicks>
+
+## **Choose the Right Tool**
+- **Files.newBufferedWriter()** - Modern, preferred approach
+- **FileWriter** - Simple cases, legacy compatibility
+- **PrintWriter** - When you need formatted output methods
+
+## **Key Guidelines**
+- **Always use try-with-resources** for automatic cleanup
+- **Create directories first** using Files.createDirectories()
+- **Handle specific exceptions** for better error reporting
+- **Use BufferedWriter** for multiple writes to same file
+- **Consider charset encoding** for international text
+
+## **Modern Java Approach**
+- **java.nio.file.Files** over java.io.File
+- **Path objects** over String file paths
+- **Streaming for large files** to manage memory
+
+</v-clicks>

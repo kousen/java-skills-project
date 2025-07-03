@@ -10,7 +10,7 @@ This project is structured as a Gradle multi-module build with Java 21, designed
 
 The project includes Slidev-powered slides for enhanced teaching:
 
-- **slides.md** - Interactive presentations covering naming conventions, string formatting (including escape characters), operator precedence, Scanner input, and multidimensional arrays with nested loops
+- **slides.md** - Interactive presentations covering naming conventions, string formatting (including escape characters), operator precedence, Scanner input, multidimensional arrays with nested loops, and File I/O operations (traditional java.io and modern java.nio)
 - **package.json** - Slidev dependencies and build scripts
 
 ### Running Slides
