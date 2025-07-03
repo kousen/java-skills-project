@@ -2019,11 +2019,10 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("employees.json")
 }
 ```
 
-## **JSON Advantages**
-- **Structured data** - Nested objects and arrays
+## **Key Benefits**
+- **Structured data** with nested objects and arrays
 - **Web-friendly** - Native JavaScript support
 - **Self-describing** - Field names included in data
-- **Industry standard** - REST APIs, configuration files
 
 </v-clicks>
 
@@ -2110,7 +2109,7 @@ try (FileWriter writer = new FileWriter("data.txt")) {
 
 ## **Buffered Writing - Faster**
 ```java
-// Writes are collected in memory buffer first
+// Writes collected in memory buffer first
 try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
     for (int i = 0; i < 1000; i++) {
         writer.write("Line " + i);
@@ -2119,34 +2118,28 @@ try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("data.txt"))) {
 }  // Buffer flushed to disk when closed
 ```
 
-## **Performance Impact**
-- **Unbuffered**: 1000 disk operations
-- **Buffered**: ~10-20 disk operations (depending on buffer size)
-
 </v-clicks>
 
 ---
 
-# Buffer Size and Performance Tips
+# Performance Best Practices
 
 <v-clicks>
 
-## **Buffer Size Considerations**
+## **Buffer Size Guidelines**
 - **Default buffer size** - Usually 8KB, good for most cases
-- **Large files** - Consider larger buffers or streaming approaches
+- **Large files** - Consider streaming approaches
 - **Small frequent writes** - BufferedWriter is essential
-- **Memory constraints** - Larger buffers use more memory
 
 ## **When to Use Each Approach**
 - **Single write operations** - FileWriter is fine
 - **Multiple writes** - Always use BufferedWriter
 - **Large datasets** - Consider streaming with Files.lines()
-- **Real-time logging** - BufferedWriter with regular flush()
 
-## **Performance Rules of Thumb**
+## **Key Rules**
 - **Always buffer** when writing more than once
 - **Close properly** to ensure buffer is flushed
-- **Consider charset** for international text
+- **Performance impact**: Unbuffered = 1000 disk ops, Buffered = ~10-20 ops
 
 </v-clicks>
 
