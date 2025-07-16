@@ -1,0 +1,125 @@
+
+---
+layout: cover
+--- 
+
+# Java Access Modifiers
+
+<div class="pt-12">
+  <span class="px-2 py-1 rounded">
+    Goal 8: Apply access modifiers to control visibility.
+  </span>
+</div>
+
+---
+layout: section
+---
+
+# What Are Access Modifiers?
+
+<v-clicks>
+
+- Keywords that set the **visibility** (accessibility) of classes, methods, and variables.
+- They are the core of **encapsulation** in Java.
+- They answer the question: "Who can use this?"
+
+</v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+**The Goal:** Give classes and members the most restrictive access level possible.
+
+</v-click>
+</div>
+
+---
+
+# The Four Access Modifiers
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **`public`**
+- **Visibility**: Everywhere
+- **Use Case**: For APIs and methods intended for general use.
+
+## **`protected`**
+- **Visibility**: Same package + subclasses anywhere
+- **Use Case**: For members that subclasses may need to use or override.
+
+</div>
+
+<div>
+
+## **`private`**
+- **Visibility**: Only within the same class
+- **Use Case**: The default choice for fields and helper methods. The cornerstone of encapsulation.
+
+## **Package-Private (default)**
+- **Visibility**: Only within the same package
+- **Use Case**: For helper classes and members that should not be part of the public API.
+
+</div>
+
+</div>
+
+---
+
+# Visibility Summary (Most to Least Visible)
+
+| Modifier | Same Class | Same Package | Subclass (Diff Pkg) | World |
+| :--- | :---: | :---: | :---: | :---: |
+| `public` | ✅ | ✅ | ✅ | ✅ |
+| `protected` | ✅ | ✅ | ✅ | ❌ |
+| package-private | ✅ | ✅ | ❌ | ❌ |
+| `private` | ✅ | ❌ | ❌ | ❌ |
+
+---
+
+# Code Demo: `Employee.java`
+
+Let's look at a real-world example of encapsulation.
+
+```java
+public class Employee {
+    // Fields are private to protect the object's state
+    private String name;
+    private double salary;
+
+    // Public methods provide controlled access
+    public String getName() {
+        return this.name;
+    }
+
+    public void setSalary(double salary) {
+        // The method can enforce rules (validation)
+        if (salary > 0) {
+            this.salary = salary;
+        }
+    }
+
+    // This method is an internal implementation detail
+    private double calculateBonus() {
+        // ... complex logic ...
+    }
+}
+```
+
+---
+layout: section
+---
+
+# Key Takeaways
+
+<v-clicks>
+
+- Access modifiers are essential for encapsulation.
+- Start with the most restrictive access level (`private`) and increase visibility only when necessary.
+- `public`: Open to everyone.
+- `protected`: Open to the package and subclasses.
+- `package-private` (no keyword): Open to the package.
+- `private`: Open only to the class itself.
+
+</v-clicks>
