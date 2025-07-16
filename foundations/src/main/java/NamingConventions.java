@@ -1,6 +1,3 @@
-
-package com.oreilly.javaskills.foundations;
-
 /**
  * This class demonstrates standard Java naming conventions.
  * The goal is to write code that is readable, self-documenting, and easy to maintain.
@@ -39,8 +36,7 @@ public class NamingConventions {
         // Starting with an uppercase letter (looks like a class name)
         String Name = "Peter Jones"; // Problem: Use camelCase, like 'name'.
 
-        System.out.println("
---- Demonstrating Bad Naming ---");
+        System.out.println(" --- Demonstrating Bad Naming ---");
         System.out.println("Vague name 'n': " + n);
         System.out.println("Confusing constant-like name 'ANOTHER_NAME': " + ANOTHER_NAME);
         System.out.println("Non-standard 'employee_id': " + employee_id);
@@ -60,8 +56,7 @@ public class NamingConventions {
         System.out.println("--- Demonstrating Good Naming ---");
         System.out.println("Company: " + COMPANY_NAME);
         System.out.println("Max Employees: " + MAX_EMPLOYEES);
-        System.out.println("
-Employee Details:");
+        System.out.println(" Employee Details:");
         System.out.println("  Name: " + name);
         System.out.println("  ID: " + id);
         System.out.println("  Salary: $" + salary);
