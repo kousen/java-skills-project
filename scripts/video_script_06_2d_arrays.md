@@ -21,12 +21,12 @@
 
 ### SCENE 2: Understanding 2D Arrays (0:30 - 1:00)
 
-**(Show Slide 3: What is a 2D Array?)**
+**(Show Slide 2: What is a 2D Array?)**
 
 **YOU:**
 "A two-dimensional array is essentially an array of arrays. Think of it as a grid or table with rows and columns, just like a spreadsheet."
 
-**(Show Slide 4: Employee Management Example)**
+**(Continue with Slide 2)**
 
 **YOU:**
 "In our Employee Management System, we might use a 2D array to store employee data where each row represents a department and each column represents a specific employee within that department. It's perfect for organizing data that naturally fits into a table structure."
@@ -35,7 +35,7 @@
 
 ### SCENE 3: Declaration and Creation (1:00 - 1:30)
 
-**(Show Slide 5: Declaration Syntax)**
+**(Show Slide 3: Declaring and Initializing 2D Arrays)**
 
 **YOU:**
 "Declaring a 2D array uses two sets of square brackets."
@@ -54,7 +54,7 @@
 
 ### SCENE 4: Accessing and Modifying Elements (1:30 - 2:00)
 
-**(Show Slide 6: Element Access)**
+**(Show Slide 4: Nested Loops: The Key to Processing 2D Arrays)**
 
 **YOU:**
 "To access an element, you provide both row and column indices."
@@ -88,12 +88,12 @@
 
 ### SCENE 6: Advanced Features and Best Practices (2:45 - 3:15)
 
-**(Show Slide 7: Jagged Arrays)**
+**(Show Slide 5: Code Demo: EmployeeRoster.java)**
 
 **YOU:**
 "Here's something powerful - each row in a 2D array can have different lengths! This is called a 'jagged array'. Engineering might have 8 people, while Marketing has only 3."
 
-**(Show Slide 8: Enhanced For Loops)**
+**(Continue with Slide 5)**
 
 **YOU:**
 "You can also use enhanced for loops with 2D arrays. This is cleaner when you don't need the indices, just the values. The nested enhanced for loops naturally handle the two-dimensional structure."
@@ -102,12 +102,12 @@
 
 ### SCENE 7: Conclusion (3:15 - 3:45)
 
-**(Show Slide 9: Common Use Cases)**
+**(Show Slide 6: Key Takeaways)**
 
 **YOU:**
 "2D arrays are perfect for game boards, image data, mathematical matrices, seating charts - any tabular data where both dimensions matter."
 
-**(Show Slide 10: Key Takeaways)**
+**(Continue with Slide 6)**
 
 **YOU:**
 "Two-dimensional arrays are your go-to tool for grid-based data. Combined with nested loops from our previous video, you can process complex tabular information efficiently and elegantly. Next time, we'll explore file I/O operations to save and load our employee data. Thanks for watching!"

@@ -37,6 +37,11 @@
 
 ### SCENE 3: Code Demo - The Validation Loop (1:30 - 3:00)
 
+**(Show Slide 4: The Robust Validation Loop)**
+
+**YOU:**
+"Now let's see how to build a robust validation loop that handles any input gracefully."
+
 **(Transition to IDE showing `EmployeeInput.java`)**
 
 **YOU:**
