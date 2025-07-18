@@ -72,6 +72,6 @@ tasks.register('runExample', JavaExec) {
 
         def moduleProject = project.findProject(":${module}")
         classpath = moduleProject.sourceSets.main.runtimeClasspath
-        mainClass = project.property('mainClass') as Property<String>
+        mainClass = project.property('mainClass')
     }
 }

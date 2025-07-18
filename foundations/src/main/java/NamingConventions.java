@@ -10,6 +10,8 @@ public class NamingConventions {
     public static final int MAX_EMPLOYEES = 1000;
 
     public static void main(String[] args) {
+        System.out.println("=== Proper Naming Conventions Demo ===");
+        
         // --- GOOD NAMING CONVENTIONS ---
 
         // VARIABLES: Use camelCase for local variables and fields.
@@ -36,7 +38,7 @@ public class NamingConventions {
         // Starting with an uppercase letter (looks like a class name)
         String Name = "Peter Jones"; // Problem: Use camelCase, like 'name'.
 
-        System.out.println(" --- Demonstrating Bad Naming ---");
+        System.out.println("Bad examples:");
         System.out.println("Vague name 'n': " + n);
         System.out.println("Confusing constant-like name 'ANOTHER_NAME': " + ANOTHER_NAME);
         System.out.println("Non-standard 'employee_id': " + employee_id);

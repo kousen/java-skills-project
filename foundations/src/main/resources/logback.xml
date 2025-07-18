@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    
+    <!-- Console Appender for development -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- Pattern includes MDC context: userId and requestId -->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{userId}] [%X{requestId}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- File Appender for persistent logging -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/employee-system.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{50} [%X{userId}] [%X{requestId}] [%X{sessionId}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Rolling File Appender for production -->
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/employee-app.log</file>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Daily rollover -->
+            <fileNamePattern>logs/employee-app.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- Keep 30 days worth of history -->
+            <maxHistory>30</maxHistory>
+            <!-- Total size cap -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [%X{userId}] [%X{requestId}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Async Appender for high-throughput scenarios -->
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>500</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+        <appender-ref ref="FILE" />
+    </appender>
+    
+    <!-- Logger for specific package - more detailed logging for our demos -->
+    <logger name="EmployeeLogger" level="TRACE" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </logger>
+    
+    <!-- Logger for third-party libraries - less verbose -->
+    <logger name="org.springframework" level="WARN" />
+    <logger name="org.hibernate" level="WARN" />
+    <logger name="com.zaxxer.hikari" level="WARN" />
+    
+    <!-- Root logger configuration -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ASYNC" />
+    </root>
+    
+</configuration>
