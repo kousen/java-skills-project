@@ -1,8 +1,16 @@
 # Video Script: Git Collaboration for Java Projects
 
-## Introduction (0:00-0:15)
+**Goal:** 24. Master Git workflows for effective team collaboration on Java projects.
+**Target Duration:** 4-5 minutes
 
-Welcome back! Today we're stepping away from code to talk about something equally important - Git collaboration. If you're working on a team or planning to contribute to open source projects, mastering Git workflows is essential. Let's learn how to collaborate effectively without stepping on each other's toes.
+---
+
+### SCENE 1: Introduction (0:00 - 0:30)
+
+**(Show Slide 1: Title Slide - "Git Collaboration for Java Projects")**
+
+**Host:**
+"Welcome back! Today we're stepping away from code to talk about something equally important - Git collaboration. If you're working on a team or planning to contribute to open source projects, mastering Git workflows is essential. Let's learn how to collaborate effectively without stepping on each other's toes."
 
 ## The Branching Strategy (0:15-0:45)
 

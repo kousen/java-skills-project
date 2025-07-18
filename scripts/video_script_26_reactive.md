@@ -1,8 +1,16 @@
 # Video Script: Reactive Programming with Project Reactor
 
-## Introduction (0:00-0:15)
+**Goal:** 26. Implement reactive programming patterns using Project Reactor for scalable applications.
+**Target Duration:** 4-5 minutes
 
-Welcome to our final video in the Java Skills series! Today we're exploring reactive programming - a paradigm that can dramatically improve your application's performance and responsiveness. If you've ever built an app that crawled under load or wondered how streaming services handle millions of concurrent users, reactive programming is part of the answer.
+---
+
+### SCENE 1: Introduction (0:00 - 0:30)
+
+**(Show Slide 1: Title Slide - "Reactive Programming with Project Reactor")**
+
+**Host:**
+"Welcome to our final video in the Java Skills series! Today we're exploring reactive programming - a paradigm that can dramatically improve your application's performance and responsiveness. If you've ever built an app that crawled under load or wondered how streaming services handle millions of concurrent users, reactive programming is part of the answer."
 
 ## The Problem with Blocking (0:15-0:45)
 
@@ -16,7 +24,7 @@ Reactive programming is like having waiters who can serve multiple tables, takin
 
 Spring's reactive library gives us two main types: Mono for single values and Flux for streams.
 
-[Show Mono and Flux examples]
+**(Show Slide 3: Mono and Flux)**
 
 Notice we're not directly calling database methods - we're building a pipeline of operations. The Mono represents a promise of an Employee that will arrive later. Operations like map and flatMap transform the data as it flows through.
 
@@ -26,7 +34,7 @@ This is the key insight: instead of getting data and then processing it, we desc
 
 Real applications need data from multiple sources.
 
-[Show zip example]
+**(Show Slide 4: Combining Streams)**
 
 The zip operator waits for all three Monos to complete, then combines their results. But here's the magic - while waiting for one service, other operations can proceed. No threads are blocked waiting!
 
@@ -36,7 +44,7 @@ This is where reactive programming shines - coordinating multiple async operatio
 
 Spring WebFlux brings reactive programming to web applications.
 
-[Show reactive controller]
+**(Show Slide 5: Reactive Web Controllers)**
 
 Look how similar this is to regular Spring MVC! The difference is under the hood - instead of blocking threads, these methods return immediately with a Mono or Flux. The framework handles subscribing and writing the response when data arrives.
 
@@ -46,7 +54,7 @@ Your thread count stays low even with thousands of concurrent requests.
 
 Reactive streams need sophisticated error handling.
 
-[Show error handling examples]
+**(Show Slide 6: Error Handling)**
 
 We have multiple strategies - onErrorReturn provides a fallback value, onErrorResume switches to an alternative stream, and retry attempts the operation again. Timeout ensures we don't wait forever.
 
@@ -56,7 +64,7 @@ This composable error handling is more powerful than traditional try-catch block
 
 What happens when data arrives faster than you can process it? That's where backpressure comes in.
 
-[Show backpressure example]
+**(Show Slide 7: Backpressure)**
 
 We can buffer items, drop them when overwhelmed, or signal upstream to slow down. This prevents your application from running out of memory when faced with data floods.
 
@@ -66,7 +74,7 @@ Traditional systems often just crash under load - reactive systems gracefully de
 
 StepVerifier makes testing reactive streams elegant.
 
-[Show testing example]
+**(Show Slide 8: Testing Reactive Code)**
 
 We can verify exactly what events occur in what order. The virtual time feature lets us test time-based operations without actually waiting. No more Thread.sleep in your tests!
 

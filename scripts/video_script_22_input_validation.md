@@ -1,8 +1,16 @@
 # Video Script: Input Validation for Security
 
-## Introduction (0:00-0:15)
+**Goal:** 22. Implement secure input validation to prevent SQL injection and XSS attacks.
+**Target Duration:** 4-5 minutes
 
-Welcome to one of the most important videos in this series. Today we're talking about input validation - your first and best defense against security attacks. If you've ever wondered how websites get hacked or databases get compromised, stick around. More importantly, you'll learn how to prevent it.
+---
+
+### SCENE 1: Introduction (0:00 - 0:30)
+
+**(Show Slide 1: Title Slide - "Input Validation for Security")**
+
+**Host:**
+"Welcome to one of the most important videos in this series. Today we're talking about input validation - your first and best defense against security attacks. If you've ever wondered how websites get hacked or databases get compromised, stick around. More importantly, you'll learn how to prevent it."
 
 ## The Threat Is Real (0:15-0:45)
 
@@ -14,13 +22,13 @@ The good news? Both are completely preventable with proper input validation. Let
 
 SQL injection happens when user input is concatenated directly into SQL queries.
 
-[Show dangerous example]
+**(Show Slide 3: SQL Injection Example)**
 
 See this innocent-looking code? If I enter "Robert'; DROP TABLE employees; --" as the name, I've just deleted your entire employee table. The semicolon ends the first query, DROP TABLE runs next, and the double dash comments out the rest.
 
 Never, ever build SQL queries with string concatenation. 
 
-[Show safe example]
+**(Show Slide 4: Prepared Statements)**
 
 Instead, use prepared statements. The question mark is a placeholder that gets safely filled by setString. The database knows this is data, not SQL commands, so injection is impossible.
 
@@ -28,7 +36,7 @@ Instead, use prepared statements. The question mark is a placeholder that gets s
 
 If you're using Spring Data JPA or Hibernate, you're already protected in most cases.
 
-[Show JPA examples]
+**(Show Slide 5: JPA Protection)**
 
 These frameworks use parameterized queries under the hood. Named parameters with colons or positional parameters with question marks - both are safe. The key is letting the framework handle the SQL generation.
 
@@ -36,13 +44,13 @@ These frameworks use parameterized queries under the hood. Named parameters with
 
 XSS is sneakier. It happens when user input gets displayed on a webpage without encoding.
 
-[Show XSS example]
+**(Show Slide 6: XSS Attack Example)**
 
 If someone enters JavaScript in a comment field and you display it directly, that script runs in every user's browser. Attackers can steal cookies, redirect users, or deface your site.
 
 The fix? Always encode output.
 
-[Show encoding example]
+**(Show Slide 7: HTML Encoding)**
 
 Spring's HtmlUtils.htmlEscape converts dangerous characters to safe HTML entities. That script tag becomes harmless text that displays but doesn't execute.
 
@@ -50,7 +58,7 @@ Spring's HtmlUtils.htmlEscape converts dangerous characters to safe HTML entitie
 
 Java gives us a powerful validation framework. Let's use it!
 
-[Show Employee class with annotations]
+**(Show Slide 8: Bean Validation)**
 
 Look at these annotations. @NotNull ensures the field exists. @Size limits length. @Pattern enforces a regex - here we're only allowing letters and spaces in names. @Email validates email format.
 
@@ -60,7 +68,7 @@ Add @Valid to your controller method, and Spring automatically validates incomin
 
 Sometimes you need custom validation logic.
 
-[Show custom validator]
+**(Show Slide 9: Custom Validation)**
 
 This validator checks for SQL injection patterns - semicolons, SQL comments, script tags. Create an annotation, implement the validator, and you've got reusable security validation.
 
@@ -70,7 +78,7 @@ The regex might look scary, but it's checking for common attack patterns. In pro
 
 File uploads are particularly dangerous. You need multiple checks.
 
-[Show file upload validation]
+**(Show Slide 10: File Upload Security)**
 
 First, validate the content type - only accept expected file types. Then check file size to prevent denial of service. Finally, sanitize the filename to prevent path traversal attacks.
 

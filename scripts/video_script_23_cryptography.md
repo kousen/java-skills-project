@@ -1,8 +1,16 @@
 # Video Script: Java Cryptographic APIs
 
-## Introduction (0:00-0:15)
+**Goal:** 23. Implement cryptographic security using Java's built-in APIs for encryption and authentication.
+**Target Duration:** 4-5 minutes
 
-Welcome back! Today we're diving into Java's cryptographic APIs. If you're storing passwords, credit card numbers, or any sensitive data, this video is essential. We'll learn how to properly encrypt data and authenticate users using Java's built-in security features.
+---
+
+### SCENE 1: Introduction (0:00 - 0:30)
+
+**(Show Slide 1: Title Slide - "Java Cryptographic APIs")**
+
+**Host:**
+"Welcome back! Today we're diving into Java's cryptographic APIs. If you're storing passwords, credit card numbers, or any sensitive data, this video is essential. We'll learn how to properly encrypt data and authenticate users using Java's built-in security features."
 
 ## Why Cryptography Matters (0:15-0:45)
 
@@ -14,7 +22,7 @@ Cryptography gives us three things: confidentiality to keep secrets secret, inte
 
 Let's start with the most common security need - storing passwords.
 
-[Show BCrypt example]
+**(Show Slide 3: BCrypt Password Hashing)**
 
 Never, ever store passwords in plain text. Instead, use BCrypt from Spring Security. It's specifically designed for passwords. 
 
@@ -24,7 +32,7 @@ See how simple this is? The encode method hashes the password with a random salt
 
 For data integrity, we use SHA-256 hashing.
 
-[Show SHA-256 example]
+**(Show Slide 4: SHA-256 Hashing)**
 
 A hash is a one-way function - you can't reverse it to get the original data. It's like a fingerprint for your data. Change even one character, and you get a completely different hash. This is perfect for verifying data hasn't been modified.
 
@@ -32,7 +40,7 @@ A hash is a one-way function - you can't reverse it to get the original data. It
 
 Sometimes you need to encrypt data and decrypt it later. That's where AES comes in.
 
-[Show AES encryption example]
+**(Show Slide 5: AES Encryption)**
 
 AES is symmetric encryption - the same key encrypts and decrypts. We're using GCM mode, which provides both confidentiality and authenticity. The initialization vector (IV) ensures that encrypting the same data twice gives different results.
 
@@ -42,7 +50,7 @@ Notice we're using 256-bit keys - that's military-grade encryption. The key is e
 
 Digital signatures prove that data came from who it claims and hasn't been tampered with.
 
-[Show signature example]
+**(Show Slide 6: Digital Signatures)**
 
 We use RSA with a key pair - private key signs, public key verifies. It's like a wax seal on a letter. Only you have the private key to create the signature, but anyone with your public key can verify it's authentic.
 
@@ -50,7 +58,7 @@ We use RSA with a key pair - private key signs, public key verifies. It's like a
 
 Modern web applications use JSON Web Tokens for authentication.
 
-[Show JWT example]
+**(Show Slide 7: JWT Tokens)**
 
 A JWT contains claims about a user, signed with a secret key. The token includes the username, when it was issued, and when it expires. Send this token with each request, and the server can verify the user without hitting the database.
 
@@ -58,7 +66,7 @@ A JWT contains claims about a user, signed with a secret key. The token includes
 
 Here's the critical part - protecting your keys.
 
-[Show environment variable example]
+**(Show Slide 8: Secure Key Management)**
 
 Never hardcode encryption keys in your source code! Use environment variables or dedicated key management services. Think of encryption keys like the keys to your house - you wouldn't leave them under the doormat.
 
