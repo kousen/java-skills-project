@@ -21,12 +21,12 @@
 
 ### SCENE 2: Understanding REST APIs (0:30 - 1:00)
 
-**(Show Slide 3: What is REST?)**
+**(Show Slide 2: What is a REST API?)**
 
 **YOU:**
 "REST stands for Representational State Transfer. Don't let the fancy name scare you - it's just a way for applications to talk to each other over HTTP."
 
-**(Show Slide 4: Restaurant Analogy)**
+**(Show Slide 3: Common Operations)**
 
 **YOU:**
 "Think of it like ordering from a restaurant menu. You make a request - 'I'd like the employee data, please' - and the server brings you back exactly what you ordered, usually in JSON format. The main operations are GET to retrieve, POST to create, PUT to update, and DELETE to remove."
@@ -35,7 +35,7 @@
 
 ### SCENE 3: Java's Modern HTTP Client (1:00 - 1:30)
 
-**(Show Slide 5: HTTP Client Evolution)**
+**(Show Slide 4: Java HTTP Client)**
 
 **YOU:**
 "Before Java 11, making HTTP requests was painful. You had to use HttpURLConnection, which felt like programming in the stone age. But Java 11 introduced a modern HTTP client that's a joy to use."
@@ -49,7 +49,7 @@
 
 ### SCENE 4: Making GET Requests (1:30 - 2:15)
 
-**(Show Slide 6: GET Request Structure)**
+**(Show Slide 6: Making a GET Request)**
 
 **YOU:**
 "Let's fetch employee data from an API."
@@ -66,7 +66,7 @@
 
 ### SCENE 5: POST Requests and JSON Handling (2:15 - 3:00)
 
-**(Show Slide 7: POST Request Structure)**
+**(Show Slide 8: POST Request)**
 
 **YOU:**
 "Creating a new employee is just as straightforward."
@@ -83,7 +83,7 @@
 
 ### SCENE 6: Error Handling and Best Practices (3:00 - 3:45)
 
-**(Show Slide 8: Error Handling)**
+**(Show Slide 10: Error Handling)**
 
 **YOU:**
 "In the real world, things go wrong. Networks fail, servers go down, APIs change."
@@ -93,7 +93,7 @@
 **YOU:**
 "We need to handle different status codes appropriately. 200 means success, 404 means not found, 401 means we're not authorized. And we wrap everything in a try-catch to handle network errors."
 
-**(Show Slide 9: Pro Tips)**
+**(Show Slide 11: Robust API Communication)**
 
 **YOU:**
 "Pro tip: Always log errors with enough context to debug later. Your future self will thank you."
@@ -102,7 +102,7 @@
 
 ### SCENE 7: Asynchronous Requests (3:45 - 4:15)
 
-**(Show Slide 10: Async Operations)**
+**(Show Slide 12: Asynchronous Requests)**
 
 **YOU:**
 "Sometimes you don't want to wait for a response. Maybe you're making multiple API calls and want them to run in parallel."
@@ -116,7 +116,7 @@
 
 ### SCENE 8: Complete Implementation (4:15 - 4:45)
 
-**(Show Slide 11: Complete API Client)**
+**(Show Slide 14: Complete Example)**
 
 **YOU:**
 "Let's look at our complete `EmployeeApiClient` class."
@@ -128,12 +128,28 @@
 
 ---
 
-### SCENE 9: Conclusion (4:45 - 5:00)
+### SCENE 9: Best Practices (4:45 - 5:15)
 
-**(Show Slide 12: Key Takeaways)**
+**(Show Slide 21: Best Practices)**
+
+**YOU:**
+"Let me share some best practices for API client design."
+
+**(Show Slide 22: Performance & Reliability)**
+
+**YOU:**
+"Reuse your HttpClient instance - it's thread-safe and manages connections efficiently. Always set timeouts to avoid hanging forever. Consider retry logic for transient failures, and log requests and responses for debugging, but be careful with sensitive data."
+
+---
+
+### SCENE 10: Conclusion (5:15 - 5:30)
+
+**(Show Slide 24: Summary)**
 
 **YOU:**
 "You now know how to consume any REST API using Java's built-in HTTP client. No external libraries needed for basic operations! Start simple with GET requests, then add POST, error handling, and async as needed."
+
+**(Show Slide 25: Next Steps)**
 
 **YOU:**
 "Next time, we'll flip the script and create our own REST APIs using Spring Boot. Thanks for watching!"

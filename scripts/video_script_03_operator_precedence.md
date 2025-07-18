@@ -13,7 +13,7 @@
 **YOU:**
 "Hi everyone. In this video, we're going to tackle a topic that can be the source of very subtle bugs: **Operator Precedence**."
 
-**(Transition to Slide 2: Why Precedence Matters)**
+**(Show Slide 2: Why Precedence Matters)**
 
 **YOU:**
 "Operator precedence is simply the set of rules that dictates the order in which operations are performed in a Java expression. Getting this wrong can lead to incorrect calculations and logic errors. The golden rule is: when in doubt, use parentheses!"
@@ -36,6 +36,11 @@
 ---
 
 ### SCENE 3: Code Demo - Arithmetic and Boolean (1:15 - 2:15)
+
+**(Show Slide 4: Arithmetic Precedence)**
+
+**YOU:**
+"Let's see how this works with arithmetic operations."
 
 **(Transition to IDE showing `OperatorPrecedenceTest.java`)**
 
@@ -77,6 +82,8 @@
 
 **YOU:**
 "So, to wrap up: remember that multiplicative operators come before additive, and logical AND comes before logical OR. Most importantly, use parentheses whenever the order of operations isn't perfectly clear. It makes your code safer and easier for the next person to read."
+
+**(Show Slide 7: Review)**
 
 **YOU:**
 "That's all for this lesson. Thanks for watching!"
