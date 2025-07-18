@@ -1,68 +1,94 @@
 # Video Script: Nested Loops for Processing Multidimensional Data
 
-## Introduction (0:00-0:15)
+**Goal:** 5. Implement nested loops to process multidimensional employee data.  
+**Target Duration:** 3-4 minutes
 
-Welcome back to our Java Skills series! Today we're diving into nested loops - one of the most powerful patterns in programming. If you've ever needed to process complex data structures like grids, tables, or matrices, nested loops are your best friend.
+---
 
-## Understanding Nested Loops (0:15-0:45)
+### SCENE 1: Introduction (0:00 - 0:30)
 
-A nested loop is simply a loop inside another loop. Think of it like this - imagine you're organizing a company picnic and need to check attendance for every employee in every department.
+**(Show Slide 1: Title Slide - "Nested Loops for Processing Multidimensional Data")**
 
-The outer loop goes through each department, one by one. For each department, the inner loop goes through every employee in that department. This ensures you don't miss anyone - you systematically visit every single person in the entire company.
+**YOU:**
+"Hi everyone, and welcome to this series on essential Java skills. Today we're diving into **nested loops** - one of the most powerful patterns in programming for handling complex data structures."
 
-## The Classic Pattern (0:45-1:15)
+**(Transition to Slide 2: Why Nested Loops Matter)**
 
-Here's the fundamental nested loop pattern you'll use over and over again:
+**YOU:**
+"If you've ever needed to process grids, tables, or any data that has multiple dimensions, nested loops are your solution. Think of organizing a company picnic where you need to check attendance for every employee in every department."
 
-[Show code example]
+---
 
-The outer loop controls the first dimension - maybe departments or rows. The inner loop controls the second dimension - maybe employees or columns. This pattern works whether you're processing a 2D array, checking game boards, or analyzing data tables.
+### SCENE 2: Understanding the Concept (0:30 - 1:00)
 
-## Real-World Example (1:15-2:30)
+**(Show Slide 3: Nested Loop Concept)**
 
-Let's look at our Employee Management System. In the EmployeeRoster class, we have a perfect example.
+**YOU:**
+"A nested loop is simply a loop inside another loop. The outer loop goes through each department, one by one. For each department, the inner loop goes through every employee in that department."
 
-[Show EmployeeRoster.java calculateStatistics method]
+**(Show Slide 4: Visual Representation)**
 
-Here, we're calculating average salaries by department. The outer loop iterates through each department - Engineering, Marketing, Sales, and so on. 
+**YOU:**
+"This ensures you don't miss anyone - you systematically visit every single person in the entire company. It's a methodical way to handle two-dimensional data."
 
-For each department, we reset our counters, then the inner loop examines every employee in that department. We accumulate salaries and count employees, then calculate the average.
+---
 
-Notice how the nested structure ensures we process every employee in every department systematically.
+### SCENE 3: The Classic Pattern (1:00 - 1:30)
 
-## Performance Considerations (2:30-3:00)
+**(Show Slide 5: Basic Nested Loop Pattern)**
 
-Nested loops can be expensive! If your outer loop runs 100 times and your inner loop runs 100 times, that's 10,000 total iterations. This is called O(n²) time complexity.
+**YOU:**
+"Here's the fundamental nested loop pattern you'll use repeatedly."
 
-That's not always bad, but be mindful. Sometimes you can optimize by breaking out of loops early, caching results, or restructuring your data.
+**(Transition to IDE showing basic nested loop code)**
 
-## Common Patterns (3:00-3:30)
+**YOU:**
+"The outer loop controls the first dimension - maybe departments or rows. The inner loop controls the second dimension - maybe employees or columns. This pattern works whether you're processing arrays, checking game boards, or analyzing data tables."
 
-You'll see nested loops everywhere:
-- Processing 2D arrays (which we'll cover in the next video)
-- Comparing every item with every other item
-- Searching through hierarchical data
-- Game development for grid-based games
-- Image processing, pixel by pixel
+---
 
-The key is recognizing when you need to systematically visit every combination of two sets of data.
+### SCENE 4: Real-World Example (1:30 - 2:30)
 
-## Best Practices (3:30-3:45)
+**(Transition to IDE showing `EmployeeRoster.java`)**
 
-A few quick tips:
-- Use descriptive loop variable names like `row` and `col` instead of just `i` and `j`
-- Consider breaking complex nested logic into separate methods
-- Watch for opportunities to break or continue early
-- Be careful with variable scope - declare variables in the right place
+**YOU:**
+"Let's look at our Employee Management System. In the `EmployeeRoster` class, we have a perfect example in the `calculateStatistics` method."
 
-## Wrapping Up (3:45-4:00)
+**(Highlight the nested loop in calculateStatistics)**
 
-Nested loops are essential for processing multidimensional data. Master this pattern, and you'll be able to tackle complex data processing tasks with confidence.
+**YOU:**
+"Here, we're calculating average salaries by department. The outer loop iterates through each department - Engineering, Marketing, Sales."
 
-Next time, we'll explore 2D arrays - the perfect data structure to pair with nested loops. Until then, happy coding!
+**YOU:**
+"For each department, we reset our counters, then the inner loop examines every employee in that department. We accumulate salaries and count employees, then calculate the average."
 
-## Code Examples Referenced:
+**YOU:**
+"Notice how the nested structure ensures we process every employee in every department systematically."
 
-1. Basic nested loop pattern
-2. EmployeeRoster calculateStatistics method
-3. Department and employee iteration example
+---
+
+### SCENE 5: Performance and Best Practices (2:30 - 3:15)
+
+**(Show Slide 6: Performance Considerations)**
+
+**YOU:**
+"Nested loops can be expensive! If your outer loop runs 100 times and your inner loop runs 100 times, that's 10,000 total iterations. This is called O(n²) time complexity."
+
+**(Show Slide 7: Best Practices)**
+
+**YOU:**
+"Here are some best practices: Use descriptive loop variable names like `department` and `employee` instead of just `i` and `j`. Consider breaking complex nested logic into separate methods. And watch for opportunities to break or continue early."
+
+---
+
+### SCENE 6: Conclusion (3:15 - 3:45)
+
+**(Show Slide 8: Common Use Cases)**
+
+**YOU:**
+"You'll see nested loops everywhere: processing 2D arrays, comparing every item with every other item, searching hierarchical data, game development, and image processing."
+
+**(Show Slide 9: Key Takeaways)**
+
+**YOU:**
+"Nested loops are essential for processing multidimensional data. Master this pattern, and you'll tackle complex data processing tasks with confidence. Next time, we'll explore 2D arrays - the perfect data structure to pair with nested loops. Thanks for watching!"

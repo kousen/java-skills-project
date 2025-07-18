@@ -1,97 +1,139 @@
 # Video Script: Consuming REST APIs with Java
 
-## Introduction (0:00-0:15)
+**Goal:** 20. Integrate with external services by consuming REST APIs using modern Java HTTP client.  
+**Target Duration:** 4-5 minutes
 
-Welcome back! In our last video, we learned about logging. Today, we're going to connect our Employee Management System to the outside world by consuming REST APIs. If you've ever needed to fetch data from a web service or integrate with third-party APIs, this is the video for you.
+---
 
-## What is a REST API? (0:15-0:45)
+### SCENE 1: Introduction (0:00 - 0:30)
 
-REST stands for Representational State Transfer. Don't let the fancy name scare you - it's just a way for applications to talk to each other over HTTP. 
+**(Show Slide 1: Title Slide - "Consuming REST APIs with Java")**
 
-Think of it like ordering from a restaurant menu. You make a request - "I'd like the employee data, please" - and the server brings you back exactly what you ordered, usually in JSON format. The main operations are GET to retrieve, POST to create, PUT to update, and DELETE to remove.
+**YOU:**
+"Hi everyone, and welcome to this series on essential Java skills. Today, we're connecting our Employee Management System to the outside world by consuming **REST APIs**."
 
-## Java's HTTP Client (0:45-1:15)
+**(Transition to Slide 2: Why REST APIs Matter)**
 
-Before Java 11, making HTTP requests was painful. You had to use HttpURLConnection, which felt like programming in the stone age. But Java 11 introduced a modern HTTP client that's a joy to use.
+**YOU:**
+"If you've ever needed to fetch data from a web service or integrate with third-party APIs, this video will show you the modern Java way to do it."
 
-[Show client creation code]
+---
 
-Look how clean this is! We create a client using the builder pattern, set the HTTP version, add a timeout, and we're ready to go. This client can be reused for multiple requests, which is much more efficient than creating a new one each time.
+### SCENE 2: Understanding REST APIs (0:30 - 1:00)
 
-## Making Your First GET Request (1:15-2:00)
+**(Show Slide 3: What is REST?)**
 
-Let's fetch employee data from an API. 
+**YOU:**
+"REST stands for Representational State Transfer. Don't let the fancy name scare you - it's just a way for applications to talk to each other over HTTP."
 
-[Show GET request code]
+**(Show Slide 4: Restaurant Analogy)**
 
-We build the request with a URI, add headers like "Accept" to tell the server we want JSON, and specify it's a GET request. Then we send it and get back a response.
+**YOU:**
+"Think of it like ordering from a restaurant menu. You make a request - 'I'd like the employee data, please' - and the server brings you back exactly what you ordered, usually in JSON format. The main operations are GET to retrieve, POST to create, PUT to update, and DELETE to remove."
 
-The response contains everything - the status code, headers, and most importantly, the body with our data. If the status is 200, we know it worked and we can process the JSON.
+---
 
-## POST Requests - Creating Data (2:00-2:45)
+### SCENE 3: Java's Modern HTTP Client (1:00 - 1:30)
 
-Creating a new employee is just as straightforward. 
+**(Show Slide 5: HTTP Client Evolution)**
 
-[Show POST request code]
+**YOU:**
+"Before Java 11, making HTTP requests was painful. You had to use HttpURLConnection, which felt like programming in the stone age. But Java 11 introduced a modern HTTP client that's a joy to use."
 
-We use a text block to create our JSON - one of my favorite Java features. Then we build a POST request, set the Content-Type header so the server knows we're sending JSON, and attach our data as the body.
+**(Transition to IDE showing EmployeeApiClient.java)**
 
-Notice how we're using the fluent builder pattern throughout? Each method returns the builder, so we can chain calls together. It reads almost like English.
+**YOU:**
+"Look how clean this is! We create a client using the builder pattern, set the HTTP version, add a timeout, and we're ready to go. This client can be reused for multiple requests, which is much more efficient than creating a new one each time."
 
-## Error Handling (2:45-3:15)
+---
 
-In the real world, things go wrong. Networks fail, servers go down, APIs change. 
+### SCENE 4: Making GET Requests (1:30 - 2:15)
 
-[Show error handling code]
+**(Show Slide 6: GET Request Structure)**
 
-We need to handle different status codes appropriately. 200 means success, 404 means not found, 401 means we're not authorized. And we wrap everything in a try-catch to handle network errors.
+**YOU:**
+"Let's fetch employee data from an API."
 
-Pro tip: Always log errors with enough context to debug later. Your future self will thank you.
+**(Highlight the GET request method in the code)**
 
-## Asynchronous Requests (3:15-3:45)
+**YOU:**
+"We build the request with a URI, add headers like 'Accept' to tell the server we want JSON, and specify it's a GET request. Then we send it and get back a response."
 
-Sometimes you don't want to wait for a response. Maybe you're making multiple API calls and want them to run in parallel.
+**YOU:**
+"The response contains everything - the status code, headers, and most importantly, the body with our data. If the status is 200, we know it worked and we can process the JSON."
 
-[Show async code]
+---
 
-The sendAsync method returns a CompletableFuture. We can process the response when it arrives using thenAccept, and handle errors with exceptionally. This keeps your application responsive while waiting for slow APIs.
+### SCENE 5: POST Requests and JSON Handling (2:15 - 3:00)
 
-## Working with JSON (3:45-4:15)
+**(Show Slide 7: POST Request Structure)**
 
-Most REST APIs use JSON, so you'll want a good JSON library. Jackson is the most popular choice.
+**YOU:**
+"Creating a new employee is just as straightforward."
 
-[Show Jackson example]
+**(Highlight the POST request method)**
 
-With Jackson's ObjectMapper, we can convert JSON strings to Java objects and vice versa. Define your Employee class with the right fields, and Jackson handles all the mapping automatically. No more manual JSON parsing!
+**YOU:**
+"We use a text block to create our JSON - one of my favorite Java features. Then we build a POST request, set the Content-Type header so the server knows we're sending JSON, and attach our data as the body."
 
-## Complete API Client (4:15-4:45)
+**YOU:**
+"Notice how we're using the fluent builder pattern throughout? Each method returns the builder, so we can chain calls together. It reads almost like English."
 
-Let's put it all together in a reusable API client class.
+---
 
-[Show EmployeeApiClient class]
+### SCENE 6: Error Handling and Best Practices (3:00 - 3:45)
 
-This client encapsulates all our HTTP logic. It has methods for each operation - get, create, update, delete. Each method handles the HTTP details and returns proper Java objects. Your application code stays clean and focused on business logic, not HTTP plumbing.
+**(Show Slide 8: Error Handling)**
 
-## Best Practices (4:45-5:00)
+**YOU:**
+"In the real world, things go wrong. Networks fail, servers go down, APIs change."
 
-A few quick tips:
-- Reuse your HttpClient instance - it's thread-safe and manages connections efficiently
-- Always set timeouts to avoid hanging forever
-- Consider retry logic for transient failures
-- Log requests and responses for debugging, but be careful with sensitive data
+**(Highlight the error handling code)**
 
-## Wrapping Up (5:00-5:15)
+**YOU:**
+"We need to handle different status codes appropriately. 200 means success, 404 means not found, 401 means we're not authorized. And we wrap everything in a try-catch to handle network errors."
 
-You now know how to consume any REST API using Java's built-in HTTP client. No external libraries needed for basic operations! Start simple with GET requests, then add POST, error handling, and async as needed.
+**(Show Slide 9: Pro Tips)**
 
-Next time, we'll flip the script and create our own REST APIs using Spring Boot. Until then, go forth and integrate with the world's APIs!
+**YOU:**
+"Pro tip: Always log errors with enough context to debug later. Your future self will thank you."
 
-## Code Examples Referenced:
+---
 
-1. HttpClient creation with builder
-2. GET request for employee data
-3. POST request with JSON body
-4. Error handling with status codes
-5. Async request example
-6. Jackson JSON processing
-7. Complete EmployeeApiClient class
+### SCENE 7: Asynchronous Requests (3:45 - 4:15)
+
+**(Show Slide 10: Async Operations)**
+
+**YOU:**
+"Sometimes you don't want to wait for a response. Maybe you're making multiple API calls and want them to run in parallel."
+
+**(Highlight the async method)**
+
+**YOU:**
+"The `sendAsync` method returns a CompletableFuture. We can process the response when it arrives using `thenAccept`, and handle errors with `exceptionally`. This keeps your application responsive while waiting for slow APIs."
+
+---
+
+### SCENE 8: Complete Implementation (4:15 - 4:45)
+
+**(Show Slide 11: Complete API Client)**
+
+**YOU:**
+"Let's look at our complete `EmployeeApiClient` class."
+
+**(Show the full class structure)**
+
+**YOU:**
+"This client encapsulates all our HTTP logic. It has methods for each operation - get, create, update, delete. Each method handles the HTTP details and returns proper Java objects. Your application code stays clean and focused on business logic, not HTTP plumbing."
+
+---
+
+### SCENE 9: Conclusion (4:45 - 5:00)
+
+**(Show Slide 12: Key Takeaways)**
+
+**YOU:**
+"You now know how to consume any REST API using Java's built-in HTTP client. No external libraries needed for basic operations! Start simple with GET requests, then add POST, error handling, and async as needed."
+
+**YOU:**
+"Next time, we'll flip the script and create our own REST APIs using Spring Boot. Thanks for watching!"

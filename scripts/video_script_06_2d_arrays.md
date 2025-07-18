@@ -1,110 +1,113 @@
 # Video Script: Two-Dimensional Arrays
 
-## Introduction (0:00-0:15)
+**Goal:** 6. Utilize two-dimensional arrays to organize and process employee roster data.  
+**Target Duration:** 3-4 minutes
 
-Welcome back! In our last video, we explored nested loops. Today, we're looking at the perfect data structure to pair with them - two-dimensional arrays. If you've ever worked with spreadsheets, game boards, or any grid-like data, 2D arrays are exactly what you need.
+---
 
-## What is a 2D Array? (0:15-0:45)
+### SCENE 1: Introduction (0:00 - 0:30)
 
-A two-dimensional array is essentially an array of arrays. Think of it as a grid or table with rows and columns, just like a spreadsheet. 
+**(Show Slide 1: Title Slide - "Two-Dimensional Arrays")**
 
-In our Employee Management System, we might use a 2D array to store employee data where each row represents a department and each column represents a specific employee within that department. It's perfect for organizing data that naturally fits into a table structure.
+**YOU:**
+"Hi everyone, and welcome back to this series on essential Java skills. In our last video, we explored nested loops. Today, we're looking at the perfect data structure to pair with them - **two-dimensional arrays**."
 
-## Declaration and Creation (0:45-1:15)
+**(Transition to Slide 2: Why 2D Arrays Matter)**
 
-Declaring a 2D array uses two sets of square brackets:
+**YOU:**
+"If you've ever worked with spreadsheets, game boards, or any grid-like data, 2D arrays are exactly what you need. They're the natural choice for organizing tabular information."
 
-[Show declaration example]
+---
 
-```java
-String[][] employeeNames;  // Declaration
-employeeNames = new String[5][10];  // 5 departments, 10 employees each
-```
+### SCENE 2: Understanding 2D Arrays (0:30 - 1:00)
 
-You can also initialize with data directly:
+**(Show Slide 3: What is a 2D Array?)**
 
-```java
-String[][] departments = {
-    {"Alice", "Bob", "Charlie"},      // Engineering
-    {"Diana", "Eve"},                 // Marketing  
-    {"Frank", "Grace", "Henry", "Ivy"} // Sales
-};
-```
+**YOU:**
+"A two-dimensional array is essentially an array of arrays. Think of it as a grid or table with rows and columns, just like a spreadsheet."
 
-## Accessing Elements (1:15-1:45)
+**(Show Slide 4: Employee Management Example)**
 
-To access an element, you provide both row and column indices:
+**YOU:**
+"In our Employee Management System, we might use a 2D array to store employee data where each row represents a department and each column represents a specific employee within that department. It's perfect for organizing data that naturally fits into a table structure."
 
-[Show access example]
+---
 
-```java
-String employee = employeeNames[0][2];  // Third employee in first department
-employeeNames[1][0] = "New Employee";   // Set first employee in second department
-```
+### SCENE 3: Declaration and Creation (1:00 - 1:30)
 
-Remember, Java is zero-indexed, so the first row is index 0, first column is index 0.
+**(Show Slide 5: Declaration Syntax)**
 
-## Working with Variable Lengths (1:45-2:15)
+**YOU:**
+"Declaring a 2D array uses two sets of square brackets."
 
-Here's something cool - each row in a 2D array can have different lengths! This is called a "jagged array."
+**(Transition to IDE showing declaration examples)**
 
-[Show EmployeeRoster.java example]
+**YOU:**
+"Here we declare an array, then create it with specific dimensions - 5 departments, 10 employees each. You can also initialize with data directly using this nested brace syntax."
 
-In our EmployeeRoster class, departments might have different numbers of employees. Engineering might have 8 people, while Marketing has only 3. Java handles this perfectly.
+**(Highlight the initialization code)**
 
-You can check the length of any row using `array[row].length`, and the number of rows using `array.length`.
+**YOU:**
+"Notice how each inner array can represent a different department - Engineering, Marketing, Sales - with their respective employees."
 
-## Processing with Enhanced For Loops (2:15-2:45)
+---
 
-You can use enhanced for loops with 2D arrays too:
+### SCENE 4: Accessing and Modifying Elements (1:30 - 2:00)
 
-[Show enhanced for loop example]
+**(Show Slide 6: Element Access)**
 
-```java
-for (String[] department : employeeNames) {
-    for (String employee : department) {
-        if (employee != null) {
-            System.out.println("Employee: " + employee);
-        }
-    }
-}
-```
+**YOU:**
+"To access an element, you provide both row and column indices."
 
-This is cleaner when you don't need the indices, just the values.
+**(Return to IDE showing access examples)**
 
-## Real-World Example (2:45-3:30)
+**YOU:**
+"Here we're getting the third employee in the first department. Remember, Java is zero-indexed, so the first row is index 0, first column is index 0."
 
-Let's look at our EmployeeRoster class again. We have two parallel 2D arrays - one for names and one for salaries:
+**YOU:**
+"And here we're setting the first employee in the second department to a new value. The double bracket notation gives us precise control over our grid data."
 
-[Show EmployeeRoster.java]
+---
 
-Notice how we use nested loops to process these arrays. The outer loop goes through each department, and the inner loop processes each employee in that department. The arrays work together - `employeeNames[dept][emp]` corresponds to `employeeSalaries[dept][emp]`.
+### SCENE 5: Real-World Implementation (2:00 - 2:45)
 
-This pattern is incredibly common in real applications - organizing data by categories and subcategories.
+**(Transition to IDE showing `EmployeeRoster.java`)**
 
-## Common Use Cases (3:30-3:45)
+**YOU:**
+"Let's look at our `EmployeeRoster` class. We have two parallel 2D arrays - one for names and one for salaries."
 
-2D arrays are perfect for:
-- Game boards (chess, tic-tac-toe, Sudoku)
-- Image data (pixels in rows and columns)  
-- Mathematical matrices
-- Seating charts or room layouts
-- Any tabular data where both dimensions matter
+**(Highlight the arrays and processing methods)**
 
-## Memory Considerations (3:45-4:00)
+**YOU:**
+"Notice how we use nested loops to process these arrays. The outer loop goes through each department, and the inner loop processes each employee in that department."
 
-Remember that 2D arrays can use significant memory. A 1000x1000 array of integers uses about 4MB. For very large datasets, consider using ArrayList of ArrayLists or other data structures that grow dynamically.
+**YOU:**
+"The arrays work together - `employeeNames[dept][emp]` corresponds to `employeeSalaries[dept][emp]`. This pattern is incredibly common in real applications for organizing data by categories and subcategories."
 
-## Wrapping Up (4:00-4:15)
+---
 
-Two-dimensional arrays are your go-to tool for grid-based data. Combined with nested loops from our previous video, you can process complex tabular information efficiently and elegantly.
+### SCENE 6: Advanced Features and Best Practices (2:45 - 3:15)
 
-Next time, we'll explore file I/O operations to save and load our employee data. Until then, think in grids and happy coding!
+**(Show Slide 7: Jagged Arrays)**
 
-## Code Examples Referenced:
+**YOU:**
+"Here's something powerful - each row in a 2D array can have different lengths! This is called a 'jagged array'. Engineering might have 8 people, while Marketing has only 3."
 
-1. 2D array declaration and initialization
-2. Element access and modification
-3. EmployeeRoster with parallel 2D arrays
-4. Enhanced for loop processing
-5. Jagged array examples
+**(Show Slide 8: Enhanced For Loops)**
+
+**YOU:**
+"You can also use enhanced for loops with 2D arrays. This is cleaner when you don't need the indices, just the values. The nested enhanced for loops naturally handle the two-dimensional structure."
+
+---
+
+### SCENE 7: Conclusion (3:15 - 3:45)
+
+**(Show Slide 9: Common Use Cases)**
+
+**YOU:**
+"2D arrays are perfect for game boards, image data, mathematical matrices, seating charts - any tabular data where both dimensions matter."
+
+**(Show Slide 10: Key Takeaways)**
+
+**YOU:**
+"Two-dimensional arrays are your go-to tool for grid-based data. Combined with nested loops from our previous video, you can process complex tabular information efficiently and elegantly. Next time, we'll explore file I/O operations to save and load our employee data. Thanks for watching!"
