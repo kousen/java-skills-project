@@ -1,4 +1,6 @@
+// Build configuration for solid-principles module
+// Demonstrates SOLID principles with practical examples
+
 dependencies {
-    // Additional dependencies specific to SOLID principles module
-    // Refactoring examples and demonstrations
+    // No additional dependencies needed - uses Java standard library
 }

@@ -4,12 +4,12 @@ import java.util.List;
 // We can add new employee types without modifying existing code
 
 // Abstract base class that defines the contract
-abstract class Employee {
+abstract class OCPEmployee {
     protected final int id;
     protected final String name;
     protected final double baseSalary;
     
-    protected Employee(int id, String name, double baseSalary) {
+    protected OCPEmployee(int id, String name, double baseSalary) {
         this.id = id;
         this.name = name;
         this.baseSalary = baseSalary;
@@ -43,7 +43,7 @@ abstract class Employee {
 
 // Concrete employee types - extending without modifying base class
 
-class FullTimeEmployee extends Employee {
+class FullTimeEmployee extends OCPEmployee {
     private final int yearsOfService;
     
     public FullTimeEmployee(int id, String name, double baseSalary, int yearsOfService) {
@@ -78,7 +78,7 @@ class FullTimeEmployee extends Employee {
     }
 }
 
-class PartTimeEmployee extends Employee {
+class PartTimeEmployee extends OCPEmployee {
     private final int hoursPerWeek;
     
     public PartTimeEmployee(int id, String name, double hourlyRate, int hoursPerWeek) {
@@ -120,7 +120,7 @@ class PartTimeEmployee extends Employee {
     }
 }
 
-class ContractEmployee extends Employee {
+class ContractEmployee extends OCPEmployee {
     private final int contractMonths;
     private final boolean hasHealthBenefits;
     
@@ -166,7 +166,7 @@ class ContractEmployee extends Employee {
 }
 
 // NEW employee type - can be added without modifying existing code
-class InternEmployee extends Employee {
+class InternEmployee extends OCPEmployee {
     private final String university;
     private final boolean isPaid;
     
@@ -210,18 +210,18 @@ class InternEmployee extends Employee {
 // Payroll calculator that works with any employee type
 class PayrollCalculator {
     
-    public double calculateTotalPayroll(List<Employee> employees) {
+    public double calculateTotalPayroll(List<OCPEmployee> employees) {
         return employees.stream()
-                .mapToDouble(Employee::calculatePay)
+                .mapToDouble(OCPEmployee::calculatePay)
                 .sum();
     }
     
-    public void generatePayrollReport(List<Employee> employees) {
+    public void generatePayrollReport(List<OCPEmployee> employees) {
         System.out.println("=== Payroll Report ===");
         System.out.println("Employee Details:");
         
         double totalPayroll = 0;
-        for (Employee emp : employees) {
+        for (OCPEmployee emp : employees) {
             System.out.println("  " + emp);
             totalPayroll += emp.calculatePay();
         }
@@ -230,7 +230,7 @@ class PayrollCalculator {
         System.out.printf("Average Pay: $%.2f%n", totalPayroll / employees.size());
     }
     
-    public List<Employee> getHighEarners(List<Employee> employees, double threshold) {
+    public List<OCPEmployee> getHighEarners(List<OCPEmployee> employees, double threshold) {
         return employees.stream()
                 .filter(emp -> emp.calculatePay() > threshold)
                 .toList();
@@ -238,12 +238,12 @@ class PayrollCalculator {
 }
 
 // Demo class showing Open/Closed Principle
-class OpenClosedPrincipleDemo {
+public class OpenClosedPrinciple {
     public static void main(String[] args) {
         System.out.println("=== Open/Closed Principle Demo ===");
         
         // Create different types of employees
-        List<Employee> employees = List.of(
+        List<OCPEmployee> employees = List.of(
             new FullTimeEmployee(1001, "Alice Johnson", 80000, 5),
             new PartTimeEmployee(1002, "Bob Smith", 25, 25), // $25/hour, 25 hours/week
             new ContractEmployee(1003, "Carol Davis", 7000, 18, true), // $7000/month, 18 months
@@ -256,7 +256,7 @@ class OpenClosedPrincipleDemo {
         
         // Demonstrate that we can add new functionality without modifying existing code
         System.out.println("\n=== High Earners (>$40,000) ===");
-        List<Employee> highEarners = calculator.getHighEarners(employees, 40000);
+        List<OCPEmployee> highEarners = calculator.getHighEarners(employees, 40000);
         highEarners.forEach(System.out::println);
         
         // Show that adding new employee types doesn't break existing functionality
@@ -266,7 +266,7 @@ class OpenClosedPrincipleDemo {
         // The existing PayrollCalculator and other code continues to work
         System.out.println("New employee types can be added without modifying:");
         System.out.println("- PayrollCalculator class");
-        System.out.println("- Existing Employee subclasses");
+        System.out.println("- Existing OCPEmployee subclasses");
         System.out.println("- Client code that uses employees");
         
         System.out.println("\nThis demonstrates the Open/Closed Principle:");

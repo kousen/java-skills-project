@@ -4,8 +4,8 @@ import java.util.List;
 // SOLID Principles Demonstration
 // Single Responsibility Principle - Each class has one reason to change
 
-// Employee entity - only responsible for employee data
-class Employee {
+// SRPEmployee entity - only responsible for employee data
+class SRPEmployee {
     private final int id;
     private String name;
     private String email;
@@ -13,7 +13,7 @@ class Employee {
     private final LocalDate hireDate;
     private String department;
     
-    public Employee(int id, String name, String email, double salary, LocalDate hireDate) {
+    public SRPEmployee(int id, String name, String email, double salary, LocalDate hireDate) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -35,42 +35,42 @@ class Employee {
     
     @Override
     public String toString() {
-        return String.format("Employee{id=%d, name='%s', email='%s', salary=%.2f}", 
+        return String.format("SRPEmployee{id=%d, name='%s', email='%s', salary=%.2f}", 
                            id, name, email, salary);
     }
 }
 
 // SRP: Separate interface for employee data persistence
 interface EmployeeRepository {
-    void save(Employee employee);
-    Employee findById(int id);
-    List<Employee> findAll();
+    void save(SRPEmployee employee);
+    SRPEmployee findById(int id);
+    List<SRPEmployee> findAll();
     void delete(int id);
-    List<Employee> findByDepartment(String department);
+    List<SRPEmployee> findByDepartment(String department);
 }
 
 // SRP: Separate interface for salary calculations
 interface SalaryCalculator {
-    double calculateAnnualSalary(Employee employee);
-    double calculateMonthlyPay(Employee employee);
-    double calculateBonus(Employee employee);
+    double calculateAnnualSalary(SRPEmployee employee);
+    double calculateMonthlyPay(SRPEmployee employee);
+    double calculateBonus(SRPEmployee employee);
 }
 
 // SRP: Separate interface for notifications
 interface NotificationService {
-    void sendWelcomeEmail(Employee employee);
-    void sendSalaryChangeNotification(Employee employee, double oldSalary, double newSalary);
-    void sendTerminationNotification(Employee employee);
+    void sendWelcomeEmail(SRPEmployee employee);
+    void sendSalaryChangeNotification(SRPEmployee employee, double oldSalary, double newSalary);
+    void sendTerminationNotification(SRPEmployee employee);
 }
 
 // SRP: Employee business logic service
-public class EmployeeService {
+public class SRPEmployeeService {
     private final EmployeeRepository repository;
     private final SalaryCalculator salaryCalculator;
     private final NotificationService notificationService;
     
     // Dependency Injection Constructor
-    public EmployeeService(EmployeeRepository repository, 
+    public SRPEmployeeService(EmployeeRepository repository, 
                           SalaryCalculator salaryCalculator, 
                           NotificationService notificationService) {
         this.repository = repository;
@@ -78,13 +78,13 @@ public class EmployeeService {
         this.notificationService = notificationService;
     }
     
-    public void hireEmployee(Employee employee) {
+    public void hireEmployee(SRPEmployee employee) {
         repository.save(employee);
         notificationService.sendWelcomeEmail(employee);
     }
     
     public void updateSalary(int employeeId, double newSalary) {
-        Employee employee = repository.findById(employeeId);
+        SRPEmployee employee = repository.findById(employeeId);
         if (employee != null) {
             double oldSalary = employee.getSalary();
             employee.setSalary(newSalary);
@@ -94,7 +94,7 @@ public class EmployeeService {
     }
     
     public void terminateEmployee(int employeeId) {
-        Employee employee = repository.findById(employeeId);
+        SRPEmployee employee = repository.findById(employeeId);
         if (employee != null) {
             repository.delete(employeeId);
             notificationService.sendTerminationNotification(employee);
@@ -102,14 +102,30 @@ public class EmployeeService {
     }
     
     public double getEmployeeAnnualCost(int employeeId) {
-        Employee employee = repository.findById(employeeId);
+        SRPEmployee employee = repository.findById(employeeId);
         if (employee != null) {
             return salaryCalculator.calculateAnnualSalary(employee);
         }
         return 0;
     }
     
-    public List<Employee> getEmployeesByDepartment(String department) {
+    public List<SRPEmployee> getEmployeesByDepartment(String department) {
         return repository.findByDepartment(department);
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("=== Single Responsibility Principle Demo ===");
+        System.out.println("Each class has one reason to change:");
+        System.out.println("- SRPEmployee: Employee data only");
+        System.out.println("- EmployeeRepository: Data persistence only");
+        System.out.println("- SalaryCalculator: Salary calculations only");
+        System.out.println("- NotificationService: Notifications only");
+        System.out.println("- SRPEmployeeService: Business logic coordination only");
+        
+        System.out.println("\nBenefits:");
+        System.out.println("- Easy to test each component in isolation");
+        System.out.println("- Changes to notification logic don't affect salary calculations");
+        System.out.println("- Database changes don't affect business logic");
+        System.out.println("- New features can be added without modifying existing classes");
     }
 }

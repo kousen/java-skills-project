@@ -1,23 +1,15 @@
-import javax.validation.constraints.*;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
 
-// Input Validation Examples - Defensive Programming
+/**
+ * Input Validation Examples - Defensive Programming
+ * Demonstrates validation techniques without external validation frameworks.
+ * Shows protection against SQL injection, XSS, and other security threats.
+ */
 public class InputValidation {
-    
-    private static final Validator validator;
-    
-    static {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-    }
     
     public static void main(String[] args) {
         System.out.println("=== Input Validation Demo ===");
@@ -26,6 +18,7 @@ public class InputValidation {
         demonstrateEmployeeValidation();
         demonstrateSqlInjectionPrevention();
         demonstrateXssPreventionBasics();
+        demonstrateBusinessRuleValidation();
     }
     
     private static void demonstrateBasicValidation() {
@@ -55,16 +48,86 @@ public class InputValidation {
     }
     
     private static void validateEmployee(EmployeeDto employee) {
-        Set<ConstraintViolation<EmployeeDto>> violations = validator.validate(employee);
+        List<String> errors = new ArrayList<>();
         
-        if (violations.isEmpty()) {
+        // Validate name
+        if (!isValidName(employee.getName())) {
+            errors.add("Invalid name: must be 2-50 characters, letters only");
+        }
+        
+        // Validate email
+        if (!isValidEmail(employee.getEmail())) {
+            errors.add("Invalid email format");
+        }
+        
+        // Validate salary
+        if (!isValidSalary(employee.getSalary())) {
+            errors.add("Invalid salary: must be positive and under $1,000,000");
+        }
+        
+        // Validate phone
+        if (!isValidPhone(employee.getPhone())) {
+            errors.add("Invalid phone format");
+        }
+        
+        // Validate address
+        if (!isValidAddress(employee.getAddress())) {
+            errors.add("Invalid address: cannot be empty and max 200 characters");
+        }
+        
+        if (errors.isEmpty()) {
             System.out.println("✓ Employee validation passed: " + employee.getName());
         } else {
             System.out.println("✗ Employee validation failed: " + employee.getName());
-            for (ConstraintViolation<EmployeeDto> violation : violations) {
-                System.out.println("  - " + violation.getPropertyPath() + ": " + violation.getMessage());
+            for (String error : errors) {
+                System.out.println("  - " + error);
             }
         }
+    }
+    
+    private static boolean isValidName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return false;
+        }
+        
+        String trimmed = name.trim();
+        
+        // Length check
+        if (trimmed.length() < 2 || trimmed.length() > 50) {
+            return false;
+        }
+        
+        // Pattern check - only letters, spaces, hyphens, and apostrophes
+        Pattern namePattern = Pattern.compile("^[a-zA-Z\\s\\-']+$");
+        return namePattern.matcher(trimmed).matches();
+    }
+    
+    private static boolean isValidEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+        
+        // Simple email pattern - in production use more robust validation
+        Pattern emailPattern = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
+        return emailPattern.matcher(email.trim()).matches();
+    }
+    
+    private static boolean isValidSalary(Double salary) {
+        return salary != null && salary > 0.0 && salary <= 1000000.0;
+    }
+    
+    private static boolean isValidPhone(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            return false;
+        }
+        
+        // Allow various phone formats
+        Pattern phonePattern = Pattern.compile("^\\+?[1-9]\\d{1,14}$|^\\+?1-\\d{3}-\\d{3}-\\d{4}$");
+        return phonePattern.matcher(phone.trim()).matches();
+    }
+    
+    private static boolean isValidAddress(String address) {
+        return address != null && !address.trim().isEmpty() && address.length() <= 200;
     }
     
     private static void demonstrateEmployeeValidation() {
@@ -89,25 +152,12 @@ public class InputValidation {
     }
     
     private static boolean validateEmployeeName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            return false;
-        }
-        
-        String trimmed = name.trim();
-        
-        // Length check
-        if (trimmed.length() < 2 || trimmed.length() > 50) {
-            return false;
-        }
-        
-        // Pattern check - only letters, spaces, hyphens, and apostrophes
-        Pattern namePattern = Pattern.compile("^[a-zA-Z\\s\\-']+$");
-        if (!namePattern.matcher(trimmed).matches()) {
+        if (!isValidName(name)) {
             return false;
         }
         
         // Check for potential XSS patterns
-        if (containsPotentialXss(trimmed)) {
+        if (containsPotentialXss(name)) {
             return false;
         }
         
@@ -115,6 +165,8 @@ public class InputValidation {
     }
     
     private static boolean containsPotentialXss(String input) {
+        if (input == null) return false;
+        
         String lower = input.toLowerCase();
         String[] xssPatterns = {
             "<script", "</script", "javascript:", "onload=", "onerror=", 
@@ -204,50 +256,29 @@ public class InputValidation {
             .replace("\"", "&quot;")
             .replace("'", "&#39;");
     }
-}
-
-// Employee DTO with validation annotations
-class EmployeeDto {
-    @NotBlank(message = "Name cannot be blank")
-    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
-    @Pattern(regexp = "^[a-zA-Z\\s\\-']+$", message = "Name can only contain letters, spaces, hyphens, and apostrophes")
-    private String name;
     
-    @NotBlank(message = "Email cannot be blank")
-    @Email(message = "Email must be valid")
-    private String email;
-    
-    @NotNull(message = "Salary cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Salary must be positive")
-    @DecimalMax(value = "1000000.0", message = "Salary cannot exceed $1,000,000")
-    private Double salary;
-    
-    @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$|^\\+?1-\\d{3}-\\d{3}-\\d{4}$", 
-             message = "Phone must be a valid format")
-    private String phone;
-    
-    @NotBlank(message = "Address cannot be blank")
-    @Size(max = 200, message = "Address cannot exceed 200 characters")
-    private String address;
-    
-    public EmployeeDto(String name, String email, Double salary, String phone, String address) {
-        this.name = name;
-        this.email = email;
-        this.salary = salary;
-        this.phone = phone;
-        this.address = address;
+    private static void demonstrateBusinessRuleValidation() {
+        System.out.println("\n--- Business Rule Validation ---");
+        
+        List<EmployeeDto> testEmployees = List.of(
+            new EmployeeDto("Alice Johnson", "alice@company.com", 75000.0, "555-123-4567", "123 Main St"),
+            new EmployeeDto("Bob Smith", "bob@external.com", 85000.0, "555-234-5678", "456 Oak Ave"),
+            new EmployeeDto("Carol CEO", "carol@company.com", 350000.0, "555-345-6789", "789 Pine Rd"),
+            new EmployeeDto("Admin User", "admin@company.com", 50000.0, "555-456-7890", "321 Elm St")
+        );
+        
+        for (EmployeeDto employee : testEmployees) {
+            List<String> businessErrors = validateEmployeeBusinessRules(employee);
+            if (businessErrors.isEmpty()) {
+                System.out.println("✓ Business rules passed: " + employee.getName());
+            } else {
+                System.out.println("✗ Business rules failed: " + employee.getName());
+                for (String error : businessErrors) {
+                    System.out.println("  - " + error);
+                }
+            }
+        }
     }
-    
-    // Getters
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public Double getSalary() { return salary; }
-    public String getPhone() { return phone; }
-    public String getAddress() { return address; }
-}
-
-// Custom validator for business rules
-class EmployeeValidator {
     
     public static List<String> validateEmployeeBusinessRules(EmployeeDto employee) {
         List<String> errors = new ArrayList<>();
@@ -257,7 +288,7 @@ class EmployeeValidator {
             errors.add("Email domain not allowed for employees");
         }
         
-        // Check salary range based on position level (would normally come from position field)
+        // Check salary range based on position level
         if (employee.getSalary() != null) {
             if (employee.getSalary() < 30000) {
                 errors.add("Salary below minimum threshold");
@@ -267,7 +298,7 @@ class EmployeeValidator {
             }
         }
         
-        // Check name against blacklist (for demo purposes)
+        // Check name against blacklist
         if (employee.getName() != null && isNameBlacklisted(employee.getName())) {
             errors.add("Name appears on restricted list");
         }
@@ -288,14 +319,11 @@ class EmployeeValidator {
     }
     
     private static boolean isExecutiveLevel(EmployeeDto employee) {
-        // In real implementation, this would check position level
-        // For demo, assume names containing "CEO", "CTO", etc. are executives
         String name = employee.getName().toUpperCase();
         return name.contains("CEO") || name.contains("CTO") || name.contains("CFO") || name.contains("PRESIDENT");
     }
     
     private static boolean isNameBlacklisted(String name) {
-        // Demo blacklist - in real implementation this would be from database
         String[] blacklist = {"test user", "admin", "administrator", "root", "guest"};
         String lowerName = name.toLowerCase().trim();
         
@@ -305,5 +333,36 @@ class EmployeeValidator {
             }
         }
         return false;
+    }
+}
+
+/**
+ * Employee DTO for validation demonstrations.
+ */
+class EmployeeDto {
+    private String name;
+    private String email;
+    private Double salary;
+    private String phone;
+    private String address;
+    
+    public EmployeeDto(String name, String email, Double salary, String phone, String address) {
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+        this.phone = phone;
+        this.address = address;
+    }
+    
+    // Getters
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+    public Double getSalary() { return salary; }
+    public String getPhone() { return phone; }
+    public String getAddress() { return address; }
+    
+    @Override
+    public String toString() {
+        return "EmployeeDto{name='" + name + "', email='" + email + "', salary=" + salary + "}";
     }
 }

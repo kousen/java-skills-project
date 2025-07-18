@@ -1,0 +1,113 @@
+# Git Configuration Example for Java Developers
+# Copy these settings to your global .gitconfig file
+
+[user]
+    name = Your Full Name
+    email = your.email@company.com
+
+[core]
+    editor = code --wait  # Use VS Code as default editor
+    autocrlf = input      # Handle line endings properly
+    ignorecase = false    # Case-sensitive file names
+
+[init]
+    defaultBranch = main
+
+[pull]
+    rebase = true  # Rebase on pull to keep clean history
+
+[push]
+    default = current
+    autoSetupRemote = true  # Automatically set up remote tracking
+
+[branch]
+    autosetupmerge = always
+    autosetuprebase = always
+
+[merge]
+    conflictstyle = diff3  # Show original content in conflicts
+
+[diff]
+    tool = vscode
+    algorithm = histogram  # Better diff algorithm
+
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+
+[merge]
+    tool = vscode
+
+[mergetool "vscode"]
+    cmd = code --wait $MERGED
+
+# Useful aliases for Java development
+[alias]
+    # Quick status and log
+    st = status
+    lg = log --oneline --graph --decorate --all
+    lol = log --graph --decorate --pretty=oneline --abbrev-commit
+    lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+    
+    # Branch management
+    co = checkout
+    br = branch
+    cob = checkout -b
+    brd = branch -d
+    
+    # Commit shortcuts
+    ci = commit
+    cm = commit -m
+    ca = commit -am
+    amend = commit --amend --no-edit
+    
+    # Working directory
+    unstage = reset HEAD --
+    discard = checkout --
+    
+    # Feature branch workflow
+    feature = "!f() { git checkout -b feature/$1 && git push -u origin feature/$1; }; f"
+    hotfix = "!f() { git checkout -b hotfix/$1 main && git push -u origin hotfix/$1; }; f"
+    
+    # Clean up merged branches
+    cleanup = "!git branch --merged main | grep -v 'main\\|develop' | xargs -n 1 git branch -d"
+    
+    # Find commits by message
+    find = "!f() { git log --all --grep=\"$1\" --oneline; }; f"
+    
+    # Show what changed in last commit
+    last = log -1 HEAD --stat
+    
+    # Undo last commit but keep changes
+    undo = reset HEAD~1 --mixed
+    
+    # Java-specific: find large files (good for finding accidentally committed JARs)
+    large = "!git rev-list --objects --all | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | sed -n 's/^blob //p' | sort --numeric-sort --key=2 | cut -c 1-12,41- | $(command -v gnumfmt || echo numfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest"
+
+[color]
+    ui = auto
+    branch = auto
+    diff = auto
+    status = auto
+
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+# Java project specific settings
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true

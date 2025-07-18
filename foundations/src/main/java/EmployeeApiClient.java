@@ -1,5 +1,3 @@
-package com.oreilly.employee.client;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +41,7 @@ public class EmployeeApiClient {
     /**
      * Demonstrates GET request to fetch a single employee.
      */
-    public Optional<Employee> getEmployee(Long id) throws IOException, InterruptedException {
+    public Optional<EmployeeDto> getEmployee(Long id) throws IOException, InterruptedException {
         logger.debug("Fetching employee with ID: {}", id);
         
         HttpRequest request = HttpRequest.newBuilder()
@@ -61,7 +59,7 @@ public class EmployeeApiClient {
         
         switch (response.statusCode()) {
             case 200:
-                Employee employee = objectMapper.readValue(response.body(), Employee.class);
+                EmployeeDto employee = objectMapper.readValue(response.body(), EmployeeDto.class);
                 logger.info("Successfully retrieved employee: {}", employee.getName());
                 return Optional.of(employee);
             case 404:
@@ -79,7 +77,7 @@ public class EmployeeApiClient {
     /**
      * Demonstrates GET request for multiple employees with error handling.
      */
-    public List<Employee> getAllEmployees() throws IOException, InterruptedException {
+    public List<EmployeeDto> getAllEmployees() throws IOException, InterruptedException {
         logger.debug("Fetching all employees");
         
         HttpRequest request = HttpRequest.newBuilder()
@@ -92,8 +90,8 @@ public class EmployeeApiClient {
             HttpResponse.BodyHandlers.ofString());
         
         if (response.statusCode() == 200) {
-            List<Employee> employees = objectMapper.readValue(response.body(),
-                objectMapper.getTypeFactory().constructCollectionType(List.class, Employee.class));
+            List<EmployeeDto> employees = objectMapper.readValue(response.body(),
+                objectMapper.getTypeFactory().constructCollectionType(List.class, EmployeeDto.class));
             logger.info("Retrieved {} employees", employees.size());
             return employees;
         } else {
@@ -105,7 +103,7 @@ public class EmployeeApiClient {
     /**
      * Demonstrates POST request to create a new employee.
      */
-    public Employee createEmployee(Employee employee) throws IOException, InterruptedException {
+    public EmployeeDto createEmployee(EmployeeDto employee) throws IOException, InterruptedException {
         logger.debug("Creating new employee: {}", employee.getName());
         
         String jsonPayload = objectMapper.writeValueAsString(employee);
@@ -121,7 +119,7 @@ public class EmployeeApiClient {
             HttpResponse.BodyHandlers.ofString());
         
         if (response.statusCode() == 201) {
-            Employee createdEmployee = objectMapper.readValue(response.body(), Employee.class);
+            EmployeeDto createdEmployee = objectMapper.readValue(response.body(), EmployeeDto.class);
             logger.info("Successfully created employee with ID: {}", createdEmployee.getId());
             return createdEmployee;
         } else {
@@ -131,61 +129,9 @@ public class EmployeeApiClient {
     }
     
     /**
-     * Demonstrates PUT request to update an existing employee.
-     */
-    public Employee updateEmployee(Long id, Employee employee) throws IOException, InterruptedException {
-        logger.debug("Updating employee with ID: {}", id);
-        
-        String jsonPayload = objectMapper.writeValueAsString(employee);
-        
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(baseUrl + "/employees/" + id))
-            .header("Content-Type", "application/json")
-            .header("Accept", "application/json")
-            .PUT(HttpRequest.BodyPublishers.ofString(jsonPayload))
-            .build();
-        
-        HttpResponse<String> response = client.send(request,
-            HttpResponse.BodyHandlers.ofString());
-        
-        if (response.statusCode() == 200) {
-            Employee updatedEmployee = objectMapper.readValue(response.body(), Employee.class);
-            logger.info("Successfully updated employee: {}", updatedEmployee.getName());
-            return updatedEmployee;
-        } else {
-            logger.error("Failed to update employee, status: {}", response.statusCode());
-            throw new ApiException("Failed to update employee", response.statusCode());
-        }
-    }
-    
-    /**
-     * Demonstrates DELETE request to remove an employee.
-     */
-    public boolean deleteEmployee(Long id) throws IOException, InterruptedException {
-        logger.debug("Deleting employee with ID: {}", id);
-        
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(baseUrl + "/employees/" + id))
-            .DELETE()
-            .build();
-        
-        HttpResponse<String> response = client.send(request,
-            HttpResponse.BodyHandlers.ofString());
-        
-        boolean success = response.statusCode() == 204;
-        if (success) {
-            logger.info("Successfully deleted employee with ID: {}", id);
-        } else {
-            logger.error("Failed to delete employee, status: {}", response.statusCode());
-        }
-        
-        return success;
-    }
-    
-    /**
      * Demonstrates query parameters and URL encoding.
      */
-    public List<Employee> searchEmployees(String department, Double minSalary) 
+    public List<EmployeeDto> searchEmployees(String department, Double minSalary) 
             throws IOException, InterruptedException {
         logger.debug("Searching employees in department: {} with min salary: {}", department, minSalary);
         
@@ -203,8 +149,8 @@ public class EmployeeApiClient {
             HttpResponse.BodyHandlers.ofString());
         
         if (response.statusCode() == 200) {
-            List<Employee> employees = objectMapper.readValue(response.body(),
-                objectMapper.getTypeFactory().constructCollectionType(List.class, Employee.class));
+            List<EmployeeDto> employees = objectMapper.readValue(response.body(),
+                objectMapper.getTypeFactory().constructCollectionType(List.class, EmployeeDto.class));
             logger.info("Found {} employees matching search criteria", employees.size());
             return employees;
         } else {
@@ -216,7 +162,7 @@ public class EmployeeApiClient {
     /**
      * Demonstrates asynchronous HTTP requests using CompletableFuture.
      */
-    public CompletableFuture<Employee> getEmployeeAsync(Long id) {
+    public CompletableFuture<EmployeeDto> getEmployeeAsync(Long id) {
         logger.debug("Fetching employee asynchronously with ID: {}", id);
         
         HttpRequest request = HttpRequest.newBuilder()
@@ -230,7 +176,7 @@ public class EmployeeApiClient {
                 logger.debug("Async response received, status: {}", response.statusCode());
                 try {
                     if (response.statusCode() == 200) {
-                        Employee employee = objectMapper.readValue(response.body(), Employee.class);
+                        EmployeeDto employee = objectMapper.readValue(response.body(), EmployeeDto.class);
                         logger.info("Async fetch successful for employee: {}", employee.getName());
                         return employee;
                     } else {
@@ -245,34 +191,6 @@ public class EmployeeApiClient {
                 logger.error("Async request failed", throwable);
                 return null;
             });
-    }
-    
-    /**
-     * Demonstrates request with authentication header.
-     */
-    public Optional<Employee> getEmployeeWithAuth(Long id, String bearerToken) 
-            throws IOException, InterruptedException {
-        logger.debug("Fetching employee with authentication, ID: {}", id);
-        
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(baseUrl + "/employees/" + id))
-            .header("Accept", "application/json")
-            .header("Authorization", "Bearer " + bearerToken)
-            .GET()
-            .build();
-        
-        HttpResponse<String> response = client.send(request,
-            HttpResponse.BodyHandlers.ofString());
-        
-        if (response.statusCode() == 200) {
-            Employee employee = objectMapper.readValue(response.body(), Employee.class);
-            return Optional.of(employee);
-        } else if (response.statusCode() == 401) {
-            logger.warn("Authentication failed for employee request");
-            return Optional.empty();
-        } else {
-            throw new ApiException("Request failed", response.statusCode());
-        }
     }
     
     /**
@@ -331,9 +249,9 @@ public class EmployeeApiClient {
     }
     
     /**
-     * Simple Employee model for demonstration.
+     * Simple Employee DTO for demonstration.
      */
-    public static class Employee {
+    public static class EmployeeDto {
         private Long id;
         private String name;
         private String email;
@@ -341,9 +259,9 @@ public class EmployeeApiClient {
         private Double salary;
         
         // Default constructor for Jackson
-        public Employee() {}
+        public EmployeeDto() {}
         
-        public Employee(Long id, String name, String email, String department, Double salary) {
+        public EmployeeDto(Long id, String name, String email, String department, Double salary) {
             this.id = id;
             this.name = name;
             this.email = email;
@@ -383,24 +301,35 @@ public class EmployeeApiClient {
             System.out.println("=== Employee API Client Demonstration ===");
             
             // Create a new employee
-            Employee newEmployee = new Employee(null, "John Doe", "john@example.com", "Engineering", 75000.0);
+            EmployeeDto newEmployee = new EmployeeDto(null, "John Doe", "john@example.com", "Engineering", 75000.0);
             
             // Note: These calls would work if connecting to a real API
             // For demonstration, we'll show how the calls would be made
             
             System.out.println("1. Creating employee: " + newEmployee.getName());
-            // Employee created = client.createEmployee(newEmployee);
+            System.out.println("   POST " + client.baseUrl + "/employees");
+            System.out.println("   Content-Type: application/json");
+            System.out.println("   Body: " + client.objectMapper.writeValueAsString(newEmployee));
             
-            System.out.println("2. Fetching employee by ID");
-            // Optional<Employee> found = client.getEmployee(1L);
+            System.out.println("\n2. Fetching employee by ID");
+            System.out.println("   GET " + client.baseUrl + "/employees/1");
+            System.out.println("   Accept: application/json");
             
-            System.out.println("3. Searching employees by department");
-            // List<Employee> engineers = client.searchEmployees("Engineering", 50000.0);
+            System.out.println("\n3. Searching employees by department");
+            System.out.println("   GET " + client.baseUrl + "/employees/search?department=Engineering&minSalary=50000.00");
             
-            System.out.println("4. Async employee fetch");
-            // CompletableFuture<Employee> futureEmployee = client.getEmployeeAsync(1L);
+            System.out.println("\n4. Async employee fetch demonstrates non-blocking operations");
+            CompletableFuture<EmployeeDto> futureEmployee = client.getEmployeeAsync(1L);
+            System.out.println("   Async request initiated...");
             
-            System.out.println("=== API client demonstration complete ===");
+            System.out.println("\n=== Key HTTP Client Features Demonstrated ===");
+            System.out.println("- HTTP/2 support for better performance");
+            System.out.println("- Proper timeout configuration");
+            System.out.println("- JSON serialization/deserialization");
+            System.out.println("- Error handling for different HTTP status codes");
+            System.out.println("- Asynchronous requests with CompletableFuture");
+            System.out.println("- URL encoding for query parameters");
+            System.out.println("- Retry logic for handling transient failures");
             
         } catch (Exception e) {
             logger.error("Demonstration failed", e);

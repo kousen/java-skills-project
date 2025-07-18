@@ -1,10 +1,10 @@
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.SecretKeyFactory;
 import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -15,10 +15,7 @@ import java.util.Base64;
  * Demonstrates Java cryptographic APIs for encryption, hashing, and digital signatures.
  * Shows best practices for password hashing, data encryption, and key management.
  */
-public class SecurityService {
-    
-    // BCrypt password encoder with strength 12 (more secure than default 10)
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+public class CryptographicAPIs {
     
     // AES encryption constants
     private static final String AES_ALGORITHM = "AES";
@@ -26,8 +23,14 @@ public class SecurityService {
     private static final int GCM_IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 16;
     
+    // PBKDF2 constants for password hashing
+    private static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA256";
+    private static final int PBKDF2_ITERATIONS = 100000;
+    private static final int SALT_LENGTH = 16;
+    private static final int HASH_LENGTH = 32;
+    
     public static void main(String[] args) {
-        SecurityService service = new SecurityService();
+        CryptographicAPIs service = new CryptographicAPIs();
         
         System.out.println("=== Java Cryptography Demonstration ===");
         
@@ -43,37 +46,46 @@ public class SecurityService {
         // Message hashing
         service.demonstrateMessageHashing();
         
-        // JWT token simulation
+        // Key derivation
+        service.demonstrateKeyDerivation();
+        
+        // Secure token generation
         service.demonstrateTokenGeneration();
         
         System.out.println("\n=== Cryptography demonstration complete ===");
     }
     
     /**
-     * Demonstrates secure password hashing with BCrypt.
+     * Demonstrates secure password hashing with PBKDF2.
      */
     public void demonstratePasswordHashing() {
-        System.out.println("\n--- Password Hashing with BCrypt ---");
+        System.out.println("\n--- Password Hashing with PBKDF2 ---");
         
-        String plainPassword = "mySecretPassword123!";
-        
-        // Hash the password
-        String hashedPassword = hashPassword(plainPassword);
-        System.out.println("Original password: " + plainPassword);
-        System.out.println("Hashed password: " + hashedPassword);
-        
-        // Verify the password
-        boolean isValid = verifyPassword(plainPassword, hashedPassword);
-        System.out.println("Password verification: " + isValid);
-        
-        // Show that same password produces different hashes (due to salt)
-        String hash2 = hashPassword(plainPassword);
-        System.out.println("Second hash (different salt): " + hash2);
-        System.out.println("Both hashes verify: " + verifyPassword(plainPassword, hash2));
-        
-        // Demonstrate wrong password
-        boolean wrongPassword = verifyPassword("wrongPassword", hashedPassword);
-        System.out.println("Wrong password verification: " + wrongPassword);
+        try {
+            String plainPassword = "mySecretPassword123!";
+            
+            // Hash the password
+            String hashedPassword = hashPassword(plainPassword);
+            System.out.println("Original password: " + plainPassword);
+            System.out.println("Hashed password: " + hashedPassword);
+            
+            // Verify the password
+            boolean isValid = verifyPassword(plainPassword, hashedPassword);
+            System.out.println("Password verification: " + isValid);
+            
+            // Show that same password produces different hashes (due to salt)
+            String hash2 = hashPassword(plainPassword);
+            System.out.println("Second hash (different salt): " + hash2);
+            System.out.println("Both hashes verify: " + verifyPassword(plainPassword, hash2));
+            
+            // Demonstrate wrong password
+            boolean wrongPassword = verifyPassword("wrongPassword", hashedPassword);
+            System.out.println("Wrong password verification: " + wrongPassword);
+            
+        } catch (Exception e) {
+            System.err.println("Password hashing error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -184,6 +196,38 @@ public class SecurityService {
     }
     
     /**
+     * Demonstrates key derivation from passwords.
+     */
+    public void demonstrateKeyDerivation() {
+        System.out.println("\n--- Key Derivation from Passwords ---");
+        
+        try {
+            String password = "userPassword123";
+            byte[] salt = generateSalt();
+            
+            System.out.println("Password: " + password);
+            System.out.println("Salt: " + Base64.getEncoder().encodeToString(salt));
+            
+            // Derive encryption key from password
+            SecretKey derivedKey = deriveKeyFromPassword(password, salt);
+            System.out.println("Derived key: " + Base64.getEncoder().encodeToString(derivedKey.getEncoded()));
+            
+            // Use derived key for encryption
+            String data = "Confidential employee information";
+            byte[] encrypted = encrypt(data, derivedKey);
+            String decrypted = decrypt(encrypted, derivedKey);
+            
+            System.out.println("Original: " + data);
+            System.out.println("Encrypted: " + Base64.getEncoder().encodeToString(encrypted));
+            System.out.println("Decrypted: " + decrypted);
+            
+        } catch (Exception e) {
+            System.err.println("Key derivation error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    /**
      * Demonstrates secure token generation.
      */
     public void demonstrateTokenGeneration() {
@@ -213,17 +257,55 @@ public class SecurityService {
     }
     
     /**
-     * Hash a password using BCrypt.
+     * Hash a password using PBKDF2.
      */
-    public String hashPassword(String plainPassword) {
-        return passwordEncoder.encode(plainPassword);
+    public String hashPassword(String password) throws Exception {
+        byte[] salt = generateSalt();
+        byte[] hash = pbkdf2(password.toCharArray(), salt, PBKDF2_ITERATIONS, HASH_LENGTH);
+        
+        // Combine salt and hash
+        byte[] combined = new byte[salt.length + hash.length];
+        System.arraycopy(salt, 0, combined, 0, salt.length);
+        System.arraycopy(hash, 0, combined, salt.length, hash.length);
+        
+        return Base64.getEncoder().encodeToString(combined);
     }
     
     /**
      * Verify a password against its hash.
      */
-    public boolean verifyPassword(String plainPassword, String hashedPassword) {
-        return passwordEncoder.matches(plainPassword, hashedPassword);
+    public boolean verifyPassword(String password, String storedHash) throws Exception {
+        byte[] combined = Base64.getDecoder().decode(storedHash);
+        
+        // Extract salt and hash
+        byte[] salt = new byte[SALT_LENGTH];
+        byte[] hash = new byte[HASH_LENGTH];
+        System.arraycopy(combined, 0, salt, 0, SALT_LENGTH);
+        System.arraycopy(combined, SALT_LENGTH, hash, 0, HASH_LENGTH);
+        
+        // Hash the provided password with the extracted salt
+        byte[] testHash = pbkdf2(password.toCharArray(), salt, PBKDF2_ITERATIONS, HASH_LENGTH);
+        
+        return MessageDigest.isEqual(hash, testHash);
+    }
+    
+    /**
+     * Generate random salt.
+     */
+    public byte[] generateSalt() throws Exception {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[SALT_LENGTH];
+        random.nextBytes(salt);
+        return salt;
+    }
+    
+    /**
+     * PBKDF2 key derivation.
+     */
+    public byte[] pbkdf2(char[] password, byte[] salt, int iterations, int keyLength) throws Exception {
+        PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, keyLength * 8);
+        SecretKeyFactory skf = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
+        return skf.generateSecret(spec).getEncoded();
     }
     
     /**
@@ -233,6 +315,14 @@ public class SecurityService {
         KeyGenerator keyGen = KeyGenerator.getInstance(AES_ALGORITHM);
         keyGen.init(256); // 256-bit key
         return keyGen.generateKey();
+    }
+    
+    /**
+     * Derive AES key from password.
+     */
+    public SecretKey deriveKeyFromPassword(String password, byte[] salt) throws Exception {
+        byte[] keyBytes = pbkdf2(password.toCharArray(), salt, PBKDF2_ITERATIONS, 32);
+        return new SecretKeySpec(keyBytes, AES_ALGORITHM);
     }
     
     /**
@@ -335,15 +425,6 @@ public class SecurityService {
     }
     
     /**
-     * Create secret key from string (for demo purposes only).
-     * In production, keys should come from secure key management.
-     */
-    public SecretKey createKeyFromString(String keyString) {
-        byte[] keyBytes = Base64.getDecoder().decode(keyString);
-        return new SecretKeySpec(keyBytes, AES_ALGORITHM);
-    }
-    
-    /**
      * Employee data encryption utility.
      */
     public static class EmployeeDataEncryption {
@@ -354,11 +435,11 @@ public class SecurityService {
         }
         
         public EncryptedEmployee encryptEmployeeData(Employee employee) throws Exception {
-            SecurityService security = new SecurityService();
+            CryptographicAPIs crypto = new CryptographicAPIs();
             
             // Encrypt sensitive fields
-            byte[] encryptedSSN = security.encrypt(employee.getSsn(), masterKey);
-            byte[] encryptedSalary = security.encrypt(employee.getSalary().toString(), masterKey);
+            byte[] encryptedSSN = crypto.encrypt(employee.getSsn(), masterKey);
+            byte[] encryptedSalary = crypto.encrypt(employee.getSalary().toString(), masterKey);
             
             return new EncryptedEmployee(
                 employee.getId(),
@@ -371,11 +452,11 @@ public class SecurityService {
         }
         
         public Employee decryptEmployeeData(EncryptedEmployee encryptedEmployee) throws Exception {
-            SecurityService security = new SecurityService();
+            CryptographicAPIs crypto = new CryptographicAPIs();
             
             // Decrypt sensitive fields
-            String ssn = security.decrypt(encryptedEmployee.getEncryptedSSN(), masterKey);
-            String salaryStr = security.decrypt(encryptedEmployee.getEncryptedSalary(), masterKey);
+            String ssn = crypto.decrypt(encryptedEmployee.getEncryptedSSN(), masterKey);
+            String salaryStr = crypto.decrypt(encryptedEmployee.getEncryptedSalary(), masterKey);
             Double salary = Double.parseDouble(salaryStr);
             
             return new Employee(
@@ -386,6 +467,41 @@ public class SecurityService {
                 ssn,
                 salary
             );
+        }
+        
+        public static void demonstrateEmployeeEncryption() {
+            System.out.println("\n--- Employee Data Encryption Example ---");
+            
+            try {
+                // Generate master key
+                CryptographicAPIs crypto = new CryptographicAPIs();
+                SecretKey masterKey = crypto.generateAESKey();
+                EmployeeDataEncryption encryption = new EmployeeDataEncryption(masterKey);
+                
+                // Create employee with sensitive data
+                Employee employee = new Employee(
+                    1001L,
+                    "Alice Johnson",
+                    "alice@company.com",
+                    "Engineering",
+                    "123-45-6789",
+                    85000.0
+                );
+                
+                System.out.println("Original employee: " + employee);
+                
+                // Encrypt employee data
+                EncryptedEmployee encrypted = encryption.encryptEmployeeData(employee);
+                System.out.println("Encrypted SSN: " + Base64.getEncoder().encodeToString(encrypted.getEncryptedSSN()));
+                System.out.println("Encrypted Salary: " + Base64.getEncoder().encodeToString(encrypted.getEncryptedSalary()));
+                
+                // Decrypt employee data
+                Employee decrypted = encryption.decryptEmployeeData(encrypted);
+                System.out.println("Decrypted employee: " + decrypted);
+                
+            } catch (Exception e) {
+                System.err.println("Employee encryption error: " + e.getMessage());
+            }
         }
     }
     
@@ -416,6 +532,12 @@ public class SecurityService {
         public String getDepartment() { return department; }
         public String getSsn() { return ssn; }
         public Double getSalary() { return salary; }
+        
+        @Override
+        public String toString() {
+            return "Employee{id=" + id + ", name='" + name + "', department='" + department + 
+                   "', ssn='" + ssn + "', salary=" + salary + "}";
+        }
     }
     
     /**
