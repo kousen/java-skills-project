@@ -1,0 +1,86 @@
+
+# Video Script: Java Records
+
+## 1. Introduction
+
+**Host:** "Hello and welcome! In this lesson, we're going to dive into one of the most exciting features added to Java in recent years: Records."
+
+**Host:** "Introduced as a standard feature in Java 16, records provide a highly concise syntax for creating classes that are transparent carriers for immutable data. In other words, they are a fantastic way to model things like Data Transfer Objects (DTOs) or any simple, plain old Java object (POJO) that just holds data."
+
+**Host:** "Before records, you had to write a lot of boilerplate code: a constructor, getters for every field, and you had to override `equals`, `hashCode`, and `toString`. With records, you get all of that for free. Let's see how."
+
+---
+
+## 2. The Old Way vs. The New Way
+
+**Host:** "Let's say you wanted to create a simple `Employee` class. Before records, you'd have to write a class like this..."
+
+**(Show a slide with the verbose POJO example)**
+
+**Host:** "You have the final fields, the constructor, the getters, and then you still need to implement `equals`, `hashCode`, and `toString`, which can be dozens of lines of code. It's a lot of ceremony for a simple data class."
+
+**Host:** "Now, here is the exact same thing, but written as a record:"
+
+```java
+public record EmployeeRecord(String name, int id, double salary) { }
+```
+
+**Host:** "And that's it. Seriously. That one line of code generates all the same functionality: the private final fields, the public constructor, the accessor methods, and the `equals`, `hashCode`, and `toString` methods. It's a huge improvement."
+
+---
+
+## 3. Key Features of Records
+
+**Host:** "So let's break down what you get. Records are immutable by default; all the fields you declare in the header are implicitly `final`. The syntax is incredibly concise. And you get all those standard methods generated for you by the compiler."
+
+**Host:** "It's important to know that records can't extend other classes, because they implicitly extend a special class called `java.lang.Record`. However, they can implement interfaces, and you can add your own static and instance methods to them."
+
+---
+
+## 4. Code Demo: `ModernJavaFeatures.java`
+
+**Host:** "Let's look at our `ModernJavaFeatures.java` file to see records in action."
+
+**(Show `oop-core/src/main/java/ModernJavaFeatures.java` on screen)**
+
+**Host:** "Here we define a simple `EmployeeRecord`. We can instantiate it just like a regular class. Notice how we can access the fields with methods like `alice.name()` and `alice.salary()`. The accessor methods don't have the 'get' prefix, which is a stylistic difference from the old JavaBean convention."
+
+```java
+// Using the record
+var alice = new EmployeeRecord("Alice Johnson", 1001, 75000);
+System.out.println("Name: " + alice.name()); // Accessor
+
+// The auto-generated toString() gives a nice output
+System.out.println(alice);
+```
+
+**Host:** "The `toString` method is provided automatically, and so is `equals`. If we create two records with the exact same data, the `equals` method will correctly return `true`."
+
+---
+
+## 5. Customizing Records
+
+**Host:** "What if you need to add validation? You can do that by implementing a 'compact constructor'."
+
+```java
+public record EmployeeRecord(String name, int id, double salary) {
+    // Compact constructor for validation
+    public EmployeeRecord {
+        if (salary < 0) {
+            throw new IllegalArgumentException("Salary cannot be negative");
+        }
+    }
+}
+```
+
+**Host:** "This special constructor allows you to run checks before the fields are assigned. You can also add any other methods you need, just like a regular class."
+
+---
+
+## 6. Summary
+
+**Host:** "To wrap it up, Java Records are a game-changer for creating simple, immutable data carriers. They drastically reduce boilerplate, making your code cleaner, clearer, and less error-prone."
+
+**Host:** "Use them whenever you need a simple aggregate of data, like for DTOs, API responses, or internal data structures. They are a powerful and elegant feature of modern Java."
+
+**Host:** "Thanks for tuning in. I'll see you in the next lesson!"
