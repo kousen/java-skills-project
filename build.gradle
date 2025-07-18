@@ -13,8 +13,9 @@ subprojects {
     version = '1.0.0'
     
     java {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
     }
     
     repositories {
@@ -60,21 +61,17 @@ configure(subprojects.findAll { it.name in ['web-services', 'advanced-systems'] 
 }
 
 // Custom task to run examples
-task runExample(type: JavaExec) {
+tasks.register('runExample', JavaExec) {
     description = 'Run a specific example: gradle runExample -Pmodule=foundations -PmainClass=NamingConventions'
     group = 'application'
-    
+
     doFirst {
         if (!project.hasProperty('module') || !project.hasProperty('mainClass')) {
             throw new GradleException("Usage: gradle runExample -Pmodule=<module-name> -PmainClass=<ClassName>")
         }
-        
+
         def moduleProject = project.findProject(":${module}")
         classpath = moduleProject.sourceSets.main.runtimeClasspath
-        mainClass = project.property('mainClass')
+        mainClass = project.property('mainClass') as Property<String>
     }
-}
-
-wrapper {
-    gradleVersion = '8.14.2'
 }
