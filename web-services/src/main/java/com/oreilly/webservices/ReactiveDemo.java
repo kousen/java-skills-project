@@ -1,3 +1,5 @@
+package com.oreilly.webservices;
+
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -57,8 +59,8 @@ public class ReactiveDemo {
         
         // Creating Monos
         Mono<String> helloMono = Mono.just("Hello Reactive World!");
-        Mono<Employee> employeeMono = Mono.fromSupplier(() -> 
-            new Employee(1L, "Alice Johnson", "Engineering"));
+        Mono<ReactiveEmployee> employeeMono = Mono.fromSupplier(() -> 
+            new ReactiveEmployee(1L, "Alice Johnson", "Engineering"));
         Mono<String> emptyMono = Mono.empty();
         Mono<String> errorMono = Mono.error(new RuntimeException("Something went wrong"));
         
@@ -74,7 +76,7 @@ public class ReactiveDemo {
         
         // Chain operations
         Mono<String> processedEmployee = employeeMono
-            .map(Employee::getName)
+            .map(ReactiveEmployee::getName)
             .map(String::toUpperCase)
             .map(name -> "Processed: " + name);
         
@@ -90,7 +92,7 @@ public class ReactiveDemo {
         // Creating Fluxes
         Flux<String> departmentFlux = Flux.just("Engineering", "Marketing", "Sales", "HR");
         Flux<Integer> numbersFlux = Flux.range(1, 5);
-        Flux<Employee> employeeFlux = Flux.fromIterable(createSampleEmployees());
+        Flux<ReactiveEmployee> employeeFlux = Flux.fromIterable(createSampleEmployees());
         
         // Subscribe and consume all values
         departmentFlux.subscribe(dept -> System.out.println("✓ Department: " + dept));
@@ -103,7 +105,7 @@ public class ReactiveDemo {
         // Filter elements
         employeeFlux
             .filter(emp -> "Engineering".equals(emp.getDepartment()))
-            .map(Employee::getName)
+            .map(ReactiveEmployee::getName)
             .subscribe(name -> System.out.println("✓ Engineer: " + name));
         
         // Count elements
@@ -118,7 +120,7 @@ public class ReactiveDemo {
     public void demonstrateTransformations() {
         System.out.println("\n--- Transformations and Operations ---");
         
-        Flux<Employee> employees = Flux.fromIterable(createSampleEmployees());
+        Flux<ReactiveEmployee> employees = Flux.fromIterable(createSampleEmployees());
         
         // Map - transform each element
         employees
@@ -132,7 +134,7 @@ public class ReactiveDemo {
         
         // GroupBy - group elements
         employees
-            .groupBy(Employee::getDepartment)
+            .groupBy(ReactiveEmployee::getDepartment)
             .flatMap(group -> 
                 group.collectList()
                     .map(empList -> group.key() + ": " + empList.size() + " employees")
@@ -151,9 +153,9 @@ public class ReactiveDemo {
     public void demonstrateCombiningStreams() {
         System.out.println("\n--- Combining Reactive Streams ---");
         
-        Mono<Employee> employeeMono = Mono.just(new Employee(1L, "Alice Johnson", "Engineering"));
-        Mono<Department> departmentMono = Mono.just(new Department(1L, "Engineering", "Software Development"));
-        Mono<Salary> salaryMono = Mono.just(new Salary(1L, 85000.0, "USD"));
+        Mono<ReactiveEmployee> employeeMono = Mono.just(new ReactiveEmployee(1L, "Alice Johnson", "Engineering"));
+        Mono<ReactiveDepartment> departmentMono = Mono.just(new ReactiveDepartment(1L, "Engineering", "Software Development"));
+        Mono<ReactiveSalary> salaryMono = Mono.just(new ReactiveSalary(1L, 85000.0, "USD"));
         
         // Zip - combine multiple Monos
         Mono<EmployeeProfile> profileMono = Mono.zip(employeeMono, departmentMono, salaryMono)
@@ -186,14 +188,14 @@ public class ReactiveDemo {
         System.out.println("\n--- Error Handling ---");
         
         // Error recovery with onErrorReturn
-        Flux<Employee> employeesWithError = Flux.fromIterable(createSampleEmployees())
+        Flux<ReactiveEmployee> employeesWithError = Flux.fromIterable(createSampleEmployees())
             .map(emp -> {
                 if ("Bob Smith".equals(emp.getName())) {
                     throw new RuntimeException("Database error for employee: " + emp.getName());
                 }
                 return emp;
             })
-            .onErrorReturn(new Employee(-1L, "Unknown Employee", "Unknown"));
+            .onErrorReturn(new ReactiveEmployee(-1L, "Unknown Employee", "Unknown"));
         
         employeesWithError.subscribe(
             emp -> System.out.println("✓ Processed: " + emp.getName()),
@@ -202,7 +204,7 @@ public class ReactiveDemo {
         );
         
         // Error recovery with onErrorResume
-        Mono<Employee> employeeWithFallback = getEmployeeFromDatabase(999L)
+        Mono<ReactiveEmployee> employeeWithFallback = getEmployeeFromDatabase(999L)
             .onErrorResume(error -> {
                 System.out.println("⚠️ Database error, using cache: " + error.getMessage());
                 return getEmployeeFromCache(999L);
@@ -315,9 +317,9 @@ public class ReactiveDemo {
         
         // Simulate WebFlux operations
         System.out.println("WebFlux Controller Methods:");
-        System.out.println("✓ GET /api/employees/{id} -> Mono<Employee>");
-        System.out.println("✓ GET /api/employees -> Flux<Employee>");
-        System.out.println("✓ POST /api/employees -> Mono<Employee>");
+        System.out.println("✓ GET /api/employees/{id} -> Mono<ReactiveEmployee>");
+        System.out.println("✓ GET /api/employees -> Flux<ReactiveEmployee>");
+        System.out.println("✓ POST /api/employees -> Mono<ReactiveEmployee>");
         System.out.println("✓ GET /api/employees/stream -> Server-Sent Events");
         
         // Demonstrate reactive operations
@@ -325,22 +327,22 @@ public class ReactiveDemo {
     }
     
     // Helper methods for demonstration
-    private List<Employee> createSampleEmployees() {
+    private List<ReactiveEmployee> createSampleEmployees() {
         return Arrays.asList(
-            new Employee(1L, "Alice Johnson", "Engineering", 85000.0),
-            new Employee(2L, "Bob Smith", "Marketing", 70000.0),
-            new Employee(3L, "Carol Davis", "Engineering", 90000.0),
-            new Employee(4L, "David Wilson", "Sales", 65000.0),
-            new Employee(5L, "Eve Brown", "HR", 75000.0)
+            new ReactiveEmployee(1L, "Alice Johnson", "Engineering", 85000.0),
+            new ReactiveEmployee(2L, "Bob Smith", "Marketing", 70000.0),
+            new ReactiveEmployee(3L, "Carol Davis", "Engineering", 90000.0),
+            new ReactiveEmployee(4L, "David Wilson", "Sales", 65000.0),
+            new ReactiveEmployee(5L, "Eve Brown", "HR", 75000.0)
         );
     }
     
-    private Mono<Employee> getEmployeeFromDatabase(Long id) {
+    private Mono<ReactiveEmployee> getEmployeeFromDatabase(Long id) {
         return Mono.error(new RuntimeException("Database connection failed"));
     }
     
-    private Mono<Employee> getEmployeeFromCache(Long id) {
-        return Mono.just(new Employee(id, "Cached Employee", "Unknown", 0.0));
+    private Mono<ReactiveEmployee> getEmployeeFromCache(Long id) {
+        return Mono.just(new ReactiveEmployee(id, "Cached Employee", "Unknown", 0.0));
     }
 }
 
@@ -358,7 +360,7 @@ class ReactiveEmployeeController {
      * Get single employee - returns Mono
      */
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Employee>> getEmployee(@PathVariable Long id) {
+    public Mono<ResponseEntity<ReactiveEmployee>> getEmployee(@PathVariable Long id) {
         return employeeService.findById(id)
             .map(ResponseEntity::ok)
             .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -368,7 +370,7 @@ class ReactiveEmployeeController {
      * Get all employees - returns Flux
      */
     @GetMapping
-    public Flux<Employee> getAllEmployees() {
+    public Flux<ReactiveEmployee> getAllEmployees() {
         return employeeService.findAll();
     }
     
@@ -376,7 +378,7 @@ class ReactiveEmployeeController {
      * Create employee - returns Mono
      */
     @PostMapping
-    public Mono<Employee> createEmployee(@RequestBody Employee employee) {
+    public Mono<ReactiveEmployee> createEmployee(@RequestBody ReactiveEmployee employee) {
         return employeeService.save(employee);
     }
     
@@ -384,7 +386,7 @@ class ReactiveEmployeeController {
      * Stream employees - Server-Sent Events
      */
     @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Employee> streamEmployees() {
+    public Flux<ReactiveEmployee> streamEmployees() {
         return employeeService.findAll()
             .delayElements(Duration.ofSeconds(1));
     }
@@ -393,7 +395,7 @@ class ReactiveEmployeeController {
      * Search employees with reactive filtering
      */
     @GetMapping("/search")
-    public Flux<Employee> searchEmployees(@RequestParam String department) {
+    public Flux<ReactiveEmployee> searchEmployees(@RequestParam String department) {
         return employeeService.findAll()
             .filter(emp -> emp.getDepartment().equals(department));
     }
@@ -413,7 +415,7 @@ class ReactiveEmployeeController {
             .subscribe(count -> System.out.println("✓ Total employees: " + count));
         
         // Simulate creating an employee
-        Employee newEmployee = new Employee(null, "John Doe", "IT", 80000.0);
+        ReactiveEmployee newEmployee = new ReactiveEmployee(null, "John Doe", "IT", 80000.0);
         service.save(newEmployee)
             .subscribe(saved -> System.out.println("✓ Saved: " + saved.getName()));
     }
@@ -424,25 +426,25 @@ class ReactiveEmployeeController {
  */
 class ReactiveEmployeeService {
     
-    private final Map<Long, Employee> employees = new HashMap<>();
+    private final Map<Long, ReactiveEmployee> employees = new HashMap<>();
     
     public ReactiveEmployeeService() {
         // Initialize with sample data
-        employees.put(1L, new Employee(1L, "Alice Johnson", "Engineering", 85000.0));
-        employees.put(2L, new Employee(2L, "Bob Smith", "Marketing", 70000.0));
-        employees.put(3L, new Employee(3L, "Carol Davis", "Engineering", 90000.0));
+        employees.put(1L, new ReactiveEmployee(1L, "Alice Johnson", "Engineering", 85000.0));
+        employees.put(2L, new ReactiveEmployee(2L, "Bob Smith", "Marketing", 70000.0));
+        employees.put(3L, new ReactiveEmployee(3L, "Carol Davis", "Engineering", 90000.0));
     }
     
-    public Mono<Employee> findById(Long id) {
+    public Mono<ReactiveEmployee> findById(Long id) {
         return Mono.fromSupplier(() -> employees.get(id))
             .switchIfEmpty(Mono.empty());
     }
     
-    public Flux<Employee> findAll() {
+    public Flux<ReactiveEmployee> findAll() {
         return Flux.fromIterable(employees.values());
     }
     
-    public Mono<Employee> save(Employee employee) {
+    public Mono<ReactiveEmployee> save(ReactiveEmployee employee) {
         return Mono.fromSupplier(() -> {
             if (employee.getId() == null) {
                 employee.setId((long) (employees.size() + 1));
@@ -452,7 +454,7 @@ class ReactiveEmployeeService {
         });
     }
     
-    public Flux<Employee> findByDepartment(String department) {
+    public Flux<ReactiveEmployee> findByDepartment(String department) {
         return findAll()
             .filter(emp -> emp.getDepartment().equals(department));
     }
@@ -460,7 +462,7 @@ class ReactiveEmployeeService {
     /**
      * Simulate async database operations
      */
-    public Mono<Employee> findByIdAsync(Long id) {
+    public Mono<ReactiveEmployee> findByIdAsync(Long id) {
         return Mono.fromSupplier(() -> employees.get(id))
             .delayElement(Duration.ofMillis(100)) // Simulate network delay
             .switchIfEmpty(Mono.error(new RuntimeException("Employee not found")));
@@ -470,39 +472,39 @@ class ReactiveEmployeeService {
      * Combine multiple async operations
      */
     public Mono<EmployeeProfile> getCompleteProfile(Long employeeId) {
-        Mono<Employee> employeeMono = findById(employeeId);
-        Mono<Department> departmentMono = getDepartmentInfo(employeeId);
-        Mono<Salary> salaryMono = getSalaryInfo(employeeId);
+        Mono<ReactiveEmployee> employeeMono = findById(employeeId);
+        Mono<ReactiveDepartment> departmentMono = getDepartmentInfo(employeeId);
+        Mono<ReactiveSalary> salaryMono = getSalaryInfo(employeeId);
         
         return Mono.zip(employeeMono, departmentMono, salaryMono)
             .map(tuple -> new EmployeeProfile(tuple.getT1(), tuple.getT2(), tuple.getT3()));
     }
     
-    private Mono<Department> getDepartmentInfo(Long employeeId) {
-        return Mono.just(new Department(1L, "Engineering", "Software Development"))
+    private Mono<ReactiveDepartment> getDepartmentInfo(Long employeeId) {
+        return Mono.just(new ReactiveDepartment(1L, "Engineering", "Software Development"))
             .delayElement(Duration.ofMillis(50));
     }
     
-    private Mono<Salary> getSalaryInfo(Long employeeId) {
-        return Mono.just(new Salary(employeeId, 85000.0, "USD"))
+    private Mono<ReactiveSalary> getSalaryInfo(Long employeeId) {
+        return Mono.just(new ReactiveSalary(employeeId, 85000.0, "USD"))
             .delayElement(Duration.ofMillis(75));
     }
 }
 
 // Data classes
-class Employee {
+class ReactiveEmployee {
     private Long id;
     private String name;
     private String department;
     private Double salary;
     
-    public Employee() {}
+    public ReactiveEmployee() {}
     
-    public Employee(Long id, String name, String department) {
+    public ReactiveEmployee(Long id, String name, String department) {
         this(id, name, department, 0.0);
     }
     
-    public Employee(Long id, String name, String department, Double salary) {
+    public ReactiveEmployee(Long id, String name, String department, Double salary) {
         this.id = id;
         this.name = name;
         this.department = department;
@@ -539,12 +541,12 @@ class EmployeeDto {
     public Double getSalary() { return salary; }
 }
 
-class Department {
+class ReactiveDepartment {
     private Long id;
     private String name;
     private String description;
     
-    public Department(Long id, String name, String description) {
+    public ReactiveDepartment(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -555,12 +557,12 @@ class Department {
     public String getDescription() { return description; }
 }
 
-class Salary {
+class ReactiveSalary {
     private Long employeeId;
     private Double amount;
     private String currency;
     
-    public Salary(Long employeeId, Double amount, String currency) {
+    public ReactiveSalary(Long employeeId, Double amount, String currency) {
         this.employeeId = employeeId;
         this.amount = amount;
         this.currency = currency;
@@ -572,17 +574,17 @@ class Salary {
 }
 
 class EmployeeProfile {
-    private Employee employee;
-    private Department department;
-    private Salary salary;
+    private ReactiveEmployee employee;
+    private ReactiveDepartment department;
+    private ReactiveSalary salary;
     
-    public EmployeeProfile(Employee employee, Department department, Salary salary) {
+    public EmployeeProfile(ReactiveEmployee employee, ReactiveDepartment department, ReactiveSalary salary) {
         this.employee = employee;
         this.department = department;
         this.salary = salary;
     }
     
-    public Employee getEmployee() { return employee; }
-    public Department getDepartment() { return department; }
-    public Salary getSalary() { return salary; }
+    public ReactiveEmployee getEmployee() { return employee; }
+    public ReactiveDepartment getDepartment() { return department; }
+    public ReactiveSalary getSalary() { return salary; }
 }

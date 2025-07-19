@@ -52,9 +52,9 @@ npm run build       # Build static presentation
 npm run export      # Export to PDF
 ```
 
-## Streamlined Module Structure
+## Module Structure
 
-**Focused on 27 working videos with 100% functional code:**
+**Organized into 5 modules covering 27 video topics with 100% functional code:**
 
 ### 📚 **foundations** - Basic Java Concepts (Videos 1-7 + Bonus 7B)
 **Status: ✅ Complete & Fully Tested (10/10 tests passing)**
@@ -97,6 +97,14 @@ npm run export      # Export to PDF
 
 - **SRPEmployeeService.java** - Single Responsibility Principle with separated concerns
 - **OpenClosedPrinciple.java** - Open/Closed Principle with extensible employee types
+
+### 🌐 **web-services** - Spring Boot REST & Reactive (Videos 20, 25-26)
+**Status: ✅ Complete & Builds Successfully**
+
+- **WebServicesApplication.java** - Spring Boot 3.5.3 main application
+- **EmployeeApiClient.java** - HTTP client for consuming REST APIs (Java 11+ HttpClient)
+- **MicroservicesDemo.java** - Spring Cloud microservices patterns (Eureka, Circuit Breaker, etc.)
+- **ReactiveDemo.java** - Project Reactor examples (Mono, Flux, WebFlux)
 
 ## Technology Stack (2025 Latest)
 

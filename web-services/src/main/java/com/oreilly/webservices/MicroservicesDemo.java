@@ -1,3 +1,5 @@
+package com.oreilly.webservices;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -80,21 +82,21 @@ class EmployeeController {
     
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeWithDepartment> getEmployee(@PathVariable Long id) {
-        Employee employee = employeeService.findById(id);
+        MicroserviceEmployee employee = employeeService.findById(id);
         if (employee == null) {
             return ResponseEntity.notFound().build();
         }
         
         // Call Department Service to get department details
-        Department department = departmentClient.getDepartment(employee.getDepartmentId());
+        MicroserviceDepartment department = departmentClient.getDepartment(employee.getDepartmentId());
         
         EmployeeWithDepartment result = new EmployeeWithDepartment(employee, department);
         return ResponseEntity.ok(result);
     }
     
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        Employee saved = employeeService.save(employee);
+    public ResponseEntity<MicroserviceEmployee> createEmployee(@RequestBody MicroserviceEmployee employee) {
+        MicroserviceEmployee saved = employeeService.save(employee);
         
         // Publish event for other services
         employeeService.publishEmployeeCreatedEvent(saved);
@@ -115,13 +117,13 @@ class DepartmentController {
     private DepartmentService departmentService;
     
     @GetMapping("/{id}")
-    public ResponseEntity<Department> getDepartment(@PathVariable Long id) {
-        Department department = departmentService.findById(id);
+    public ResponseEntity<MicroserviceDepartment> getDepartment(@PathVariable Long id) {
+        MicroserviceDepartment department = departmentService.findById(id);
         return department != null ? ResponseEntity.ok(department) : ResponseEntity.notFound().build();
     }
     
     @GetMapping
-    public List<Department> getAllDepartments() {
+    public List<MicroserviceDepartment> getAllDepartments() {
         return departmentService.findAll();
     }
 }
@@ -178,19 +180,19 @@ class PayrollServiceDemo {
  */
 class EmployeeService {
     
-    private Map<Long, Employee> employees = new HashMap<>();
+    private Map<Long, MicroserviceEmployee> employees = new HashMap<>();
     
     public EmployeeService() {
         // Initialize with sample data
-        employees.put(1L, new Employee(1L, "Alice Johnson", "alice@company.com", 1L, 85000.0));
-        employees.put(2L, new Employee(2L, "Bob Smith", "bob@company.com", 2L, 75000.0));
+        employees.put(1L, new MicroserviceEmployee(1L, "Alice Johnson", "alice@company.com", 1L, 85000.0));
+        employees.put(2L, new MicroserviceEmployee(2L, "Bob Smith", "bob@company.com", 2L, 75000.0));
     }
     
-    public Employee findById(Long id) {
+    public MicroserviceEmployee findById(Long id) {
         return employees.get(id);
     }
     
-    public Employee save(Employee employee) {
+    public MicroserviceEmployee save(MicroserviceEmployee employee) {
         if (employee.getId() == null) {
             employee.setId((long) (employees.size() + 1));
         }
@@ -198,7 +200,7 @@ class EmployeeService {
         return employee;
     }
     
-    public void publishEmployeeCreatedEvent(Employee employee) {
+    public void publishEmployeeCreatedEvent(MicroserviceEmployee employee) {
         System.out.println("📢 Publishing EmployeeCreatedEvent: " + employee.getName());
         // In real implementation, this would use message queue or event bus
     }
@@ -206,18 +208,18 @@ class EmployeeService {
 
 class DepartmentService {
     
-    private Map<Long, Department> departments = new HashMap<>();
+    private Map<Long, MicroserviceDepartment> departments = new HashMap<>();
     
     public DepartmentService() {
-        departments.put(1L, new Department(1L, "Engineering", "Software Development"));
-        departments.put(2L, new Department(2L, "Marketing", "Product Marketing"));
+        departments.put(1L, new MicroserviceDepartment(1L, "Engineering", "Software Development"));
+        departments.put(2L, new MicroserviceDepartment(2L, "Marketing", "Product Marketing"));
     }
     
-    public Department findById(Long id) {
+    public MicroserviceDepartment findById(Long id) {
         return departments.get(id);
     }
     
-    public List<Department> findAll() {
+    public List<MicroserviceDepartment> findAll() {
         return new ArrayList<>(departments.values());
     }
 }
@@ -232,14 +234,14 @@ class DepartmentServiceClient {
     
     @CircuitBreaker(name = "department-service", fallbackMethod = "getDepartmentFallback")
     @Retry(name = "department-service")
-    public Department getDepartment(Long id) {
+    public MicroserviceDepartment getDepartment(Long id) {
         String url = "http://department-service/api/departments/" + id;
-        return restTemplate.getForObject(url, Department.class);
+        return restTemplate.getForObject(url, MicroserviceDepartment.class);
     }
     
-    public Department getDepartmentFallback(Long id, Exception ex) {
+    public MicroserviceDepartment getDepartmentFallback(Long id, Exception ex) {
         System.out.println("🔴 Circuit breaker activated for department " + id);
-        return new Department(id, "Unknown Department", "Service Unavailable");
+        return new MicroserviceDepartment(id, "Unknown Department", "Service Unavailable");
     }
 }
 
@@ -315,7 +317,7 @@ class ConfigurableService {
  */
 class EmployeeEventPublisher {
     
-    public void publishEmployeeCreated(Employee employee) {
+    public void publishEmployeeCreated(MicroserviceEmployee employee) {
         EmployeeCreatedEvent event = new EmployeeCreatedEvent(
             employee.getId(),
             employee.getName(),
@@ -368,16 +370,16 @@ class ServiceHealthIndicator {
 }
 
 // Data Transfer Objects and Entities
-class Employee {
+class MicroserviceEmployee {
     private Long id;
     private String name;
     private String email;
     private Long departmentId;
     private Double salary;
     
-    public Employee() {}
+    public MicroserviceEmployee() {}
     
-    public Employee(Long id, String name, String email, Long departmentId, Double salary) {
+    public MicroserviceEmployee(Long id, String name, String email, Long departmentId, Double salary) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -398,14 +400,14 @@ class Employee {
     public void setSalary(Double salary) { this.salary = salary; }
 }
 
-class Department {
+class MicroserviceDepartment {
     private Long id;
     private String name;
     private String description;
     
-    public Department() {}
+    public MicroserviceDepartment() {}
     
-    public Department(Long id, String name, String description) {
+    public MicroserviceDepartment(Long id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -421,18 +423,18 @@ class Department {
 }
 
 class EmployeeWithDepartment {
-    private Employee employee;
-    private Department department;
+    private MicroserviceEmployee employee;
+    private MicroserviceDepartment department;
     
-    public EmployeeWithDepartment(Employee employee, Department department) {
+    public EmployeeWithDepartment(MicroserviceEmployee employee, MicroserviceDepartment department) {
         this.employee = employee;
         this.department = department;
     }
     
-    public Employee getEmployee() { return employee; }
-    public void setEmployee(Employee employee) { this.employee = employee; }
-    public Department getDepartment() { return department; }
-    public void setDepartment(Department department) { this.department = department; }
+    public MicroserviceEmployee getEmployee() { return employee; }
+    public void setEmployee(MicroserviceEmployee employee) { this.employee = employee; }
+    public MicroserviceDepartment getDepartment() { return department; }
+    public void setDepartment(MicroserviceDepartment department) { this.department = department; }
 }
 
 class EmployeeCreatedEvent {

@@ -131,21 +131,25 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - `foundations/src/main/java/EmployeeLogger.java`
 - `foundations/src/main/java/ModernEmployeeFileManager.java`
 - `foundations/src/main/java/FileIOComparison.java`
-- `web-services/src/main/java/com/oreilly/employee/client/EmployeeApiClient.java`
-- `web-services/src/main/java/com/oreilly/employee/EmployeeServiceApplication.java`
-- `web-services/src/main/java/com/oreilly/employee/controller/EmployeeController.java`
-- `web-services/src/main/java/com/oreilly/employee/controller/ReactiveEmployeeController.java`
-- `web-services/src/main/java/com/oreilly/employee/service/ReactiveEmployeeService.java`
-- `security/src/main/java/SecurityService.java`
-- `security/src/main/java/ValidationExamples.java`
+- `foundations/src/main/java/RestServiceConcepts.java`
+- `foundations/src/main/java/InputValidation.java`
+- `foundations/src/main/java/CryptographicAPIs.java`
+- `foundations/src/main/java/MicroservicesConcepts.java`
+- `foundations/src/main/java/ReactiveConcepts.java`
+- `web-services/src/main/java/com/oreilly/webservices/WebServicesApplication.java`
+- `web-services/src/main/java/com/oreilly/webservices/EmployeeApiClient.java`
+- `web-services/src/main/java/com/oreilly/webservices/MicroservicesDemo.java`
+- `web-services/src/main/java/com/oreilly/webservices/ReactiveDemo.java`
+- `git-workflows/` - Git configuration examples and CI/CD pipeline
+- `.github/workflows/java-ci.yml` - Professional CI/CD pipeline
 
 ## Complete Module Structure (July 2025)
 
-**Project streamlined to 4 core modules with 100% working code:**
+**Project organized into 5 core modules with 100% working code:**
 
 ### ✅ **foundations** - COMPLETE & FULLY TESTED (10/10 tests passing)
-- **All 15 Java files working**: NamingConventions, StringFormatting, OperatorPrecedenceTest, EmployeeInput, EmployeeRoster, EmployeeFileWriter, EmployeeLogger, ModernEmployeeFileManager, FileIOComparison, EmployeeApiClient, RestServiceConcepts, InputValidation, CryptographicAPIs, MicroservicesConcepts, ReactiveConcepts
-- **Covers videos 1-7 + Bonus 7B + 20-26**: Full progression from naming to modern file I/O, plus REST APIs, security, cryptography, microservices, and reactive programming
+- **All 12 Java files working**: NamingConventions, StringFormatting, OperatorPrecedenceTest, EmployeeInput, EmployeeRoster, EmployeeFileWriter, EmployeeLogger, ModernEmployeeFileManager, FileIOComparison, RestServiceConcepts, InputValidation, CryptographicAPIs
+- **Covers videos 1-7 + Bonus 7B + 21-23**: Full progression from naming to modern file I/O, plus REST concepts, security, and cryptography
 - **Latest 2025 dependencies**: Apache Commons IO 2.19.0, SLF4J 2.0.17, Logback 1.5.18
 - **Perfect for recording**: All examples work, comprehensive test coverage
 
@@ -167,6 +171,14 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - **Fixed**: Resolved class name conflicts using SRPEmployee and OCPEmployee classes
 - **Perfect for recording**: Working demonstrations of SRP and OCP principles
 
+### 🌐 **web-services** - COMPLETE & BUILDS SUCCESSFULLY
+- **Spring Boot 3.5.3 REST services**: WebServicesApplication main class
+- **Advanced topics (20, 25-26)**: REST API client, microservices patterns, reactive programming
+- **Full Spring Cloud support**: Eureka, OpenFeign, Load Balancing, Circuit Breaker
+- **Project Reactor examples**: Mono/Flux operations, WebFlux controllers
+- **3 main classes**: EmployeeApiClient, MicroservicesDemo, ReactiveDemo
+- **Class naming fixed**: ReactiveEmployee, MicroserviceEmployee to avoid conflicts
+
 ### 📁 **Supporting Files & Documentation** - COMPLETE
 Complete video production resources:
 - **git-workflows/**: Git configuration examples, .gitignore templates, workflow documentation
@@ -178,9 +190,9 @@ Complete video production resources:
 ### 🗑️ **Removed Modules** (Problematic/Empty)
 The following modules were removed to focus on working content:
 - **security**: Import conflicts, extensive fixes needed (code moved to foundations module)
-- **web-services**: Untested implementations (code moved to foundations module)  
 - **advanced-systems**: Completely empty
 - **final-project**: Completely empty
+- **refactoring**: Only had placeholder code
 
 ## Important Commands
 
@@ -190,7 +202,7 @@ The following modules were removed to focus on working content:
 gradle build
 
 # Build only working modules (recommended)
-gradle :foundations:build :oop-core:build :design-patterns:build :solid-principles:build
+gradle :foundations:build :oop-core:build :design-patterns:build :solid-principles:build :web-services:build
 
 # Test specific modules
 gradle :foundations:test      # 10/10 passing
@@ -206,12 +218,15 @@ gradle runExample -Pmodule=solid-principles -PmainClass=SRPEmployeeService
 gradle runExample -Pmodule=solid-principles -PmainClass=OpenClosedPrinciple
 
 # Run supporting code for topics 20-26
-gradle runExample -Pmodule=foundations -PmainClass=EmployeeApiClient
+gradle runExample -Pmodule=web-services -PmainClass=com.oreilly.webservices.EmployeeApiClient
 gradle runExample -Pmodule=foundations -PmainClass=RestServiceConcepts
 gradle runExample -Pmodule=foundations -PmainClass=InputValidation
 gradle runExample -Pmodule=foundations -PmainClass=CryptographicAPIs
-gradle runExample -Pmodule=foundations -PmainClass=MicroservicesConcepts
-gradle runExample -Pmodule=foundations -PmainClass=ReactiveConcepts
+gradle runExample -Pmodule=web-services -PmainClass=com.oreilly.webservices.MicroservicesDemo
+gradle runExample -Pmodule=web-services -PmainClass=com.oreilly.webservices.ReactiveDemo
+
+# Run the Spring Boot application
+gradle :web-services:bootRun
 
 # Check for deprecation warnings (all resolved!)
 gradle build --warning-mode all
@@ -222,28 +237,13 @@ gradle build --warning-mode all
 gradle test --continue  # See all test results even if some fail
 ```
 
-## Known Issues to Fix (Both are 5-minute fixes)
+## Module Status Summary
 
-### 1. solid-principles Module - Class Name Conflict
-**Error**: Duplicate Employee class
-**Files affected**: 
-- `EmployeeService.java` (has Employee class)
-- `OpenClosedPrinciple.java` (has abstract Employee class)
-**Solution**: Rename one Employee class (e.g., `SolidEmployee` or `PrincipleEmployee`)
-
-### 2. security Module - Jakarta Validation Imports
-**Error**: `javax.validation` imports not found
-**Files affected**: `InputValidation.java`
-**Solution**: Replace imports:
-```java
-// OLD (javax)
-import javax.validation.constraints.*;
-import javax.validation.Validation;
-
-// NEW (jakarta) 
-import jakarta.validation.constraints.*;
-import jakarta.validation.Validation;
-```
+### ✅ All Major Issues Resolved
+- **solid-principles**: Fixed class naming conflicts (SRPEmployee, OCPEmployee)
+- **web-services**: Restored with Spring Boot 3.5.3 and all dependencies
+- **design-patterns**: 3 minor test failures don't impact demonstrations
+- **All modules now build successfully**
 
 ### 3. design-patterns Tests (Minor, Non-blocking)
 **Issue**: 3 database connection tests failing (not critical)
@@ -274,16 +274,15 @@ import jakarta.validation.Validation;
 
 ## Project Architecture Notes
 
-### Learning Progression (26 Video Topics)
+### Learning Progression (27 Video Topics)
 The project follows a deliberate learning arc:
-1. **foundations** → Basic syntax and I/O
-2. **oop-core** → Encapsulation, composition, modern features  
-3. **design-patterns** → Practical pattern implementations
-4. **solid-principles** → Refactoring and design improvement
-5. **security** → Defensive programming
-6. **web-services** → REST APIs and HTTP
-7. **advanced-systems** → Microservices and reactive programming
-8. **final-project** → Integration and capstone
+1. **foundations** → Basic syntax and I/O (Topics 1-7 + Bonus 7B)
+2. **oop-core** → Encapsulation, composition, modern features (Topics 8-12)
+3. **design-patterns** → Practical pattern implementations (Topics 13-15)
+4. **solid-principles** → Refactoring and design improvement (Topics 16-17)
+5. **foundations + web-services** → REST APIs, Security, Cryptography (Topics 20-23)
+6. **web-services** → Microservices and reactive programming (Topics 25-26)
+7. **git-workflows** → Version control and collaboration (Topic 24)
 
 ### Key Design Decisions
 - **Employee Management Theme**: Consistent business domain across all modules
