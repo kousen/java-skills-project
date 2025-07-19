@@ -132,24 +132,26 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - `foundations/src/main/java/ModernEmployeeFileManager.java`
 - `foundations/src/main/java/FileIOComparison.java`
 - `foundations/src/main/java/RestServiceConcepts.java`
-- `foundations/src/main/java/InputValidation.java`
-- `foundations/src/main/java/CryptographicAPIs.java`
 - `foundations/src/main/java/MicroservicesConcepts.java`
 - `foundations/src/main/java/ReactiveConcepts.java`
 - `web-services/src/main/java/com/oreilly/webservices/WebServicesApplication.java`
 - `web-services/src/main/java/com/oreilly/webservices/EmployeeApiClient.java`
 - `web-services/src/main/java/com/oreilly/webservices/MicroservicesDemo.java`
 - `web-services/src/main/java/com/oreilly/webservices/ReactiveDemo.java`
+- `security/src/main/java/com/oreilly/security/SecurityApplication.java`
+- `security/src/main/java/com/oreilly/security/InputValidation.java`
+- `security/src/main/java/com/oreilly/security/CryptographicAPIs.java`
+- `security/src/main/java/com/oreilly/security/SecurityController.java`
 - `git-workflows/` - Git configuration examples and CI/CD pipeline
 - `.github/workflows/java-ci.yml` - Professional CI/CD pipeline
 
 ## Complete Module Structure (July 2025)
 
-**Project organized into 5 core modules with 100% working code:**
+**Project organized into 6 core modules with 100% working code:**
 
 ### ✅ **foundations** - COMPLETE & FULLY TESTED (10/10 tests passing)
-- **All 12 Java files working**: NamingConventions, StringFormatting, OperatorPrecedenceTest, EmployeeInput, EmployeeRoster, EmployeeFileWriter, EmployeeLogger, ModernEmployeeFileManager, FileIOComparison, RestServiceConcepts, InputValidation, CryptographicAPIs
-- **Covers videos 1-7 + Bonus 7B + 21-23**: Full progression from naming to modern file I/O, plus REST concepts, security, and cryptography
+- **All 10 Java files working**: NamingConventions, StringFormatting, OperatorPrecedenceTest, EmployeeInput, EmployeeRoster, EmployeeFileWriter, EmployeeLogger, ModernEmployeeFileManager, FileIOComparison, RestServiceConcepts
+- **Covers videos 1-7 + Bonus 7B + 21**: Full progression from naming to modern file I/O, plus REST concepts
 - **Latest 2025 dependencies**: Apache Commons IO 2.19.0, SLF4J 2.0.17, Logback 1.5.18
 - **Perfect for recording**: All examples work, comprehensive test coverage
 
@@ -179,6 +181,14 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - **3 main classes**: EmployeeApiClient, MicroservicesDemo, ReactiveDemo
 - **Class naming fixed**: ReactiveEmployee, MicroserviceEmployee to avoid conflicts
 
+### 🔒 **security** - COMPLETE & BUILDS SUCCESSFULLY
+- **Spring Boot Security application**: SecurityApplication with proper security config
+- **Security topics (22-23)**: Input validation, cryptographic APIs
+- **Security-as-a-layer demonstration**: Shows how security layers onto existing web services
+- **4 main classes**: SecurityApplication, InputValidation, CryptographicAPIs, SecurityController
+- **Professional security stack**: Spring Security 6.4, Jakarta Validation, Bouncy Castle
+- **REST endpoints**: /api/security/* for demonstrating security integration
+
 ### 📁 **Supporting Files & Documentation** - COMPLETE
 Complete video production resources:
 - **git-workflows/**: Git configuration examples, .gitignore templates, workflow documentation
@@ -202,7 +212,7 @@ The following modules were removed to focus on working content:
 gradle build
 
 # Build only working modules (recommended)
-gradle :foundations:build :oop-core:build :design-patterns:build :solid-principles:build :web-services:build
+gradle :foundations:build :oop-core:build :design-patterns:build :solid-principles:build :web-services:build :security:build
 
 # Test specific modules
 gradle :foundations:test      # 10/10 passing
@@ -220,13 +230,14 @@ gradle runExample -Pmodule=solid-principles -PmainClass=OpenClosedPrinciple
 # Run supporting code for topics 20-26
 gradle runExample -Pmodule=web-services -PmainClass=com.oreilly.webservices.EmployeeApiClient
 gradle runExample -Pmodule=foundations -PmainClass=RestServiceConcepts
-gradle runExample -Pmodule=foundations -PmainClass=InputValidation
-gradle runExample -Pmodule=foundations -PmainClass=CryptographicAPIs
+gradle runExample -Pmodule=security -PmainClass=com.oreilly.security.InputValidation
+gradle runExample -Pmodule=security -PmainClass=com.oreilly.security.CryptographicAPIs
 gradle runExample -Pmodule=web-services -PmainClass=com.oreilly.webservices.MicroservicesDemo
 gradle runExample -Pmodule=web-services -PmainClass=com.oreilly.webservices.ReactiveDemo
 
-# Run the Spring Boot application
-gradle :web-services:bootRun
+# Run the Spring Boot applications
+gradle :web-services:bootRun   # REST/Microservices/Reactive demos
+gradle :security:bootRun       # Security layered onto web services
 
 # Check for deprecation warnings (all resolved!)
 gradle build --warning-mode all
@@ -280,9 +291,10 @@ The project follows a deliberate learning arc:
 2. **oop-core** → Encapsulation, composition, modern features (Topics 8-12)
 3. **design-patterns** → Practical pattern implementations (Topics 13-15)
 4. **solid-principles** → Refactoring and design improvement (Topics 16-17)
-5. **foundations + web-services** → REST APIs, Security, Cryptography (Topics 20-23)
-6. **web-services** → Microservices and reactive programming (Topics 25-26)
-7. **git-workflows** → Version control and collaboration (Topic 24)
+5. **foundations** → REST service concepts (Topic 21)
+6. **web-services** → REST APIs, microservices, reactive programming (Topics 20, 25-26)
+7. **security** → Security layered onto web services (Topics 22-23)
+8. **git-workflows** → Version control and collaboration (Topic 24)
 
 ### Key Design Decisions
 - **Employee Management Theme**: Consistent business domain across all modules

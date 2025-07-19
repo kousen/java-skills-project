@@ -54,7 +54,7 @@ npm run export      # Export to PDF
 
 ## Module Structure
 
-**Organized into 5 modules covering 27 video topics with 100% functional code:**
+**Organized into 6 modules covering 27 video topics with 100% functional code:**
 
 ### 📚 **foundations** - Basic Java Concepts (Videos 1-7 + Bonus 7B)
 **Status: ✅ Complete & Fully Tested (10/10 tests passing)**
@@ -105,6 +105,14 @@ npm run export      # Export to PDF
 - **EmployeeApiClient.java** - HTTP client for consuming REST APIs (Java 11+ HttpClient)
 - **MicroservicesDemo.java** - Spring Cloud microservices patterns (Eureka, Circuit Breaker, etc.)
 - **ReactiveDemo.java** - Project Reactor examples (Mono, Flux, WebFlux)
+
+### 🔒 **security** - Security Layered onto Web Services (Videos 22-23)
+**Status: ✅ Complete & Builds Successfully**
+
+- **SecurityApplication.java** - Spring Boot Security main application
+- **InputValidation.java** - XSS/SQL injection prevention techniques
+- **CryptographicAPIs.java** - PBKDF2, AES, RSA encryption and digital signatures
+- **SecurityController.java** - REST endpoints demonstrating security integration
 
 ## Technology Stack (2025 Latest)
 

@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.3'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.oreilly'
+version = '1.0-SNAPSHOT'
+
+// Spring Boot executable jar is enabled for this module
+bootJar {
+    enabled = true
+    mainClass = 'com.oreilly.security.SecurityApplication'
+}
+
+dependencies {
+    // Spring Boot starters
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    
+    // Jakarta validation (for modern Java security)
+    implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
+    implementation 'org.hibernate.validator:hibernate-validator:9.0.1.Final'
+    
+    // Cryptography libraries
+    implementation 'org.springframework.security:spring-security-crypto:6.4.2'
+    implementation 'org.bouncycastle:bcprov-jdk18on:1.78.1'
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.78.1'
+    
+    // Jackson for JSON
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.19.1')
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    
+    // SLF4J and Logback
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'ch.qos.logback:logback-classic:1.5.18'
+    
+    // Development tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test {
+    useJUnitPlatform()
+}
