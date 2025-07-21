@@ -1,4 +1,3 @@
-
 ---
 layout: cover
 --- 
@@ -11,8 +10,6 @@ layout: cover
   </span>
 </div>
 
----
-layout: section
 ---
 
 # Why Naming Matters
@@ -77,8 +74,6 @@ public static void printEmployeeDetails(...) {
 }
 ```
 
----
-layout: section
 ---
 
 # Common Mistakes to Avoid
