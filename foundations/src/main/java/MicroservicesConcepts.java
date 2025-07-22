@@ -18,7 +18,7 @@ public class MicroservicesConcepts {
         
         // Register services
         registry.registerService("employee-service", Arrays.asList("localhost:8081", "localhost:8082"));
-        registry.registerService("department-service", Arrays.asList("localhost:8083"));
+        registry.registerService("department-service", List.of("localhost:8083"));
         registry.registerService("payroll-service", Arrays.asList("localhost:8084", "localhost:8085"));
         
         // Demonstrate microservice patterns
@@ -40,7 +40,7 @@ public class MicroservicesConcepts {
         System.out.println("Services register themselves with a service registry (like Eureka)");
         
         // Services register on startup
-        registry.registerService("employee-service", Arrays.asList("192.168.1.10:8081"));
+        registry.registerService("employee-service", List.of("192.168.1.10:8081"));
         System.out.println("✓ employee-service registered at 192.168.1.10:8081");
         
         // Other services discover by name
@@ -181,8 +181,8 @@ public class MicroservicesConcepts {
  * Service Registry - Keeps track of service instances
  */
 class MicroserviceRegistry {
-    private Map<String, List<String>> services = new HashMap<>();
-    private Map<String, Boolean> healthStatus = new HashMap<>();
+    private final Map<String, List<String>> services = new HashMap<>();
+    private final Map<String, Boolean> healthStatus = new HashMap<>();
     
     public void registerService(String serviceName, List<String> instances) {
         services.put(serviceName, new ArrayList<>(instances));
@@ -253,13 +253,11 @@ class CircuitBreakerDemo {
     private int failureCount = 0;
     private int successCount = 0;
     private long lastFailureTime = 0;
-    
-    private final int failureThreshold = 3;
-    private final int successThreshold = 2;
-    private final long timeout = 5000; // 5 seconds
-    
+
     public boolean callExternalService(String serviceName) {
         if (state == State.OPEN) {
+            // 5 seconds
+            long timeout = 5000;
             if (System.currentTimeMillis() - lastFailureTime > timeout) {
                 state = State.HALF_OPEN;
                 System.out.println("🔄 Circuit breaker moving to HALF_OPEN state");
@@ -283,7 +281,8 @@ class CircuitBreakerDemo {
     
     private void onSuccess() {
         successCount++;
-        
+
+        int successThreshold = 2;
         if (state == State.HALF_OPEN && successCount >= successThreshold) {
             state = State.CLOSED;
             failureCount = 0;
@@ -296,7 +295,8 @@ class CircuitBreakerDemo {
         failureCount++;
         successCount = 0;
         lastFailureTime = System.currentTimeMillis();
-        
+
+        int failureThreshold = 3;
         if (failureCount >= failureThreshold) {
             state = State.OPEN;
             System.out.println("🔴 Circuit breaker OPEN - too many failures");
@@ -308,8 +308,8 @@ class CircuitBreakerDemo {
  * API Gateway - Single entry point for all requests
  */
 class APIGateway {
-    private MicroserviceRegistry registry = new MicroserviceRegistry();
-    private LoadBalancer loadBalancer = new LoadBalancer();
+    private final MicroserviceRegistry registry = new MicroserviceRegistry();
+    private final LoadBalancer loadBalancer = new LoadBalancer();
     
     public void routeRequest(String method, String path) {
         // Route based on path
@@ -358,7 +358,7 @@ class APIGateway {
  * Event Bus - Enables event-driven communication
  */
 class EventBus {
-    private Map<String, List<String>> subscriptions = new HashMap<>();
+    private final Map<String, List<String>> subscriptions = new HashMap<>();
     
     public void subscribe(String eventType, String serviceName) {
         subscriptions.computeIfAbsent(eventType, k -> new ArrayList<>()).add(serviceName);
@@ -389,7 +389,7 @@ class EventBus {
  * Configuration Server - Centralized configuration management
  */
 class ConfigurationServer {
-    private Map<String, Map<String, Object>> configurations = new HashMap<>();
+    private final Map<String, Map<String, Object>> configurations = new HashMap<>();
     
     public ConfigurationServer() {
         // Initialize with sample configurations

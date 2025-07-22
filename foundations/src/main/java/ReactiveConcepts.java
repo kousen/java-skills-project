@@ -1,8 +1,6 @@
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.*;
-import java.util.stream.Collectors;
-import java.time.Duration;
 
 /**
  * Reactive Programming Concepts Demonstration
@@ -37,13 +35,13 @@ public class ReactiveConcepts {
         
         // Subscribe different observers
         publisher.subscribe(event -> 
-            System.out.println("✓ PayrollService: Processing salary for " + event.getEmployeeName()));
+            System.out.println("✓ PayrollService: Processing salary for " + event.employeeName()));
         
         publisher.subscribe(event -> 
-            System.out.println("✓ NotificationService: Sending welcome email to " + event.getEmployeeName()));
+            System.out.println("✓ NotificationService: Sending welcome email to " + event.employeeName()));
         
         publisher.subscribe(event -> 
-            System.out.println("✓ AuditService: Logging employee creation: " + event.getEmployeeName()));
+            System.out.println("✓ AuditService: Logging employee creation: " + event.employeeName()));
         
         // Publish events
         publisher.publishEmployeeCreated(new EmployeeEvent("Alice Johnson", "Engineering"));
@@ -81,9 +79,9 @@ public class ReactiveConcepts {
         
         // Combine all async results
         CompletableFuture<CompleteProfile> combinedFuture = employeeFuture
-            .thenCombine(departmentFuture, (emp, dept) -> new Pair<>(emp, dept))
+            .thenCombine(departmentFuture, Pair::new)
             .thenCombine(salaryFuture, (empDept, salary) -> 
-                new CompleteProfile(empDept.first, empDept.second, salary));
+                new CompleteProfile(empDept.first(), empDept.second(), salary));
         
         // Non-blocking - continue with other work
         System.out.println("✓ Started async operations, continuing with other work...");
@@ -91,8 +89,8 @@ public class ReactiveConcepts {
         // Get result when ready
         combinedFuture.thenAccept(profile -> {
             System.out.println("✓ Combined result ready:");
-            System.out.println("  " + profile.employee.name + " in " + profile.department.name + 
-                             " earns $" + profile.salary.amount);
+            System.out.println("  " + profile.employee().name() + " in " + profile.department().name() +
+                               " earns $" + profile.salary().amount());
         });
         
         // Wait for completion (only for demo)
@@ -115,8 +113,8 @@ public class ReactiveConcepts {
         
         // Subscribe to filtered stream
         employeeStream
-            .filter(emp -> "Engineering".equals(emp.department))
-            .forEach(emp -> System.out.println("✓ Engineer: " + emp.name.toUpperCase()));
+            .filter(emp -> "Engineering".equals(emp.department()))
+            .forEach(emp -> System.out.println("✓ Engineer: " + emp.name().toUpperCase()));
         
         // Emit data to stream
         employeeStream.emit(new EmployeeInfo(1L, "Alice Johnson", "Engineering"));
@@ -129,9 +127,9 @@ public class ReactiveConcepts {
         ReactiveStream<EmployeeInfo> groupingStream = new ReactiveStream<>();
         Map<String, List<EmployeeInfo>> groups = new HashMap<>();
         
-        groupingStream.forEach(emp -> {
-            groups.computeIfAbsent(emp.department, k -> new ArrayList<>()).add(emp);
-        });
+        groupingStream.forEach(emp ->
+                groups.computeIfAbsent(emp.department(),
+                        k -> new ArrayList<>()).add(emp));
         
         groupingStream.onComplete(() -> {
             System.out.println("✓ Employees by department:");
@@ -164,24 +162,25 @@ public class ReactiveConcepts {
         });
         
         // Fast producer
-        ExecutorService producer = Executors.newSingleThreadExecutor();
-        producer.submit(() -> {
-            for (int i = 1; i <= 10; i++) {
-                try {
-                    stream.emit(i);
-                    System.out.println("📤 Produced: " + i);
-                    Thread.sleep(10); // Fast production
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
+        try (ExecutorService producer = Executors.newSingleThreadExecutor()) {
+            producer.submit(() -> {
+                for (int i = 1; i <= 10; i++) {
+                    try {
+                        stream.emit(i);
+                        System.out.println("📤 Produced: " + i);
+                        Thread.sleep(10); // Fast production
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
-            }
-            stream.complete();
-        });
-        
-        Thread.sleep(1000); // Wait for processing
-        producer.shutdown();
-        
+                stream.complete();
+            });
+
+            Thread.sleep(1000); // Wait for processing
+            producer.shutdown();
+        }
+
         System.out.println("\nBackpressure Strategies:");
         System.out.println("- Buffer: Store excess items temporarily");
         System.out.println("- Drop: Discard excess items");
@@ -249,8 +248,8 @@ public class ReactiveConcepts {
         StreamCombiner<EmployeeInfo, SalaryInfo, String> combiner = 
             new StreamCombiner<>(employeeStream, salaryStream);
         
-        combiner.combine((emp, salary) -> 
-            emp.name + " earns $" + salary.amount
+        combiner.combine((emp, salary) ->
+                emp.name() + " earns $" + salary.amount()
         ).forEach(result -> System.out.println("✓ Combined: " + result));
         
         // Emit data to both streams
@@ -446,8 +445,8 @@ class StreamCombiner<T, U, R> {
     
     private void tryEmitCombined(ReactiveStream<R> resultStream, BiFunction<T, U, R> combiner) {
         if (!buffer1.isEmpty() && !buffer2.isEmpty()) {
-            T value1 = buffer1.remove(0);
-            U value2 = buffer2.remove(0);
+            T value1 = buffer1.removeFirst();
+            U value2 = buffer2.removeFirst();
             R result = combiner.apply(value1, value2);
             resultStream.emit(result);
         }
@@ -455,12 +454,10 @@ class StreamCombiner<T, U, R> {
 }
 
 class StreamMerger<T> {
-    private final List<ReactiveStream<T>> streams;
     private final ReactiveStream<T> mergedStream = new ReactiveStream<>();
     
     public StreamMerger(List<ReactiveStream<T>> streams) {
-        this.streams = streams;
-        
+
         for (ReactiveStream<T> stream : streams) {
             stream.subscribe(mergedStream::emit);
         }
@@ -487,7 +484,7 @@ class RetryableOperation {
                 
                 if (attempts < maxRetries) {
                     try {
-                        Thread.sleep(100 * attempts); // Exponential backoff
+                        Thread.sleep(100L * attempts); // Exponential backoff
                     } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
                         break;
@@ -513,7 +510,7 @@ class EmployeeEventPublisher {
     }
     
     public void publishEmployeeCreated(EmployeeEvent event) {
-        System.out.println("📤 Publishing EmployeeCreated event: " + event.getEmployeeName());
+        System.out.println("📤 Publishing EmployeeCreated event: " + event.employeeName());
         
         for (Consumer<EmployeeEvent> observer : observers) {
             try {
@@ -526,73 +523,19 @@ class EmployeeEventPublisher {
 }
 
 // Data classes
-class EmployeeEvent {
-    private final String employeeName;
-    private final String department;
-    
-    public EmployeeEvent(String employeeName, String department) {
-        this.employeeName = employeeName;
-        this.department = department;
-    }
-    
-    public String getEmployeeName() { return employeeName; }
-    public String getDepartment() { return department; }
+record EmployeeEvent(String employeeName, String department) { }
+
+record EmployeeInfo(Long id, String name, String department) {
 }
 
-class EmployeeInfo {
-    final Long id;
-    final String name;
-    final String department;
-    
-    public EmployeeInfo(Long id, String name, String department) {
-        this.id = id;
-        this.name = name;
-        this.department = department;
-    }
+record DepartmentInfo(Long id, String name, String description) {
 }
 
-class DepartmentInfo {
-    final Long id;
-    final String name;
-    final String description;
-    
-    public DepartmentInfo(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
+record SalaryInfo(Long employeeId, Double amount, String currency) {
 }
 
-class SalaryInfo {
-    final Long employeeId;
-    final Double amount;
-    final String currency;
-    
-    public SalaryInfo(Long employeeId, Double amount, String currency) {
-        this.employeeId = employeeId;
-        this.amount = amount;
-        this.currency = currency;
-    }
+record CompleteProfile(EmployeeInfo employee, DepartmentInfo department, SalaryInfo salary) {
 }
 
-class CompleteProfile {
-    final EmployeeInfo employee;
-    final DepartmentInfo department;
-    final SalaryInfo salary;
-    
-    public CompleteProfile(EmployeeInfo employee, DepartmentInfo department, SalaryInfo salary) {
-        this.employee = employee;
-        this.department = department;
-        this.salary = salary;
-    }
-}
-
-class Pair<T, U> {
-    final T first;
-    final U second;
-    
-    public Pair(T first, U second) {
-        this.first = first;
-        this.second = second;
-    }
+record Pair<T, U>(T first, U second) {
 }
