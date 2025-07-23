@@ -183,7 +183,7 @@ docs/generated/
 *.backup
 *.orig
 *.save
-slides_*.md
+# slides_*.md  # Commented out - we now use this naming pattern
 *_backup.md
 *_old.md
 
