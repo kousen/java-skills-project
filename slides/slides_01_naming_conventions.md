@@ -117,10 +117,10 @@ public enum Department {
 
 ```java
 // Good Example: Class Name (PascalCase)
-public class NamingConventions {
+public class com.oreilly.javaskills.NamingConventions {
     
     @SuppressWarnings("ExtractMethodRecommender") // Annotation
-    public NamingConventions() { ... } // Constructor matches class
+    public com.oreilly.javaskills.NamingConventions() { ... } // Constructor matches class
     
     public static void main(String[] args) {
         var employeeName = "John Doe";        // Modern Java

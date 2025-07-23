@@ -31,15 +31,15 @@
 
 ---
 
-## 4. Code Demo: `NamingConventionsTest.java`
+## 4. Code Demo: `com.oreilly.javaskills.NamingConventionsTest.java`
 
 **Host:** "Let's look at a real-world example. In our project, we have a test that uses reflection to enforce a coding standard."
 
-**(Show `foundations/src/test/java/NamingConventionsTest.java` on screen)**
+**(Show `foundations/src/test/java/com.oreilly.javaskills.NamingConventionsTest.java` on screen)**
 
-**Host:** "This test wants to ensure that all `public static final` constants in our `NamingConventions` class are written in `SCREAMING_SNAKE_CASE`. Instead of manually checking each constant, it uses reflection to do it automatically."
+**Host:** "This test wants to ensure that all `public static final` constants in our `com.oreilly.javaskills.NamingConventions` class are written in `SCREAMING_SNAKE_CASE`. Instead of manually checking each constant, it uses reflection to do it automatically."
 
-**Host:** "First, it gets the `Class` object for `NamingConventions`. Then, it gets an array of all the declared `Field`s. It loops through each field and uses the `Modifier` class to check if the field is `public`, `static`, and `final`. If it is, it then checks if the field's name matches the required regular expression. This is a great example of how reflection can be used for automation and to enforce rules in your codebase."
+**Host:** "First, it gets the `Class` object for `com.oreilly.javaskills.NamingConventions`. Then, it gets an array of all the declared `Field`s. It loops through each field and uses the `Modifier` class to check if the field is `public`, `static`, and `final`. If it is, it then checks if the field's name matches the required regular expression. This is a great example of how reflection can be used for automation and to enforce rules in your codebase."
 
 ---
 

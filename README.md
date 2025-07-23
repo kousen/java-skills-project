@@ -15,6 +15,16 @@ This project is structured as a Gradle multi-module build with Java 21, designed
 - ✅ **Working code examples** for every concept demonstrated
 - ✅ **No production blockers** - all slide references verified and coordinated
 
+## 🚀 Modern Java 21 Approach
+
+**All code and slides showcase current Java best practices:**
+- ✅ **Java 21 LTS features** - var, text blocks, records, switch expressions, pattern matching
+- ✅ **Modern syntax throughout** - List.of(), String.formatted(), enhanced enums
+- ✅ **Visual slide enhancements** - Color-highlighted naming conventions (#00D4FF)
+- ✅ **Progressive disclosure** - Proper v-click sequencing for better presentation flow
+- ✅ **Split content appropriately** - No slide overflow issues, readable formatting
+- ✅ **Production-quality code** - Eliminates duplication, follows current best practices
+
 ## 📊 Slides and Presentations
 
 The project includes comprehensive Slidev-powered slides for all 26+ topics:
@@ -75,7 +85,7 @@ npm run export      # Export to PDF
 ### 📚 **foundations** - Basic Java Concepts (Videos 1-7 + Bonus 7B)
 **Status: ✅ Complete & Fully Tested (10/10 tests passing)**
 
-- **NamingConventions.java** - Proper Java naming conventions with good/bad examples
+- **com.oreilly.javaskills.NamingConventions.java** - Proper Java naming conventions with good/bad examples
 - **StringFormatting.java** - String concatenation, formatting, text blocks, StringBuilder, String.join(), StringJoiner, escape characters, SLF4J logging
 - **OperatorPrecedenceTest.java** - JUnit tests demonstrating operator precedence rules with arithmetic, boolean, assignment, ternary, increment/decrement, modulus, and Math.pow() examples
 - **EmployeeInput.java** - Scanner input with try-with-resources, robust validation loops, and user-friendly error handling for all data types
@@ -166,7 +176,7 @@ testImplementation 'org.mockito:mockito-core'
 gradle build
 
 # Run specific examples
-gradle runExample -Pmodule=foundations -PmainClass=NamingConventions
+gradle runExample -Pmodule=foundations -PmainClass=com.oreilly.javaskills.NamingConventions
 gradle runExample -Pmodule=oop-core -PmainClass=ModernJavaFeatures
 gradle runExample -Pmodule=design-patterns -PmainClass=StrategyPatternDemo
 

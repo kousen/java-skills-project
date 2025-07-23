@@ -1,3 +1,5 @@
+package com.oreilly.javaskills;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +48,7 @@ class NamingConventionsTest {
                 .contains("=== Proper Naming Conventions Demo ===")
                 .contains("Company:")
                 .contains("Employee Details:")
-                .contains("Bad examples");
+                .contains(" Bad examples (What NOT to do) ");
 
         } finally {
             System.setOut(originalOut);

@@ -1,3 +1,5 @@
+package com.oreilly.javaskills;
+
 import java.text.NumberFormat;
 import java.util.List;
 
@@ -39,7 +41,7 @@ public class NamingConventions {
     );
 
     /**
-     * Constructor for NamingConventions.
+     * Constructor for com.oreilly.javaskills.NamingConventions.
      * Note: Constructors use PascalCase because they must match the class name.
      * This is the one exception to the camelCase rule for methods.
      */
@@ -94,7 +96,7 @@ public class NamingConventions {
         // Modern formatting for bad examples too
         var badExamplesOutput = """
                 
-                --- Bad Examples (What NOT to do) ---
+                --- Bad examples (What NOT to do) ---
                 Vague name 'n':                           %s
                 Confusing constant-like 'ANOTHER_NAME':   %s
                 Non-standard 'employee_id':               %d

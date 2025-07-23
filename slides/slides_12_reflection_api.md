@@ -105,11 +105,11 @@ layout: section
 
 ---
 
-# Code Demo: `NamingConventionsTest.java`
+# Code Demo: `com.oreilly.javaskills.NamingConventionsTest.java`
 
 Let's look at a practical use case: checking for `static final` constants.
 
-**(Show `foundations/src/test/java/NamingConventionsTest.java`)**
+**(Show `foundations/src/test/java/com.oreilly.javaskills.NamingConventionsTest.java`)**
 
 ```java
 import java.lang.reflect.Modifier;
@@ -118,7 +118,7 @@ import java.lang.reflect.Modifier;
 @Test
 void allConstantNamesShouldBeScreamingSnakeCase() {
     // 1. Get the Class object
-    var clazz = NamingConventions.class;
+    var clazz = com.oreilly.javaskills.NamingConventions.class;
     // 2. Get all declared fields
     var fields = clazz.getDeclaredFields();
 

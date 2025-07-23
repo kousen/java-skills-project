@@ -12,6 +12,18 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - ✅ **Self-contained topics** perfect for skill-gap filling approach
 - ✅ **Complete supporting materials** - Git workflows, CI/CD pipelines, PR templates
 
+## 🚀 Modern Java 21 Approach
+
+**All code and slides showcase current Java best practices:**
+- ✅ **Java 21 LTS features** - var, text blocks, records, switch expressions, pattern matching
+- ✅ **Modern syntax throughout** - List.of(), String.formatted(), enhanced enums
+- ✅ **Visual slide enhancements** - Color-highlighted naming conventions (#00D4FF for key terms)
+- ✅ **Progressive disclosure** - Proper v-click sequencing for better presentation flow
+- ✅ **Split content appropriately** - No slide overflow issues, readable formatting
+- ✅ **Production-quality code** - Eliminates duplication, follows current best practices
+- ✅ **Consistent type coverage** - Classes, interfaces, annotations, enums, records all included
+- ✅ **Constructor clarity** - Proper documentation of constructor naming as PascalCase exception
+
 ## Key Project Details
 
 ### Build System & Latest Versions (2025)
@@ -28,6 +40,14 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - **Individual slide files** in `slides/` directory with topic number naming convention
 - **Naming convention**: `slides_XX_topic_name.md` (e.g., `slides_01_naming_conventions.md`)
 - **Commands**: `npm run dev` (development), `npm run build` (production), `npm run export` (PDF)
+
+### 🎨 Visual Design Standards for Slides
+**Established patterns for consistent, professional presentations:**
+- ✅ **Color highlighting** - Use #00D4FF for key naming convention terms (PascalCase, camelCase, UPPER_SNAKE_CASE, lowercase.with.dots)
+- ✅ **Progressive disclosure** - Use v-click with proper sequencing to reveal content logically
+- ✅ **Balanced layouts** - Two-column grids for comparing concepts, ensure content balance
+- ✅ **Contact info slides** - Standardized contact slide included in all presentations
+- ✅ **Split long content** - Keep slides readable, split into multiple focused slides when needed
 
 ### 🚨 CRITICAL SLIDEV SLIDE CREATION RULES (READ EVERY TIME!)
 **ALWAYS follow these rules when creating slides to avoid overflow issues:**
@@ -163,7 +183,7 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 **Project organized into 6 core modules with 100% working code:**
 
 ### ✅ **foundations** - COMPLETE & FULLY TESTED (10/10 tests passing)
-- **All 10 Java files working**: NamingConventions, StringFormatting, OperatorPrecedenceTest, EmployeeInput, EmployeeRoster, EmployeeFileWriter, EmployeeLogger, ModernEmployeeFileManager, FileIOComparison, RestServiceConcepts
+- **All 10 Java files working**: com.oreilly.javaskills.NamingConventions, StringFormatting, OperatorPrecedenceTest, EmployeeInput, EmployeeRoster, EmployeeFileWriter, EmployeeLogger, ModernEmployeeFileManager, FileIOComparison, RestServiceConcepts
 - **Covers videos 1-7 + Bonus 7B + 21**: Full progression from naming to modern file I/O, plus REST concepts
 - **Latest 2025 dependencies**: Apache Commons IO 2.19.0, SLF4J 2.0.17, Logback 1.5.18
 - **Perfect for recording**: All examples work, comprehensive test coverage
@@ -235,7 +255,7 @@ gradle :design-patterns:test # 12/15 passing
 gradle :solid-principles:test # Working code examples
 
 # Run examples with latest dependencies
-gradle runExample -Pmodule=foundations -PmainClass=NamingConventions
+gradle runExample -Pmodule=foundations -PmainClass=com.oreilly.javaskills.NamingConventions
 gradle runExample -Pmodule=oop-core -PmainClass=ModernJavaFeatures
 gradle runExample -Pmodule=design-patterns -PmainClass=StrategyPatternDemo
 gradle runExample -Pmodule=solid-principles -PmainClass=SRPEmployeeService
@@ -466,6 +486,17 @@ implementation 'com.fasterxml.jackson.core:jackson-databind' // No version neede
 - **Consistent Employee Management theme**: Practical, relatable examples throughout
 - **Enterprise-grade patterns**: Real-world implementations, not toy examples
 - **Teleprompter support**: Custom script2text command for clean prompter text
+
+### 💻 Code Modernization Standards (Established Patterns)
+**All code examples follow these Java 21 best practices:**
+- ✅ **var keyword usage** - Local variable type inference for cleaner, more readable code
+- ✅ **Text blocks with .formatted()** - Multi-line strings using """ syntax with String.formatted()
+- ✅ **Enhanced switch expressions** - Pattern matching and modern switch syntax on enums
+- ✅ **Modern collections** - List.of(), Set.of() instead of Arrays.asList() or new ArrayList<>()
+- ✅ **Enum with constructors** - Rich enum examples with private constructors and methods
+- ✅ **Eliminate code duplication** - Extract constants like CURRENCY_FORMATTER to avoid repeated calls
+- ✅ **Constructor documentation** - Clear explanation that constructors use PascalCase (exception to camelCase)
+- ✅ **Type inclusion completeness** - All Java constructs covered: classes, interfaces, annotations, enums, records
 
 ## 📄 Related Documentation
 - **DEPENDENCY_UPDATES.md** - Complete details on all dependency versions, BOMs, and Gradle 9.0 compatibility fixes

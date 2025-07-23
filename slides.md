@@ -352,7 +352,7 @@ List<String> names;     // Simple
 
 # Practical Exercise
 
-## Look at `NamingConventions.java`
+## Look at `com.oreilly.javaskills.NamingConventions.java`
 
 <v-clicks>
 
@@ -420,7 +420,7 @@ List<String> names;     // Simple
 <v-clicks>
 
 ## **In This Module**
-- Examine `NamingConventions.java`
+- Examine `com.oreilly.javaskills.NamingConventions.java`
 - Run the example code
 - Analyze good vs. bad naming
 
