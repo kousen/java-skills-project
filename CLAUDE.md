@@ -25,7 +25,8 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 
 ### Slidev Presentations
 - **package.json** with Slidev dependencies for interactive slides
-- **slides.md** contains teaching presentations
+- **Individual slide files** in `slides/` directory with topic number naming convention
+- **Naming convention**: `slides_XX_topic_name.md` (e.g., `slides_01_naming_conventions.md`)
 - **Commands**: `npm run dev` (development), `npm run build` (production), `npm run export` (PDF)
 
 ### 🚨 CRITICAL SLIDEV SLIDE CREATION RULES (READ EVERY TIME!)
@@ -103,16 +104,28 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 
 ### 📊 All Generated Content Files
 
-#### **Slide Files** (topics 19-26 + bonus)
-- `slides/logging_frameworks_slides.md`
-- `slides/rest_api_consumer_slides.md` 
-- `slides/rest_service_creator_slides.md`
-- `slides/input_validation_slides.md`
-- `slides/cryptographic_apis_slides.md`
-- `slides/git_collaboration_slides.md`
-- `slides/microservices_slides.md`
-- `slides/reactive_programming_slides.md`
-- `slides/modern_file_io_slides.md` (bonus topic 7B)
+#### **Slide Files** (All 27 topics with numbered naming)
+**Foundation Topics (1-7 + Bonus 7B):**
+- `slides/slides_01_naming_conventions.md`
+- `slides/slides_02_escape_characters.md`
+- `slides/slides_03_operator_precedence.md`
+- `slides/slides_04_scanner_input.md`
+- `slides/slides_05_06_2d_arrays_and_nested_loops.md`
+- `slides/slides_07_file_writer.md`
+- `slides/slides_07b_modern_file_io.md` (bonus)
+
+**Intermediate Topics (8-18):**
+- `slides/slides_08_access_modifiers.md` through `slides/slides_18_refactoring.md`
+
+**Advanced Topics (19-26):**
+- `slides/slides_19_logging_frameworks.md`
+- `slides/slides_20_rest_api_consumer.md` 
+- `slides/slides_21_rest_service_creator.md`
+- `slides/slides_22_input_validation.md`
+- `slides/slides_23_cryptographic_apis.md`
+- `slides/slides_24_git_collaboration.md`
+- `slides/slides_25_microservices.md`
+- `slides/slides_26_reactive_programming.md`
 
 #### **Script Files** (topics 19-26 + bonus + split topics)
 - `scripts/topic19_logging_frameworks.md`
@@ -195,7 +208,8 @@ Complete video production resources:
 - **.github/workflows/**: Professional CI/CD pipeline with testing, security scanning, deployment
 - **.github/pull_request_template.md**: Comprehensive PR template with checklists
 - **scripts/**: 27 professional video scripts with scene structure and slide callouts
-- **slides/**: Complete slide presentations for all 27 topics
+- **slides/**: Complete slide presentations for all 27 topics with numbered naming convention
+- **.claude/commands/script2text.md**: Custom command for teleprompter text conversion
 
 ### 🗑️ **Removed Modules** (Problematic/Empty)
 The following modules were removed to focus on working content:
@@ -332,26 +346,25 @@ testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 ## Video Production Ready Status (2025)
 
 ### 📊 Slidev Presentations Available
-- **slides.md** - Interactive presentations with improved logical flow and transition slides between major sections
-- **75+ slides total** - Ready for video recording with progressive disclosure and section dividers
-- **Restructured for better learning progression**: 
-  1. Naming Conventions → 2. Operator Precedence → 3. String Formatting (Part 1 & 2) → 4. Scanner Input → 5. Arrays/Nested Loops → 6. File I/O Operations
-- **Complete coverage** - All topics with logical flow and connecting narrative between sections
-- **Split complex sections** - String Formatting divided into basic and advanced techniques for better digestibility
-- **Added transition slides** - Clear bridges showing how topics connect and build upon each other
+- **Individual slide files** in `slides/` directory with numbered naming convention
+- **27 complete presentations** - One file per topic, all production-ready
+- **Slide naming convention**: `slides_XX_topic_name.md` format for easy reference
+- **Topics 1-27 fully covered** with logical flow and professional formatting
+- **Combined topics**: Topics 5&6 share one file (`slides_05_06_2d_arrays_and_nested_loops.md`)
+- **Bonus content**: Topic 7B included as `slides_07b_modern_file_io.md`
 - **Commands**: `npm run dev` (development), `npm run build` (production), `npm run export` (PDF)
 
-### 📊 Foundations Module Slide Status
-- **All 7 topics from foundations module are now covered in slides**:
-  1. ✅ Naming Conventions (NamingConventions.java)
-  2. ✅ Escape Characters (covered in String Formatting section)
-  3. ✅ Operator Precedence (OperatorPrecedenceTest.java)
-  4. ✅ Scanner Input (EmployeeInput.java)
-  5. ✅ Nested Loops (EmployeeRoster.java)
-  6. ✅ Multidimensional Arrays (EmployeeRoster.java)
-  7. ✅ File I/O (EmployeeFileWriter.java)
+### 📊 Complete Slide Coverage
+- **All 27 topics have dedicated slide presentations**:
+  - Topics 1-7: Foundation concepts with bonus 7B
+  - Topics 8-12: Object-oriented programming
+  - Topics 13-15: Design patterns
+  - Topics 16-17: SOLID principles
+  - Topics 18-19: Refactoring and logging
+  - Topics 20-26: Advanced enterprise topics
 - **All slides match the corresponding Java code examples**
-- **Ready for video recording of foundations module**
+- **Professional naming convention** enables easy navigation
+- **Ready for video recording in any order**
 
 ### ✅ Ready to Record (100% Working)
 - **foundations** - All 6 classes working with latest 2025 dependencies, plus accompanying slides
@@ -452,8 +465,30 @@ implementation 'com.fasterxml.jackson.core:jackson-databind' // No version neede
 - **Professional video formatting**: Scene structure and slide coordination
 - **Consistent Employee Management theme**: Practical, relatable examples throughout
 - **Enterprise-grade patterns**: Real-world implementations, not toy examples
+- **Teleprompter support**: Custom script2text command for clean prompter text
 
 ## 📄 Related Documentation
 - **DEPENDENCY_UPDATES.md** - Complete details on all dependency versions, BOMs, and Gradle 9.0 compatibility fixes
 - **README.md** - Public-facing project documentation
 - **.gitignore** - Comprehensive Java project ignore patterns
+- **.claude/commands/script2text.md** - Custom command documentation for teleprompter conversion
+
+## 🎬 Production Tools & Commands
+
+### Script to Teleprompter Conversion
+Use the custom `script2text` command to convert video scripts for teleprompter use:
+```bash
+/script2text <topic_number>  # e.g., /script2text 01 or /script2text 7b
+```
+
+This command:
+- Finds the corresponding script file in `scripts/` directory
+- Removes markdown formatting and "YOU:" prefixes
+- Converts scene headers to `[SCENE X: TITLE - duration]` format
+- Outputs clean text to `script.txt` ready for Elgato Prompter
+
+### Slide File Organization
+All slides follow the numbered naming convention:
+- Format: `slides_XX_topic_name.md`
+- Examples: `slides_01_naming_conventions.md`, `slides_07b_modern_file_io.md`
+- Benefits: Easy reference during recording, clear topic progression

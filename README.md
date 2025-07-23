@@ -9,39 +9,55 @@ This project is structured as a Gradle multi-module build with Java 21, designed
 ## 🎬 Production Status: READY FOR RECORDING
 
 **All content complete with professional video production formatting:**
-- ✅ **26+ video scripts** with proper scene structure and slide callouts
-- ✅ **Comprehensive slide presentations** for all topics using Slidev
+- ✅ **27 complete video topics** with comprehensive slides, scripts, and working code
+- ✅ **Professional slide naming** with topic numbers (e.g., `slides_01_naming_conventions.md`)
+- ✅ **Custom script2text command** for teleprompter conversion (`/script2text <number>`)
 - ✅ **Working code examples** for every concept demonstrated
-- ✅ **No production blockers** - scripts coordinated with slides
+- ✅ **No production blockers** - all slide references verified and coordinated
 
 ## 📊 Slides and Presentations
 
 The project includes comprehensive Slidev-powered slides for all 26+ topics:
 
-### Foundations Topics (1-7)
-- **slides/** directory contains individual slide files for each topic
-- **naming_conventions_slides.md** - Java naming standards and conventions
-- **operator_precedence_slides.md** - Expression evaluation and precedence rules
-- **scanner_input_slides.md** - Console input with Scanner class
-- **2d_arrays_and_nested_loops_slides.md** - Multidimensional data processing
-- **file_writer_slides.md** - Traditional file I/O with FileWriter/BufferedWriter
-- **modern_file_io_slides.md** - **BONUS**: Modern NIO.2 file operations
+### Foundations Topics (1-7 + Bonus 7B)
+All slides follow the **new naming convention** with topic numbers for easy reference:
+- **slides_01_naming_conventions.md** - Java naming standards and conventions
+- **slides_02_escape_characters.md** - String escape sequences and special characters
+- **slides_03_operator_precedence.md** - Expression evaluation and precedence rules
+- **slides_04_scanner_input.md** - Console input with Scanner class
+- **slides_05_06_2d_arrays_and_nested_loops.md** - Multidimensional data processing
+- **slides_07_file_writer.md** - Traditional file I/O with FileWriter/BufferedWriter
+- **slides_07b_modern_file_io.md** - **BONUS**: Modern NIO.2 file operations
+
+### Intermediate Topics (8-18)
+- **slides_08_access_modifiers.md** - Java visibility and encapsulation
+- **slides_09_composition.md** - Object composition and has-a relationships
+- **slides_10_var_keyword.md** - Local variable type inference in Java 10+
+- **slides_11_records.md** - Java records for immutable data
+- **slides_12_reflection_api.md** - Runtime class inspection and manipulation
+- **slides_13_singleton_pattern.md** - Thread-safe singleton implementations
+- **slides_14_strategy_pattern.md** - Strategy pattern for algorithm selection
+- **slides_15_factory_pattern.md** - Factory pattern for object creation
+- **slides_16_srp.md** - Single Responsibility Principle
+- **slides_17_ocp.md** - Open/Closed Principle
+- **slides_18_refactoring.md** - Code refactoring best practices
 
 ### Advanced Topics (19-26)
-- **logging_frameworks_slides.md** - SLF4J, Logback, and modern logging
-- **rest_api_consumer_slides.md** - HTTP client and REST API consumption
-- **rest_service_creator_slides.md** - Spring Boot REST service creation
-- **input_validation_slides.md** - Security validation and XSS/SQL injection prevention
-- **cryptographic_apis_slides.md** - Encryption, hashing, and digital signatures
-- **git_collaboration_slides.md** - Version control and team workflows
-- **microservices_slides.md** - Distributed systems with Spring Boot
-- **reactive_programming_slides.md** - Async programming with Project Reactor
+- **slides_19_logging_frameworks.md** - SLF4J, Logback, and modern logging
+- **slides_20_rest_api_consumer.md** - HTTP client and REST API consumption
+- **slides_21_rest_service_creator.md** - Spring Boot REST service creation
+- **slides_22_input_validation.md** - Security validation and XSS/SQL injection prevention
+- **slides_23_cryptographic_apis.md** - Encryption, hashing, and digital signatures
+- **slides_24_git_collaboration.md** - Version control and team workflows
+- **slides_25_microservices.md** - Distributed systems with Spring Boot
+- **slides_26_reactive_programming.md** - Async programming with Project Reactor
 
 ### Video Scripts (Production Ready)
-- **scripts/** directory contains 26+ professional video scripts
+- **scripts/** directory contains 27 professional video scripts
 - **All scripts formatted** with scene structure and proper slide callouts
 - **Split topics** 5&6 available as separate scripts for individual videos
 - **Bonus topic 7B** for modern NIO.2 file operations included
+- **Custom teleprompter conversion** using `/script2text <number>` command
 - **package.json** - Slidev dependencies and build scripts
 
 ### Running Slides
@@ -245,14 +261,20 @@ Transform into enterprise application:
 **Total: 35/38 tests passing (92% pass rate) + working SOLID examples**
 
 ### 📹 Video Content Coverage
-**27 high-quality videos covering essential Java skills:**
-- **Videos 1-7**: Java fundamentals (syntax, I/O, arrays, loops) + Bonus NIO.2
+**27 production-ready videos covering essential Java skills:**
+- **Videos 1-7 + Bonus 7B**: Java fundamentals (syntax, I/O, arrays, loops) + Modern NIO.2
 - **Videos 8-12**: Object-oriented programming and modern Java features
 - **Videos 13-15**: Essential design patterns (Singleton, Strategy, Factory)
 - **Videos 16-17**: SOLID design principles (SRP, OCP)
 - **Videos 18-19**: Refactoring and logging best practices
 - **Videos 20-23**: Advanced topics (REST APIs, Security, Cryptography)
 - **Videos 24-26**: Enterprise topics (Git workflows, Microservices, Reactive programming)
+
+### 🎬 Production Tools
+- **Slide Naming Convention**: All slides use `slides_XX_topic_name.md` format for easy reference
+- **Script Teleprompter Conversion**: Use `.claude/commands/script2text.md` to convert scripts
+  - Command: `/script2text <topic_number>` (e.g., `/script2text 01` or `/script2text 7b`)
+  - Outputs clean text file `script.txt` ready for Elgato Prompter
 
 ### 📁 Supporting Files and Documentation
 **Complete project resources for video production:**

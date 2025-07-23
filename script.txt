@@ -1,0 +1,63 @@
+[SCENE 1: INTRODUCTION - 30 SECONDS]
+
+(Show Slide 1: Title Slide - "Java Naming Conventions")
+
+Hi everyone, and welcome to this series on essential Java skills. Today, we're starting with a fundamental topic that's crucial for writing professional, readable code: Java Naming Conventions.
+
+(Transition to Slide 2: Why Naming Matters)
+
+Why does this matter so much? Because code is read far more often than it's written. Good naming conventions make your code self-documenting and easier for you and your team to understand and maintain.
+
+[SCENE 2: THE CORE CONVENTIONS - 60 SECONDS]
+
+(Show Slide 3: The Core Conventions)
+
+Java has a few core conventions that you'll see everywhere. Let's break them down.
+
+First, Classes and Interfaces use PascalCase, also known as upper camel case. Think of nouns, like Employee or SalaryCalculator.
+
+Next, Variables and Methods use camelCase, or lower camel case. Variables are typically nouns, like employeeName, and methods are verbs that describe an action, like calculateSalary.
+
+Third, Constants, which are variables that don't change, use UPPER_SNAKE_CASE. These are static final fields, like MAX_EMPLOYEES.
+
+Finally, Packages use all lowercase.with.dots, typically in a reverse domain name format, like com.oreilly.javaskills.
+
+[SCENE 3: CODE DEMO - GOOD EXAMPLES - 60 SECONDS]
+
+(Transition to IDE showing NamingConventions.java)
+
+Okay, let's see this in action. Here in our NamingConventions.java file, we can see these rules applied.
+
+(Highlight the relevant lines in the code as you speak)
+
+At the top, we have our class, NamingConventions, in PascalCase.
+
+Here are two constants, COMPANY_NAME and MAX_EMPLOYEES, both in UPPER_SNAKE_CASE. Their values can't be changed.
+
+Inside our main method, we have several variables like employeeName and salaryAmount, all following camelCase.
+
+And we have our method, printEmployeeDetails, also in camelCase. It's a verb that clearly describes what it does.
+
+[SCENE 4: CODE DEMO - COMMON MISTAKES - 45 SECONDS]
+
+(Show Slide 5: Common Mistakes to Avoid)
+
+It's also helpful to see what not to do. Let's look at some common mistakes.
+
+(Scroll down in NamingConventions.java to the "Bad Naming Conventions" section)
+
+Here, we have a variable n. This is a bad name because it's not descriptive. What does 'n' stand for? We should use something like fullName instead.
+
+This variable, ANOTHER_NAME, is in all caps, which makes it look like a constant, but it isn't. This is very confusing and should be in camelCase.
+
+The variable employee_id uses snake_case. While common in other languages like Python, the Java convention is to use camelCase.
+
+And finally, the variable Name starts with a capital letter, which makes it look like a Class name. This can be very misleading.
+
+[SCENE 5: CONCLUSION - 30 SECONDS]
+
+(Show Slide 6: Key Takeaways)
+
+So, let's recap the key takeaways. Use PascalCase for classes, camelCase for variables and methods, and UPPER_SNAKE_CASE for constants.
+
+Adopting these conventions is one of the easiest ways to make your code more professional and readable. That's all for this lesson. Thanks for watching, and I'll see you in the next video!

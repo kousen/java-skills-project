@@ -11,6 +11,24 @@ layout: cover
 </div>
 
 ---
+
+# Contact Info
+
+Ken Kousen<br>
+Kousen IT, Inc.
+
+- ken.kousen@kousenit.com
+- http://www.kousenit.com
+- http://kousenit.org (blog)
+- Social Media:
+  - [@kenkousen](https://twitter.com/kenkousen) (Twitter)
+  - [@kousenit.com](https://bsky.app/profile/kousenit.com) (Bluesky)
+  - [https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/) (LinkedIn)
+- *Tales from the jar side* (free newsletter)
+  - https://kenkousen.substack.com
+  - https://youtube.com/@talesfromthejarside
+
+---
 layout: section
 ---
 
