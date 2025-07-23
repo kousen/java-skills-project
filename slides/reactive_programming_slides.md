@@ -208,7 +208,7 @@ transition: slide-left
 ```java
 public Mono<Employee> findEmployeeWithFallback(Long id) {
     return employeeService.findById(id)
-        .onErrorReturn(new Employee(id, "Unknown", "Unknown"))
+        .onErrorReturn(new Employee(id, "Unknown", "unknown@company.com"))
         .timeout(Duration.ofSeconds(5))
         .retry(3);
 }
@@ -411,12 +411,12 @@ transition: slide-left
 ```java
 @Test
 void testEmployeeService() {
-    Employee employee = new Employee(1L, "John", "john@test.com");
+    Employee testEmployee = new Employee(1L, "John", "john@test.com");
     
     Mono<Employee> result = employeeService.findById(1L);
     
     StepVerifier.create(result)
-        .expectNext(employee)
+        .expectNext(testEmployee)
         .verifyComplete();
 }
 
