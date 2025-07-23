@@ -14,7 +14,7 @@ layout: cover
 
 # Contact Info
 
-Ken Kousen<br>
+**Ken Kousen**<br>
 Kousen IT, Inc.
 
 - ken.kousen@kousenit.com
@@ -50,16 +50,19 @@ Kousen IT, Inc.
 
 <v-click at="1">
 
-## **Classes & Interfaces**
-- `PascalCase`
-- Nouns (e.g., `Employee`, `SalaryCalculator`)
+## **Types**
+- <span style="color: #00D4FF;">**PascalCase**</span>
+- Classes (e.g., `Employee`, `SalaryCalculator`)
+- Annotations: `@Override`, `@CustomAnnotation`
+- Enums: `EmployeeStatus`, `PaymentType`
+- Records: `PersonData`, `EmployeeRecord`
 
 </v-click>
 
 <v-click at="3">
 
 ## **Constants**
-- `UPPER_SNAKE_CASE`
+- <span style="color: #00D4FF;">**UPPER_SNAKE_CASE**</span>
 - Unchanging `static final` fields (e.g., `MAX_EMPLOYEES`)
 
 </v-click>
@@ -71,15 +74,18 @@ Kousen IT, Inc.
 <v-click at="2">
 
 ## **Variables & Methods**
-- `camelCase`
-- Verbs for methods (e.g., `calculateSalary()`)
+- <span style="color: #00D4FF;">**camelCase**</span>
+- Variables: `employeeName`, `salaryAmount`
+- Methods: `calculateSalary()`
+- Parameters: `userId`, `isActive`
+- Fields: `firstName`, `departmentId`
 
 </v-click>
 
 <v-click at="4">
 
 ## **Packages**
-- `lowercase.with.dots`
+- <span style="color: #00D4FF;">**lowercase.with.dots**</span>
 - Reverse domain name (e.g., `com.oreilly.javaskills`)
 
 </v-click>
@@ -90,29 +96,38 @@ Kousen IT, Inc.
 
 ---
 
-# Let's See It In Action
-
-Now, let's look at the `NamingConventions.java` file to see these rules applied in practice.
+# Constants and Enums
 
 ```java
-// Good Example: A Constant
+// Good Example: Constants (UPPER_SNAKE_CASE)
 public static final String COMPANY_NAME = "O'Reilly Media, Inc.";
+public static final NumberFormat CURRENCY_FORMATTER = 
+    NumberFormat.getCurrencyInstance();
 
-// Good Example: A Class Name
-public class NamingConventions {
-    
-    // Good Example: Constructor (matches class name - PascalCase)
-    public NamingConventions() { ... }
-    
-    // Good Example: A Method Name
-    public static void printEmployeeDetails(...) {
-        // Good Example: A Variable Name
-        String employeeName = "John Doe";
-    }
+// Good Example: Enum (PascalCase like classes)
+public enum Department {
+    ENGINEERING("Engineering"), HR("Human Resources");
+    // ... enum methods use camelCase
 }
 ```
 
-*Note: Constructors use PascalCase because they must match the class name*
+---
+
+# Classes and Methods
+
+```java
+// Good Example: Class Name (PascalCase)
+public class NamingConventions {
+    
+    @SuppressWarnings("ExtractMethodRecommender") // Annotation
+    public NamingConventions() { ... } // Constructor matches class
+    
+    public static void main(String[] args) {
+        var employeeName = "John Doe";        // Modern Java
+        var dept = Department.ENGINEERING;    // Enum usage
+    }
+}
+```
 
 ---
 
@@ -168,14 +183,15 @@ String name = "Peter Jones";
 
 <v-clicks>
 
-- **Classes**: `PascalCase`
-- **Variables/Methods**: `camelCase`
-- **Constants**: `UPPER_SNAKE_CASE`
+- **Types**: <span style="color: #00D4FF;">**PascalCase**</span>
+- **Variables/Methods**: <span style="color: #00D4FF;">**camelCase**</span>
+- **Constants**: <span style="color: #00D4FF;">**UPPER_SNAKE_CASE**</span>
+- **Packages**: <span style="color: #00D4FF;">**lowercase.with.dots**</span>
 
 </v-clicks>
 
 <v-clicks>
 
-- Sticking to these conventions makes your code professional, readable, and maintainable.
+- Adopting these conventions makes your code professional, readable, and maintainable.
 
 </v-clicks>
