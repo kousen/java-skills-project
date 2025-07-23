@@ -48,25 +48,41 @@ Kousen IT, Inc.
 
 <div>
 
+<v-click at="1">
+
 ## **Classes & Interfaces**
 - `PascalCase`
 - Nouns (e.g., `Employee`, `SalaryCalculator`)
+
+</v-click>
+
+<v-click at="3">
 
 ## **Constants**
 - `UPPER_SNAKE_CASE`
 - Unchanging `static final` fields (e.g., `MAX_EMPLOYEES`)
 
+</v-click>
+
 </div>
 
 <div>
+
+<v-click at="2">
 
 ## **Variables & Methods**
 - `camelCase`
 - Verbs for methods (e.g., `calculateSalary()`)
 
+</v-click>
+
+<v-click at="4">
+
 ## **Packages**
 - `lowercase.with.dots`
 - Reverse domain name (e.g., `com.oreilly.javaskills`)
+
+</v-click>
 
 </div>
 
@@ -83,14 +99,20 @@ Now, let's look at the `NamingConventions.java` file to see these rules applied 
 public static final String COMPANY_NAME = "O'Reilly Media, Inc.";
 
 // Good Example: A Class Name
-public class NamingConventions { ... }
-
-// Good Example: A Method Name
-public static void printEmployeeDetails(...) {
-    // Good Example: A Variable Name
-    String employeeName = "John Doe";
+public class NamingConventions {
+    
+    // Good Example: Constructor (matches class name - PascalCase)
+    public NamingConventions() { ... }
+    
+    // Good Example: A Method Name
+    public static void printEmployeeDetails(...) {
+        // Good Example: A Variable Name
+        String employeeName = "John Doe";
+    }
 }
 ```
+
+*Note: Constructors use PascalCase because they must match the class name*
 
 ---
 

@@ -9,6 +9,15 @@ public class NamingConventions {
     public static final String COMPANY_NAME = "O'Reilly Media, Inc.";
     public static final int MAX_EMPLOYEES = 1000;
 
+    /**
+     * Constructor for NamingConventions.
+     * Note: Constructors use PascalCase because they must match the class name.
+     * This is the one exception to the camelCase rule for methods.
+     */
+    public NamingConventions() {
+        // Constructor body (if needed)
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Proper Naming Conventions Demo ===");
         
