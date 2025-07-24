@@ -183,7 +183,7 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 **Project organized into 6 core modules with 100% working code:**
 
 ### ✅ **foundations** - COMPLETE & FULLY TESTED (10/10 tests passing)
-- **All 10 Java files working**: com.oreilly.javaskills.NamingConventions, StringFormatting, OperatorPrecedenceTest, EmployeeInput, EmployeeRoster, EmployeeFileWriter, EmployeeLogger, ModernEmployeeFileManager, FileIOComparison, RestServiceConcepts
+- **All 10 Java files working**: com.oreilly.javaskills.NamingConventions, StringFormatting, com.oreilly.javaskills.OperatorPrecedenceTest, EmployeeInput, EmployeeRoster, EmployeeFileWriter, EmployeeLogger, ModernEmployeeFileManager, FileIOComparison, RestServiceConcepts
 - **Covers videos 1-7 + Bonus 7B + 21**: Full progression from naming to modern file I/O, plus REST concepts
 - **Latest 2025 dependencies**: Apache Commons IO 2.19.0, SLF4J 2.0.17, Logback 1.5.18
 - **Perfect for recording**: All examples work, comprehensive test coverage

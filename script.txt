@@ -1,71 +1,59 @@
 [SCENE 1: INTRODUCTION - 30 SECONDS]
 
-(Show Slide 1: Title Slide—"Java Escape Characters")
+(Show Slide 1: Title Slide - "Java Operator Precedence")
 
-Welcome back! In this video, we're going to cover a simple but powerful feature for controlling how your text output looks: Escape Characters.
+Hi everyone. In this video, we're going to tackle a topic that can be the source of very subtle bugs: Operator Precedence.
 
-(Show Slide: What Are Escape Characters?)
+(Show Slide 2: Why Precedence Matters)
 
-So, what are they? Escape characters are special sequences that let you insert non-printable or reserved characters into your strings. They always start with a backslash and are needed for formatting console output, creating file content, and more.
+Operator precedence is simply the set of rules that dictates the order in which operations are performed in a Java expression. Getting this wrong can lead to incorrect calculations and logic errors. The golden rule is: when in doubt, use parentheses!
 
-[SCENE 2: THE MOST COMMON CHARACTERS - 30 SECONDS]
+[SCENE 2: THE HIERARCHY - 45 SECONDS]
 
-(Show Slide: Common Escape Characters)
+(Show Slide 3: The Precedence Hierarchy)
 
-Let's look at the most common ones you'll use all the time.
+Java has a well-defined hierarchy. At the top, with the highest precedence, we have postfix operators like x++, followed by unary operators like ++x and the logical NOT !.
 
-First, \n creates a newline. It's like hitting the Enter key.
+Next comes multiplicative operators—multiply, divide, and modulus—which are all evaluated before the additive operators, plus and minus.
 
-Next, \t inserts a tab, which is great for aligning text into columns.
+Further down, we have relational and equality operators, then logical AND, then logical OR, and finally, near the bottom, the assignment operators.
 
-To include a double quote inside a string that's already enclosed in double quotes, you need to escape it with \".
+[SCENE 3: CODE DEMO—ARITHMETIC AND BOOLEAN - 60 SECONDS]
 
-And to show a literal backslash, which is common in Windows file paths, you need to escape it with another backslash, like this: \\.
+(Show Slide 4: Arithmetic Precedence)
 
-[SCENE 3: CODE DEMO - 90 SECONDS]
+Let's see how this works with arithmetic operations.
 
-(Transition to IDE showing EscapeCharacters.java)
+(Transition to IDE showing com.oreilly.javaskills.OperatorPrecedenceTest.java)
 
-Okay, let's see these in action in our EscapeCharacters.java file. It makes a lot more sense when you see the output.
+Let's see this in a test file, which is a great way to prove the behavior. In this first test, we have a salary calculation.
 
-(Highlight the \n section and run the code)
+(Highlight the arithmetic test)
 
-Here we have a string with a \n newline character. When we print it, you can see the text breaks into two separate lines right where the \n was.
+Even though addition appears first, the multiplication overtime * overtimeRate * hourlyRate is performed first because multiplication has higher precedence. The test assertion confirms this expected result.
 
-(Highlight the \t section)
+(Highlight the boolean test)
 
-Next, we use the \t tab character to create simple columns. See how 'Column 1' and 'Column 2' are neatly aligned in the output? This is much better than trying to line things up with spaces.
+It's the same with boolean logic. The && operator has higher precedence than ||. So this expression is evaluated as isFullTime OR the result of hasBonus && yearsOfService > 2. Again, parentheses make this much clearer, but it's important to know the default behavior.
 
-(Highlight the \" section)
+[SCENE 4: CODE DEMO - INCREMENT OPERATORS - 60 SECONDS]
 
-Here, we want to print a sentence with quotes inside it. By using \", we can include the double quotes without ending the string prematurely.
+(Show Slide 5: Pre-increment vs Post-increment)
 
-(Highlight the \\ section)
+Now for a classic point of confusion: pre-increment versus post-increment.
 
-And finally, here is a Windows file path. We have to use \\ for every backslash we want to appear in the final output. This is a very common use case.
+(Return to IDE, highlight the increment/decrement test)
 
-[SCENE 4: MODERN JAVA ALTERNATIVE - 60 SECONDS]
+In this test, we look at ++i (pre-increment) first. The variable i is incremented before its value is used in the expression. So i becomes 6, and the result is 12.
 
-(Scroll down to show text blocks section in the code)
-
-Now, here's something really cool. In Java 15, they introduced text blocks, which eliminate the need for most escape characters!
-
-Look at this JSON example. The old way requires \n for every line break and \" for every quote. It's hard to read and easy to make mistakes.
-
-But with text blocks using triple-double quotes, we can write the JSON exactly as we want it to appear. No escape characters needed! The indentation is preserved, the quotes are literal, and it's much more readable.
-
-(Show the SQL example)
-
-Text blocks work great for SQL queries, HTML, XML, or any multi-line string. The only exception is backslashes—they still need to be escaped even in text blocks.
+But with i++ (post-increment), the original value of i is used in the expression first, and then i is incremented. So the expression evaluates to 10, and only after that does i become 6. As you can see from the test, it's a real difference, so be careful when using these inside complex expressions.
 
 [SCENE 5: CONCLUSION - 30 SECONDS]
 
-(Show Slide: Key Takeaways)
+(Show Slide 6: Key Takeaways)
 
-So, to quickly recap: escape characters give you fine-grained control over your string output.
+So, to wrap up: remember that multiplicative operators come before additive, and logical AND comes before logical OR. Most importantly, use parentheses whenever the order of operations isn't perfectly clear. It makes your code safer and easier for the next person to read.
 
-Remember \n for new lines, \t for tabs, \" for quotes, and \\ for backslashes. But here's the modern Java tip: use text blocks with triple quotes for multi-line strings to avoid most of these escape characters!
+(Show Slide 7: Review)
 
-Mastering both approaches - traditional escape characters and modern text blocks - will make your code much cleaner and more professional.
-
-That's it for this lesson. Thanks for watching!
+That's all for this lesson. Thanks for watching!

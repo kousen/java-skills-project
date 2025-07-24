@@ -87,7 +87,7 @@ npm run export      # Export to PDF
 
 - **com.oreilly.javaskills.NamingConventions.java** - Proper Java naming conventions with good/bad examples
 - **StringFormatting.java** - String concatenation, formatting, text blocks, StringBuilder, String.join(), StringJoiner, escape characters, SLF4J logging
-- **OperatorPrecedenceTest.java** - JUnit tests demonstrating operator precedence rules with arithmetic, boolean, assignment, ternary, increment/decrement, modulus, and Math.pow() examples
+- **com.oreilly.javaskills.OperatorPrecedenceTest.java** - JUnit tests demonstrating operator precedence rules with arithmetic, boolean, assignment, ternary, increment/decrement, modulus, and Math.pow() examples
 - **EmployeeInput.java** - Scanner input with try-with-resources, robust validation loops, and user-friendly error handling for all data types
 - **EmployeeRoster.java** - Multidimensional arrays (2D), nested loops (indexed and enhanced), parallel arrays, statistics calculations, search operations
 - **EmployeeFileWriter.java** - Traditional file I/O operations (CSV, JSON, Apache Commons IO)

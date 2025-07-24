@@ -1,8 +1,12 @@
+package com.oreilly.javaskills;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
+@SuppressWarnings("ConstantValue")
 @DisplayName("Operator Precedence Demonstrations")
 public class OperatorPrecedenceTest {
     
@@ -64,9 +68,9 @@ public class OperatorPrecedenceTest {
     @Test
     @DisplayName("Assignment operators: right-to-left associativity")
     void demonstrateAssignmentPrecedence() {
-        int a = 5;
-        int b = 10;
-        int c = 15;
+        int a;
+        int b;
+        int c;
         
         // Multiple assignments work right to left
         a = b = c = 20;
@@ -150,12 +154,12 @@ public class OperatorPrecedenceTest {
         
         // Common modulus use cases
         int number = 17;
-        boolean isEven = (number % 2) == 0;
+        boolean isEven = number % 2 == 0;
         assertThat(isEven).isFalse();
         
         // Time calculations
         int totalSeconds = 3665; // 1 hour, 1 minute, 5 seconds
-        int minutes = (totalSeconds / 60) % 60;
+        int minutes = (totalSeconds / 60) % 60;  // 61 minutes without the hour part
         int seconds = totalSeconds % 60;
         
         assertThat(minutes).isEqualTo(1);
@@ -190,5 +194,24 @@ public class OperatorPrecedenceTest {
         // Verify they match Math.pow()
         assertThat(squared).isEqualTo((int) Math.pow(x, 2));
         assertThat(cubed).isEqualTo((int) Math.pow(x, 3));
+
+        // Using isCloseTo for floating-point comparisons
+        assertThat(16.0).isCloseTo(Math.pow(x, 2), within(0.0001));
+        assertThat(64.0).isCloseTo(Math.pow(x, 3), within(0.0001));
+    }
+
+    @Test
+    @DisplayName("Only do this is you are begging for a code review")
+    void pleaseDontDoThis() {
+        int i = 5;
+        int result = i++ + ++i * 2 - --i / 3; // Danger, Will Robinson! 🤖
+        // This is a complex expression with multiple increments/decrements
+        // Result breakdown:
+        // i++: 5 (then i becomes 6)
+        // ++i: 7 (i is now 7)
+        // --i: 6 (i is now 6)
+        // Final calculation: 5 + 7 * 2 - 6 / 3
+        // = 5 + 14 - 2 = 17
+        assertThat(result).isEqualTo(17);
     }
 }

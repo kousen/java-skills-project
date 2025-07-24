@@ -1,4 +1,3 @@
-
 ---
 layout: cover
 --- 
@@ -15,7 +14,7 @@ layout: cover
 
 # Contact Info
 
-Ken Kousen<br>
+**Ken Kousen**<br>
 Kousen IT, Inc.
 
 - ken.kousen@kousenit.com
@@ -29,8 +28,6 @@ Kousen IT, Inc.
   - https://kenkousen.substack.com
   - https://youtube.com/@talesfromthejarside
 
----
-layout: section
 ---
 
 # Why Precedence Matters
@@ -85,7 +82,7 @@ layout: section
 
 # Arithmetic & Boolean Precedence
 
-Let's look at `OperatorPrecedenceTest.java` to see how this works.
+Let's look at `com.oreilly.javaskills.OperatorPrecedenceTest.java` to see how this works.
 
 ```java
 // Arithmetic: Multiplication (*) happens before Addition (+)
@@ -115,8 +112,6 @@ int a = ++i; // a is 6, i is 6
 int b = i++; // b is 5, i is 6
 ```
 
----
-layout: section
 ---
 
 # Key Takeaways

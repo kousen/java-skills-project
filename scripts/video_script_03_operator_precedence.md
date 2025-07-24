@@ -2,11 +2,11 @@
 # Video Script: Java Operator Precedence
 
 **Goal:** 3. Combine multiple expressions using correct operator precedence.
-**Target Duration:** 3-4 minutes
+**Target Duration:** 3–4 minutes
 
 ---
 
-### SCENE 1: Introduction (0:00 - 0:30)
+### SCENE 1: Introduction (0:00–0:30)
 
 **(Show Slide 1: Title Slide - "Java Operator Precedence")**
 
@@ -20,7 +20,7 @@
 
 ---
 
-### SCENE 2: The Hierarchy (0:30 - 1:15)
+### SCENE 2: The Hierarchy (0:30–1:15)
 
 **(Show Slide 3: The Precedence Hierarchy)**
 
@@ -35,14 +35,14 @@
 
 ---
 
-### SCENE 3: Code Demo - Arithmetic and Boolean (1:15 - 2:15)
+### SCENE 3: Code Demo—Arithmetic and Boolean (1:15–2:15)
 
 **(Show Slide 4: Arithmetic Precedence)**
 
 **YOU:**
 "Let's see how this works with arithmetic operations."
 
-**(Transition to IDE showing `OperatorPrecedenceTest.java`)**
+**(Transition to IDE showing `com.oreilly.javaskills.OperatorPrecedenceTest.java`)**
 
 **YOU:**
 "Let's see this in a test file, which is a great way to prove the behavior. In this first test, we have a salary calculation."
@@ -76,7 +76,7 @@
 
 ---
 
-### SCENE 5: Conclusion (3:15 - 3:45)
+### SCENE 5: Conclusion (3:15–3:45)
 
 **(Show Slide 6: Key Takeaways)**
 
