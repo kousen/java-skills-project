@@ -1,59 +1,57 @@
 [SCENE 1: INTRODUCTION - 30 SECONDS]
 
-(Show Slide 1: Title Slide - "Java Operator Precedence")
+(Show Slide 1: Title Slide - "Java Scanner & User Input")
 
-Hi everyone. In this video, we're going to tackle a topic that can be the source of very subtle bugs: Operator Precedence.
+Welcome back. So far, our programs have been self-contained. In this video, we'll learn how to make them interactive by reading input from the user at the console, using the java.util.Scanner class.
 
-(Show Slide 2: Why Precedence Matters)
+(Transition to Slide 2: Reading Console Input)
 
-Operator precedence is simply the set of rules that dictates the order in which operations are performed in a Java expression. Getting this wrong can lead to incorrect calculations and logic errors. The golden rule is: when in doubt, use parentheses!
+The Scanner is the standard tool for this job. It's powerful, but it has a few quirks. The most important rule when dealing with user input is to never trust it. Always assume the user will enter something unexpected, and write your code to handle that gracefully.
 
-[SCENE 2: THE HIERARCHY - 45 SECONDS]
+[SCENE 2: THE NEXTINT() VS NEXTLINE() PITFALL - 60 SECONDS]
 
-(Show Slide 3: The Precedence Hierarchy)
+(Show Slide 3: The nextInt() vs nextLine() Pitfall)
 
-Java has a well-defined hierarchy. At the top, with the highest precedence, we have postfix operators like x++, followed by unary operators like ++x and the logical NOT !.
+Let's address the single biggest point of confusion with Scanner right away. You might be tempted to use methods like nextInt() or nextDouble() to read numbers, but this can cause problems. When you type a number and hit Enter, nextInt() reads the number, but it leaves the newline character—the 'Enter' key press—in the input buffer.
 
-Next comes multiplicative operators—multiply, divide, and modulus—which are all evaluated before the additive operators, plus and minus.
+If your next call is to nextLine(), it will immediately read that leftover newline and return an empty string, effectively skipping the prompt for the user. It's a frustrating bug.
 
-Further down, we have relational and equality operators, then logical AND, then logical OR, and finally, near the bottom, the assignment operators.
+The solution is simple: always read input one full line at a time using nextLine(). Then, if you need a number, you can parse it from the string. This completely avoids the problem.
 
-[SCENE 3: CODE DEMO—ARITHMETIC AND BOOLEAN - 60 SECONDS]
+[SCENE 3: CODE DEMO - THE VALIDATION LOOP - 90 SECONDS]
 
-(Show Slide 4: Arithmetic Precedence)
+(Show Slide 4: The Robust Validation Loop)
 
-Let's see how this works with arithmetic operations.
+Now let's see how to build a robust validation loop that handles any input gracefully.
 
-(Transition to IDE showing com.oreilly.javaskills.OperatorPrecedenceTest.java)
+(Transition to IDE showing com.oreilly.javaskills.EmployeeInput.java)
 
-Let's see this in a test file, which is a great way to prove the behavior. In this first test, we have a salary calculation.
+Let's look at a robust example in the com.oreilly.javaskills.EmployeeInput.java file. We're going to ask the user for several pieces of information to create an employee record.
 
-(Highlight the arithmetic test)
+(Scroll to the getIntInput method)
 
-Even though addition appears first, the multiplication overtime * overtimeRate * hourlyRate is performed first because multiplication has higher precedence. The test assertion confirms this expected result.
+How do we handle cases where the user types 'abc' when we're expecting a number? We use a validation loop. Look at this getIntInput method. It starts an infinite while(true) loop. Inside, a try-catch block attempts to read a line and parse it as an integer. If it succeeds, it returns the number and the loop ends.
 
-(Highlight the boolean test)
+But if Integer.parseInt fails because the input isn't a valid number, it throws a NumberFormatException. We catch that exception, print a friendly error message, and the loop continues, prompting the user to try again. This pattern is extremely useful for creating robust interactive programs.
 
-It's the same with boolean logic. The && operator has higher precedence than ||. So this expression is evaluated as isFullTime OR the result of hasBonus && yearsOfService > 2. Again, parentheses make this much clearer, but it's important to know the default behavior.
+(Briefly show the getDoubleInput and getDateInput methods)
 
-[SCENE 4: CODE DEMO - INCREMENT OPERATORS - 60 SECONDS]
+We use the exact same pattern for reading a double for the salary and even for parsing a date in a specific format.
 
-(Show Slide 5: Pre-increment vs Post-increment)
+[SCENE 4: CODE DEMO - TRY-WITH-RESOURCES - 45 SECONDS]
 
-Now for a classic point of confusion: pre-increment versus post-increment.
+(Show Slide 5: Resource Management)
 
-(Return to IDE, highlight the increment/decrement test)
+One last important point. Scanner is a resource that needs to be closed when you're done with it to prevent resource leaks. The best way to do this is with a try-with-resources statement.
 
-In this test, we look at ++i (pre-increment) first. The variable i is incremented before its value is used in the expression. So i becomes 6, and the result is 12.
+(Return to IDE, highlight the main method's try block)
 
-But with i++ (post-increment), the original value of i is used in the expression first, and then i is incremented. So the expression evaluates to 10, and only after that does i become 6. As you can see from the test, it's a real difference, so be careful when using these inside complex expressions.
+Here in our main method, we declare the scanner inside the parentheses of the try block. This tells Java to automatically call the close() method on the scanner for us when the block is finished, whether it completes normally or an error occurs. It's the modern, safe way to manage resources.
 
 [SCENE 5: CONCLUSION - 30 SECONDS]
 
 (Show Slide 6: Key Takeaways)
 
-So, to wrap up: remember that multiplicative operators come before additive, and logical AND comes before logical OR. Most importantly, use parentheses whenever the order of operations isn't perfectly clear. It makes your code safer and easier for the next person to read.
+To recap: Use the Scanner class for console input. To avoid common bugs, always read a full line with nextLine() and then parse the string. Use a while loop with a try-catch block to create robust validation loops that can handle bad input. And finally, always manage your Scanner with a try-with-resources statement.
 
-(Show Slide 7: Review)
-
-That's all for this lesson. Thanks for watching!
+Thanks for watching. I'll see you in the next video.

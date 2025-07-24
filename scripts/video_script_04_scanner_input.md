@@ -42,10 +42,10 @@
 **YOU:**
 "Now let's see how to build a robust validation loop that handles any input gracefully."
 
-**(Transition to IDE showing `EmployeeInput.java`)**
+**(Transition to IDE showing `com.oreilly.javaskills.EmployeeInput.java`)**
 
 **YOU:**
-"Let's look at a robust example in the `EmployeeInput.java` file. We're going to ask the user for several pieces of information to create an employee record."
+"Let's look at a robust example in the `com.oreilly.javaskills.EmployeeInput.java` file. We're going to ask the user for several pieces of information to create an employee record."
 
 **(Scroll to the `getIntInput` method)**
 

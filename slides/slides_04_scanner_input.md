@@ -1,4 +1,3 @@
-
 ---
 layout: cover
 --- 
@@ -15,7 +14,7 @@ layout: cover
 
 # Contact Info
 
-Ken Kousen<br>
+**Ken Kousen**<br>
 Kousen IT, Inc.
 
 - ken.kousen@kousenit.com
@@ -29,8 +28,6 @@ Kousen IT, Inc.
   - https://kenkousen.substack.com
   - https://youtube.com/@talesfromthejarside
 
----
-layout: section
 ---
 
 # Reading Console Input
@@ -128,8 +125,6 @@ try (Scanner scanner = new Scanner(System.in)) {
 }
 ```
 
----
-layout: section
 ---
 
 # Key Takeaways
