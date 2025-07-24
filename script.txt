@@ -1,73 +1,71 @@
 [SCENE 1: INTRODUCTION - 30 SECONDS]
 
-(Show Slide 1: Title Slide - "Java Naming Conventions")
+(Show Slide 1: Title Slide—"Java Escape Characters")
 
-Hi everyone, and welcome to this series on essential Java skills. Today, we're starting with a fundamental topic that's crucial for writing professional, readable code: Java Naming Conventions.
+Welcome back! In this video, we're going to cover a simple but powerful feature for controlling how your text output looks: Escape Characters.
 
-(Transition to Slide 2: Why Naming Matters)
+(Show Slide: What Are Escape Characters?)
 
-Why does this matter so much? Because code is read far more often than it's written. Good naming conventions make your code self-documenting and easier for you and your team to understand and maintain.
+So, what are they? Escape characters are special sequences that let you insert non-printable or reserved characters into your strings. They always start with a backslash and are needed for formatting console output, creating file content, and more.
 
-[SCENE 2: THE CORE CONVENTIONS - 60 SECONDS]
+[SCENE 2: THE MOST COMMON CHARACTERS - 30 SECONDS]
 
-(Show Slide 3: The Core Conventions)
+(Show Slide: Common Escape Characters)
 
-Java has a few core conventions that you'll see everywhere. Let's break them down.
+Let's look at the most common ones you'll use all the time.
 
-First, Types - that's classes, interfaces, annotations, enums, and records - all use PascalCase. Think of nouns, like Employee, SalaryCalculator, or our Department enum.
+First, \n creates a newline. It's like hitting the Enter key.
 
-Next, Variables and Methods use camelCase, or lower camel case. Variables are typically nouns, like employeeName, and methods are verbs that describe an action, like calculateSalary.
+Next, \t inserts a tab, which is great for aligning text into columns.
 
-Third, Constants, which are variables that don't change, use UPPER_SNAKE_CASE. These are static final fields, like MAX_EMPLOYEES.
+To include a double quote inside a string that's already enclosed in double quotes, you need to escape it with \".
 
-Finally, Packages use all lowercase.with.dots, typically in a reverse domain name format, like com.oreilly.javaskills.
+And to show a literal backslash, which is common in Windows file paths, you need to escape it with another backslash, like this: \\.
 
-[SCENE 3: CODE DEMO - GOOD EXAMPLES - 60 SECONDS]
+[SCENE 3: CODE DEMO - 90 SECONDS]
 
-(Transition to IDE showing com.oreilly.javaskills.NamingConventions.java)
+(Transition to IDE showing EscapeCharacters.java)
 
-Okay, let's see this in action. Here in our com.oreilly.javaskills.NamingConventions.java file, we can see these rules applied.
+Okay, let's see these in action in our EscapeCharacters.java file. It makes a lot more sense when you see the output.
 
-(Highlight the relevant lines in the code as you speak)
+(Highlight the \n section and run the code)
 
-At the top, we have our class, com.oreilly.javaskills.NamingConventions, in PascalCase.
+Here we have a string with a \n newline character. When we print it, you can see the text breaks into two separate lines right where the \n was.
 
-Here are our constants like COMPANY_NAME, MAX_EMPLOYEES, and CURRENCY_FORMATTER, all in UPPER_SNAKE_CASE. These are static final fields whose values can't be changed.
+(Highlight the \t section)
 
-Inside our main method, we're using modern Java features. Notice how we use the var keyword for local variable type inference - var employeeName, var employeeId. The types are still strong, but the code is cleaner.
+Next, we use the \t tab character to create simple columns. See how 'Column 1' and 'Column 2' are neatly aligned in the output? This is much better than trying to line things up with spaces.
 
-Here's our Department enum, which follows PascalCase like other types. And we're using a modern switch expression to calculate the department budget - no need for a default case since we cover all enum values.
+(Highlight the \" section)
 
-And we have our method, printEmployeeDetails, in camelCase. It's a verb that clearly describes what it does. Notice that constructors are the one exception - they use PascalCase because they must match the class name.
+Here, we want to print a sentence with quotes inside it. By using \", we can include the double quotes without ending the string prematurely.
 
-[SCENE 4: CODE DEMO - MODERN FEATURES - 30 SECONDS]
+(Highlight the \\ section)
 
-Let's also look at how we're using modern Java 21 features throughout. The printEmployeeDetails method uses text blocks with the formatted() method - much cleaner than string concatenation.
+And finally, here is a Windows file path. We have to use \\ for every backslash we want to appear in the final output. This is a very common use case.
 
-And notice how we're using List.of() for our VALID_DEPARTMENTS constant - this creates an immutable list using modern Java syntax.
+[SCENE 4: MODERN JAVA ALTERNATIVE - 60 SECONDS]
 
-[SCENE 5: CODE DEMO - COMMON MISTAKES - 45 SECONDS]
+(Scroll down to show text blocks section in the code)
 
-(Show Slide: Common Mistakes to Avoid)
+Now, here's something really cool. In Java 15, they introduced text blocks, which eliminate the need for most escape characters!
 
-It's also helpful to see what not to do. Let's look at some common mistakes.
+Look at this JSON example. The old way requires \n for every line break and \" for every quote. It's hard to read and easy to make mistakes.
 
-(Scroll down in com.oreilly.javaskills.NamingConventions.java to the "Bad Naming Conventions" section)
+But with text blocks using triple-double quotes, we can write the JSON exactly as we want it to appear. No escape characters needed! The indentation is preserved, the quotes are literal, and it's much more readable.
 
-Here, we have a variable n. This is a bad name because it's not descriptive. What does 'n' stand for? We should use something like fullName instead.
+(Show the SQL example)
 
-This variable, ANOTHER_NAME, is in all caps, which makes it look like a constant, but it isn't. This is very confusing and should be in camelCase.
+Text blocks work great for SQL queries, HTML, XML, or any multi-line string. The only exception is backslashes—they still need to be escaped even in text blocks.
 
-The variable employee_id uses snake_case. While common in other languages like Python, the Java convention is to use camelCase.
-
-And finally, the variable Name starts with a capital letter, which makes it look like a Class name. This can be very misleading.
-
-[SCENE 6: CONCLUSION - 30 SECONDS]
+[SCENE 5: CONCLUSION - 30 SECONDS]
 
 (Show Slide: Key Takeaways)
 
-So, let's recap the key takeaways. Use PascalCase for all types - classes, interfaces, annotations, enums, and records. Use camelCase for variables and methods, with constructors being the one exception since they match the class name. Use UPPER_SNAKE_CASE for constants.
+So, to quickly recap: escape characters give you fine-grained control over your string output.
 
-Remember that packages use lowercase.with.dots. And as we've seen, modern Java gives us great tools like var, text blocks, and enhanced switch expressions to write cleaner, more readable code.
+Remember \n for new lines, \t for tabs, \" for quotes, and \\ for backslashes. But here's the modern Java tip: use text blocks with triple quotes for multi-line strings to avoid most of these escape characters!
 
-Adopting these conventions is one of the easiest ways to make your code more professional and readable. That's all for this lesson. Thanks for watching, and I'll see you in the next video!
+Mastering both approaches - traditional escape characters and modern text blocks - will make your code much cleaner and more professional.
+
+That's it for this lesson. Thanks for watching!

@@ -20,7 +20,7 @@ public class EscapeCharacters {
         String withTab = "Column 1\tColumn 2\tColumn 3";
         System.out.println("\nTab Example:");
         System.out.println(withTab);
-        System.out.println("Value A\tValue B\tValue C");
+        System.out.println("Value A\t\tValue B\t\tValue C");
 
         // 3. Double Quote (`\"`)
         // To include a double quote inside a string literal, you must escape it.

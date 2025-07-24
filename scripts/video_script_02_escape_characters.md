@@ -2,27 +2,27 @@
 # Video Script: Java Escape Characters
 
 **Goal:** 2. Use escape characters (e.g., \n, \t) in String output to control formatting.
-**Target Duration:** 3-4 minutes
+**Target Duration:** 4–4.5 minutes
 
 ---
 
-### SCENE 1: Introduction (0:00 - 0:30)
+### SCENE 1: Introduction (0:00–0:30)
 
-**(Show Slide 1: Title Slide - "Java Escape Characters")**
+**(Show Slide 1: Title Slide—"Java Escape Characters")**
 
 **YOU:**
 "Welcome back! In this video, we're going to cover a simple but powerful feature for controlling how your text output looks: **Escape Characters**."
 
-**(Transition to Slide 2: What Are Escape Characters?)**
+**(Show Slide: What Are Escape Characters?)**
 
 **YOU:**
-"So, what are they? Escape characters are special sequences that let you insert non-printable or reserved characters into your strings. They always start with a backslash and are essential for formatting console output, creating file content, and more."
+"So, what are they? Escape characters are special sequences that let you insert non-printable or reserved characters into your strings. They always start with a backslash and are needed for formatting console output, creating file content, and more."
 
 ---
 
-### SCENE 2: The Most Common Characters (0:30 - 1:00)
+### SCENE 2: The Most Common Characters (0:30–1:00)
 
-**(Show Slide 3: Common Escape Characters)**
+**(Show Slide: Common Escape Characters)**
 
 **YOU:**
 "Let's look at the most common ones you'll use all the time."
@@ -41,7 +41,7 @@
 
 ---
 
-### SCENE 3: Code Demo (1:00 - 2:30)
+### SCENE 3: Code Demo (1:00–2:30)
 
 **(Transition to IDE showing `EscapeCharacters.java`)**
 
@@ -70,15 +70,38 @@
 
 ---
 
-### SCENE 4: Conclusion (2:30 - 3:00)
+### SCENE 4: Modern Java Alternative (2:30 - 3:30)
 
-**(Show Slide 5: Key Takeaways)**
+**(Scroll down to show text blocks section in the code)**
+
+**YOU:**
+"Now, here's something really cool. In Java 15, they introduced **text blocks**, which eliminate the need for most escape characters!"
+
+**YOU:**
+"Look at this JSON example. The old way requires `\n` for every line break and `\"` for every quote. It's hard to read and easy to make mistakes."
+
+**YOU:**
+"But with text blocks using triple-double quotes, we can write the JSON exactly as we want it to appear. No escape characters needed! The indentation is preserved, the quotes are literal, and it's much more readable."
+
+**(Show the SQL example)**
+
+**YOU:**
+"Text blocks work great for SQL queries, HTML, XML, or any multi-line string. The only exception is backslashes—they still need to be escaped even in text blocks."
+
+---
+
+### SCENE 5: Conclusion (3:30–4:00)
+
+**(Show Slide: Key Takeaways)**
 
 **YOU:**
 "So, to quickly recap: escape characters give you fine-grained control over your string output."
 
 **YOU:**
-"Remember `\n` for new lines, `\t` for tabs, `\"` for quotes, and `\\` for backslashes. Mastering these simple sequences will make your application's text output much cleaner and more professional."
+"Remember `\n` for new lines, `\t` for tabs, `\"` for quotes, and `\\` for backslashes. But here's the modern Java tip: use text blocks with triple quotes for multi-line strings to avoid most of these escape characters!"
+
+**YOU:**
+"Mastering both approaches - traditional escape characters and modern text blocks - will make your code much cleaner and more professional."
 
 **YOU:**
 "That's it for this lesson. Thanks for watching!"

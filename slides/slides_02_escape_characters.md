@@ -137,6 +137,7 @@ String json = """
 
 <v-clicks>
 
+- **Modern Java tip**: Use text blocks (`"""`) for multi-line strings to avoid most escape characters!
 - Mastering these simple tools makes your program's output much cleaner and more readable.
 
 </v-clicks>
