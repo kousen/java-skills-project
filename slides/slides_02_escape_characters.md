@@ -1,5 +1,3 @@
-
-
 ---
 layout: cover
 ---
@@ -16,7 +14,7 @@ layout: cover
 
 # Contact Info
 
-Ken Kousen<br>
+**Ken Kousen**<br>
 Kousen IT, Inc.
 
 - ken.kousen@kousenit.com
@@ -30,8 +28,6 @@ Kousen IT, Inc.
   - https://kenkousen.substack.com
   - https://youtube.com/@talesfromthejarside
 
----
-layout: section
 ---
 
 # What Are Escape Characters?
@@ -52,20 +48,20 @@ layout: section
 
 <div>
 
-## **`\n` - Newline**
+## **<span style="color: #00D4FF;">`\n`</span> - Newline**
 - Moves the cursor to the next line.
 
-## **`\t` - Tab**
+## **<span style="color: #00D4FF;">`\t`</span> - Tab**
 - Inserts a horizontal tab space.
 
 </div>
 
 <div>
 
-## **`\"` - Double Quote**
+## **<span style="color: #00D4FF;">`\"`</span> - Double Quote**
 - Inserts a `"` character.
 
-## **`\\` - Backslash**
+## **<span style="color: #00D4FF;">`\\`</span> - Backslash**
 - Inserts a `\` character.
 
 </div>
@@ -93,7 +89,40 @@ String filePath = "C:\\Users\\Guest\\Documents";
 ```
 
 ---
-layout: section
+
+# Modern Java: Text Blocks
+
+<v-clicks>
+
+- **Text blocks** (added in Java 15) eliminate most escape character needs!
+- Use `"""` triple quotes for multi-line strings
+- No need for `\n` for line breaks or `\"` for quotes
+
+</v-clicks>
+
+<v-clicks>
+
+```java
+// Old way with escape characters
+String json = "{\n  \"name\": \"John\",\n  \"age\": 30\n}";
+
+// Modern way with text blocks
+String json = """
+    {
+      "name": "John",
+      "age": 30
+    }
+    """;
+```
+
+</v-clicks>
+
+<v-click>
+
+- Still need `\\` for backslashes and can use other escapes if needed
+
+</v-click>
+
 ---
 
 # Key Takeaways
@@ -111,4 +140,3 @@ layout: section
 - Mastering these simple tools makes your program's output much cleaner and more readable.
 
 </v-clicks>
-

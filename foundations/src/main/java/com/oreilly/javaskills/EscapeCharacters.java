@@ -1,5 +1,4 @@
-
-package com.oreilly.javaskills.foundations;
+package com.oreilly.javaskills;
 
 /**
  * This class demonstrates the use of common escape characters in Java strings.
@@ -40,9 +39,49 @@ public class EscapeCharacters {
         // While not always required in a String, it's good practice to escape single quotes.
         // It is required inside a character literal (char).
         String withSingleQuote = "It's a beautiful day."; // Works without escaping
-        String withEscapedSingleQuote = "It\'s a beautiful day."; // Also works
+        String withEscapedSingleQuote = "It\'s a beautiful day."; // Also works, but not necessary
         char quoteChar = '\''; // Required here
-        System.out.println("\nSingle Quote Example:");
+        System.out.println("\nSingle Quote Examples:");
+        System.out.println(withSingleQuote + " (no escape needed)");
         System.out.println(withEscapedSingleQuote + " (char: " + quoteChar + ")");
+        
+        // 6. Modern Java: Text Blocks (Java 15+)
+        // Text blocks eliminate the need for most escape characters!
+        System.out.println("\n--- Modern Java: Text Blocks (Java 15+) ---");
+        
+        // Old way with escape characters
+        String jsonOldWay = "{\n  \"name\": \"John Doe\",\n  \"age\": 30,\n  \"address\": \"123 Main St.\"\n}";
+        System.out.println("Old way with escape characters:");
+        System.out.println(jsonOldWay);
+        
+        // Modern way with text blocks - no escape characters needed!
+        String jsonTextBlock = """
+            {
+              "name": "John Doe",
+              "age": 30,
+              "address": "123 Main St."
+            }
+            """;
+        System.out.println("\nModern way with text blocks:");
+        System.out.println(jsonTextBlock);
+        
+        // Text blocks also work great for SQL, HTML, etc.
+        String sqlQuery = """
+            SELECT employee_id, first_name, last_name
+            FROM employees
+            WHERE department = "Engineering"
+            AND salary > 50000
+            ORDER BY last_name
+            """;
+        System.out.println("\nSQL Example with text blocks:");
+        System.out.println(sqlQuery);
+        
+        // Note: You still need to escape backslashes in text blocks
+        String windowsPath = """
+            File path on Windows still needs escaped backslashes:
+            C:\\Users\\Guest\\Documents\\file.txt
+            """;
+        System.out.println("\nBackslashes still need escaping:");
+        System.out.println(windowsPath);
     }
 }
