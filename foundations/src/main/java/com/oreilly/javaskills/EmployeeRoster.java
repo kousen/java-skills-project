@@ -1,3 +1,5 @@
+package com.oreilly.javaskills;
+
 import java.util.Arrays;
 
 public class EmployeeRoster {

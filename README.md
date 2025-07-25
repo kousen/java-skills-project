@@ -89,7 +89,7 @@ npm run export      # Export to PDF
 - **StringFormatting.java** - String concatenation, formatting, text blocks, StringBuilder, String.join(), StringJoiner, escape characters, SLF4J logging
 - **com.oreilly.javaskills.OperatorPrecedenceTest.java** - JUnit tests demonstrating operator precedence rules with arithmetic, boolean, assignment, ternary, increment/decrement, modulus, and Math.pow() examples
 - **com.oreilly.javaskills.EmployeeInput.java** - Scanner input with try-with-resources, robust validation loops, and user-friendly error handling for all data types
-- **EmployeeRoster.java** - Multidimensional arrays (2D), nested loops (indexed and enhanced), parallel arrays, statistics calculations, search operations
+- **com.oreilly.javaskills.EmployeeRoster.java** - Multidimensional arrays (2D), nested loops (indexed and enhanced), parallel arrays, statistics calculations, search operations
 - **EmployeeFileWriter.java** - Traditional file I/O operations (CSV, JSON, Apache Commons IO)
 - **EmployeeLogger.java** - Comprehensive logging examples with SLF4J/Logback, MDC, different log levels
 - **ModernEmployeeFileManager.java** - **BONUS**: Modern NIO.2 file operations (Java 7+)

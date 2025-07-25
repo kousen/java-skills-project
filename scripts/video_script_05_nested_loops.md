@@ -49,10 +49,10 @@
 
 ### SCENE 4: Real-World Example (1:30 - 2:30)
 
-**(Transition to IDE showing `EmployeeRoster.java`)**
+**(Transition to IDE showing `com.oreilly.javaskills.EmployeeRoster.java`)**
 
 **YOU:**
-"Let's look at our Employee Management System. In the `EmployeeRoster` class, we have a perfect example in the `calculateStatistics` method."
+"Let's look at our Employee Management System. In the `com.oreilly.javaskills.EmployeeRoster` class, we have a perfect example in the `calculateStatistics` method."
 
 **(Highlight the nested loop in calculateStatistics)**
 

@@ -1,4 +1,3 @@
-
 ---
 layout: cover
 --- 
@@ -15,7 +14,7 @@ layout: cover
 
 # Contact Info
 
-Ken Kousen<br>
+**Ken Kousen**<br>
 Kousen IT, Inc.
 
 - ken.kousen@kousenit.com
@@ -29,8 +28,6 @@ Kousen IT, Inc.
   - https://kenkousen.substack.com
   - https://youtube.com/@talesfromthejarside
 
----
-layout: section
 ---
 
 # What is a 2D Array?
@@ -111,12 +108,12 @@ for (int row = 0; row < array.length; row++) {
 
 ---
 
-# Code Demo: `EmployeeRoster.java`
+# Code Demo: `com.oreilly.javaskills.EmployeeRoster.java`
 
 Let's see a practical example of calculating statistics for each department using nested loops.
 
 ```java
-// From EmployeeRoster.java
+// From com.oreilly.javaskills.EmployeeRoster.java
 
 // Outer loop: Iterate through each department's salary list
 for (int dept = 0; dept < salaries.length; dept++) {
@@ -136,8 +133,6 @@ for (int dept = 0; dept < salaries.length; dept++) {
 }
 ```
 
----
-layout: section
 ---
 
 # Key Takeaways

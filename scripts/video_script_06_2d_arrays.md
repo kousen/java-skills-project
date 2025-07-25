@@ -71,10 +71,10 @@
 
 ### SCENE 5: Real-World Implementation (2:00 - 2:45)
 
-**(Transition to IDE showing `EmployeeRoster.java`)**
+**(Transition to IDE showing `com.oreilly.javaskills.EmployeeRoster.java`)**
 
 **YOU:**
-"Let's look at our `EmployeeRoster` class. We have two parallel 2D arrays - one for names and one for salaries."
+"Let's look at our `com.oreilly.javaskills.EmployeeRoster` class. We have two parallel 2D arrays - one for names and one for salaries."
 
 **(Highlight the arrays and processing methods)**
 
@@ -88,7 +88,7 @@
 
 ### SCENE 6: Advanced Features and Best Practices (2:45 - 3:15)
 
-**(Show Slide 5: Code Demo: EmployeeRoster.java)**
+**(Show Slide 5: Code Demo: com.oreilly.javaskills.EmployeeRoster.java)**
 
 **YOU:**
 "Here's something powerful - each row in a 2D array can have different lengths! This is called a 'jagged array'. Engineering might have 8 people, while Marketing has only 3."
