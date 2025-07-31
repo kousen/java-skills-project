@@ -1,25 +1,25 @@
-# Video Script: Nested Loops for Processing Multidimensional Data
+# Video Script: Nested Loops in Java
 
-**Goal:** 5. Implement nested loops to process multidimensional employee data.  
-**Target Duration:** 3-4 minutes
+**Goal:** 5. Implement nested loops to process complex data and create patterns.  
+**Target Duration:** 4–5 minutes
 
 ---
 
-### SCENE 1: Introduction (0:00 - 0:30)
+### SCENE 1: Introduction (0:00–0:30)
 
-**(Show Slide 1: Title Slide - "Nested Loops for Processing Multidimensional Data")**
+**(Show Slide 1: Title Slide—"Nested Loops in Java")**
 
 **YOU:**
-"Hi everyone, and welcome to this series on essential Java skills. Today we're diving into **nested loops** - one of the most powerful patterns in programming for handling complex data structures."
+"Hi everyone. Welcome back to our series on essential Java skills. Today we're diving into **nested loops**—one of the most powerful patterns in programming for handling complex data and creating visual patterns."
 
 **(Transition to Slide 2: Why Nested Loops Matter)**
 
 **YOU:**
-"If you've ever needed to process grids, tables, or any data that has multiple dimensions, nested loops are your solution. Think of organizing a company picnic where you need to check attendance for every employee in every department."
+"Nested loops are natural for multidimensional arrays, but we'll talk about that in the next video. Here, we'll use them for employee pairing, generating schedules, finding duplicates, and even creating visual patterns. Let's explore these practical applications."
 
 ---
 
-### SCENE 2: Understanding the Concept (0:30 - 1:00)
+### SCENE 2: Understanding the Concept (0:30–1:00)
 
 **(Show Slide 3: Nested Loop Concept)**
 
@@ -29,11 +29,11 @@
 **(Show Slide 4: Visual Representation)**
 
 **YOU:**
-"This ensures you don't miss anyone - you systematically visit every single person in the entire company. It's a methodical way to handle two-dimensional data."
+"This ensures you don't miss anyone—you systematically visit every single person in the entire company. It's a methodical way to handle two-dimensional data."
 
 ---
 
-### SCENE 3: The Classic Pattern (1:00 - 1:30)
+### SCENE 3: The Classic Pattern (1:00–1:30)
 
 **(Show Slide 5: Basic Nested Loop Pattern)**
 
@@ -43,52 +43,70 @@
 **(Transition to IDE showing basic nested loop code)**
 
 **YOU:**
-"The outer loop controls the first dimension - maybe departments or rows. The inner loop controls the second dimension - maybe employees or columns. This pattern works whether you're processing arrays, checking game boards, or analyzing data tables."
+"The outer loop controls the first dimension—maybe departments or rows. The inner loop controls the second dimension—maybe employees or columns. This pattern works whether you're processing arrays, checking game boards, or analyzing data tables."
 
 ---
 
-### SCENE 4: Real-World Example (1:30 - 2:30)
+### SCENE 4: Practical Examples (1:30–2:45)
 
-**(Transition to IDE showing `com.oreilly.javaskills.EmployeeRoster.java`)**
-
-**YOU:**
-"Let's look at our Employee Management System. In the `com.oreilly.javaskills.EmployeeRoster` class, we have a perfect example in the `calculateStatistics` method."
-
-**(Highlight the nested loop in calculateStatistics)**
+**(Transition to IDE showing `com.oreilly.javaskills.NestedLoopsDemo.java`)**
 
 **YOU:**
-"Here, we're calculating average salaries by department. The outer loop iterates through each department - Engineering, Marketing, Sales."
+"Let's look at practical examples in our `NestedLoopsDemo` class. These show nested loops without 2D arrays."
+
+**(Highlight the mentorship pairing method)**
 
 **YOU:**
-"For each department, we reset our counters, then the inner loop examines every employee in that department. We accumulate salaries and count employees, then calculate the average."
+"Here's employee mentorship pairing. The outer loop goes through each mentor, and the inner loop checks every new hire. We only pair them if they're in the same department."
+
+**(Show the work schedule generation)**
 
 **YOU:**
-"Notice how the nested structure ensures we process every employee in every department systematically."
+"This method generates work schedules. Outer loop: days of the week. Inner loop: shifts per day. Every combination gets covered systematically."
+
+**(Show the duplicate finding example)**
+
+**YOU:**
+"Finding duplicates uses a classic nested loop pattern. We compare each element with every element that comes after it—that's why the inner loop starts at `i + 1`."
 
 ---
 
-### SCENE 5: Performance and Best Practices (2:30 - 3:15)
+### SCENE 5: Pattern Creation Exercise (2:45–3:45)
 
-**(Show Slide 6: Performance Considerations)**
-
-**YOU:**
-"Nested loops can be expensive! If your outer loop runs 100 times and your inner loop runs 100 times, that's 10,000 total iterations. This is called O(n²) time complexity."
-
-**(Show Slide 7: Best Practices)**
+**(Transition to IDE showing `com.oreilly.javaskills.PatternPrinting.java`)**
 
 **YOU:**
-"Here are some best practices: Use descriptive loop variable names like `department` and `employee` instead of just `i` and `j`. Consider breaking complex nested logic into separate methods. And watch for opportunities to break or continue early."
+"Now for the fun part—creating visual patterns! This is your **Try It Out** exercise."
+
+**(Show the square pattern method)**
+
+**YOU:**
+"Here's a simple square. Outer loop controls rows, inner loop prints stars for each column. Run this, and you get a 5x5 square of asterisks."
+
+**(Show the right triangle)**
+
+**YOU:**
+"For a right triangle, the inner loop limit changes each row. Row 1 prints one star, row 2 prints two stars, and so on."
+
+**(Show the diamond pattern)**
+
+**YOU:**
+"The diamond is more complex—it has an upper half and a lower half. The nested loops control both spacing and star count to create that diamond shape."
+
+**YOU:**
+"Try running the `PatternPrinting` class. Experiment with different sizes. Can you create your own pattern in the `printCustomPattern` method?"
 
 ---
 
-### SCENE 6: Conclusion (3:15 - 3:45)
+### SCENE 6: Conclusion (3:45–4:15)
 
-**(Show Slide 8: Common Use Cases)**
-
-**YOU:**
-"You'll see nested loops everywhere: processing 2D arrays, comparing every item with every other item, searching hierarchical data, game development, and image processing."
-
-**(Show Slide 9: Key Takeaways)**
+**(Show Slide 8: Key Takeaways)**
 
 **YOU:**
-"Nested loops are essential for processing multidimensional data. Master this pattern, and you'll tackle complex data processing tasks with confidence. Next time, we'll explore 2D arrays - the perfect data structure to pair with nested loops. Thanks for watching!"
+"Nested loops aren't just for multidimensional arrays. Use them for employee pairing, schedule generation, duplicate detection, and pattern creation."
+
+**YOU:**
+"Remember: outer loop controls the first dimension, inner loop controls the second. Watch out for O(n²) performance, but don't let that stop you—many problems require this approach."
+
+**YOU:**
+"Your exercise: complete the pattern printing challenges and create your own custom pattern. Master nested loops, and you'll handle complex data processing with confidence. Thanks for watching!"

@@ -1,73 +1,77 @@
 [SCENE 1: INTRODUCTION - 30 SECONDS]
 
-(Show Slide 1: Title Slide - "Java Naming Conventions")
+(Show Slide 1: Title Slide—"Nested Loops in Java")
 
-Hi everyone, and welcome to this series on essential Java skills. Today, we're starting with a fundamental topic that's crucial for writing professional, readable code: Java Naming Conventions.
+Hi everyone. Welcome back to our series on essential Java skills. Today we're diving into nested loops—one of the most powerful patterns in programming for handling complex data and creating visual patterns.
 
-(Transition to Slide 2: Why Naming Matters)
+(Transition to Slide 2: Why Nested Loops Matter)
 
-Why does this matter so much? Because code is read far more often than it's written. Good naming conventions make your code self-documenting and easier for you and your team to understand and maintain.
+Nested loops are natural for multidimensional arrays, but we'll talk about that in the next video. Here, we'll use them for employee pairing, generating schedules, finding duplicates, and even creating visual patterns. Let's explore these practical applications.
 
-[SCENE 2: THE CORE CONVENTIONS - 60 SECONDS]
+[SCENE 2: UNDERSTANDING THE CONCEPT - 30 SECONDS]
 
-(Show Slide 3: The Core Conventions)
+(Show Slide 3: Nested Loop Concept)
 
-Java has a few core conventions that you'll see everywhere. Let's break them down.
+A nested loop is simply a loop inside another loop. The outer loop goes through each department, one by one. For each department, the inner loop goes through every employee in that department.
 
-First, Types - that's classes, interfaces, annotations, enums, and records - all use PascalCase. Think of nouns, like Employee, SalaryCalculator, or our Department enum.
+(Show Slide 4: Visual Representation)
 
-Next, Variables and Methods use camelCase, or lower camel case. Variables are typically nouns, like employeeName, and methods are verbs that describe an action, like calculateSalary.
+This ensures you don't miss anyone—you systematically visit every single person in the entire company. It's a methodical way to handle two-dimensional data.
 
-Third, Constants, which are variables that don't change, use UPPER_SNAKE_CASE. These are static final fields, like MAX_EMPLOYEES.
+[SCENE 3: THE CLASSIC PATTERN - 30 SECONDS]
 
-Finally, Packages use all lowercase.with.dots, typically in a reverse domain name format, like com.oreilly.javaskills.
+(Show Slide 5: Basic Nested Loop Pattern)
 
-[SCENE 3: CODE DEMO - GOOD EXAMPLES - 60 SECONDS]
+Here's the fundamental nested loop pattern you'll use repeatedly.
 
-(Transition to IDE showing com.oreilly.javaskills.NamingConventions.java)
+(Transition to IDE showing basic nested loop code)
 
-Okay, let's see this in action. Here in our com.oreilly.javaskills.NamingConventions.java file, we can see these rules applied.
+The outer loop controls the first dimension—maybe departments or rows. The inner loop controls the second dimension—maybe employees or columns. This pattern works whether you're processing arrays, checking game boards, or analyzing data tables.
 
-(Highlight the relevant lines in the code as you speak)
+[SCENE 4: PRACTICAL EXAMPLES - 75 SECONDS]
 
-At the top, we have our class, com.oreilly.javaskills.NamingConventions, in PascalCase.
+(Transition to IDE showing `com.oreilly.javaskills.NestedLoopsDemo.java`)
 
-Here are our constants like COMPANY_NAME, MAX_EMPLOYEES, and CURRENCY_FORMATTER, all in UPPER_SNAKE_CASE. These are static final fields whose values can't be changed.
+Let's look at practical examples in our `NestedLoopsDemo` class. These show nested loops without 2D arrays.
 
-Inside our main method, we're using modern Java features. Notice how we use the var keyword for local variable type inference - var employeeName, var employeeId. The types are still strong, but the code is cleaner.
+(Highlight the mentorship pairing method)
 
-Here's our Department enum, which follows PascalCase like other types. And we're using a modern switch expression to calculate the department budget - no need for a default case since we cover all enum values.
+Here's employee mentorship pairing. The outer loop goes through each mentor, and the inner loop checks every new hire. We only pair them if they're in the same department.
 
-And we have our method, printEmployeeDetails, in camelCase. It's a verb that clearly describes what it does. Notice that constructors are the one exception - they use PascalCase because they must match the class name.
+(Show the work schedule generation)
 
-[SCENE 4: CODE DEMO - MODERN FEATURES - 30 SECONDS]
+This method generates work schedules. Outer loop: days of the week. Inner loop: shifts per day. Every combination gets covered systematically.
 
-Let's also look at how we're using modern Java 21 features throughout. The printEmployeeDetails method uses text blocks with the formatted() method - much cleaner than string concatenation.
+(Show the duplicate finding example)
 
-And notice how we're using List.of() for our VALID_DEPARTMENTS constant - this creates an immutable list using modern Java syntax.
+Finding duplicates uses a classic nested loop pattern. We compare each element with every element that comes after it—that's why the inner loop starts at `i + 1`.
 
-[SCENE 5: CODE DEMO - COMMON MISTAKES - 45 SECONDS]
+[SCENE 5: PATTERN CREATION EXERCISE - 60 SECONDS]
 
-(Show Slide: Common Mistakes to Avoid)
+(Transition to IDE showing `com.oreilly.javaskills.PatternPrinting.java`)
 
-It's also helpful to see what not to do. Let's look at some common mistakes.
+Now for the fun part—creating visual patterns! This is your Try It Out exercise.
 
-(Scroll down in com.oreilly.javaskills.NamingConventions.java to the "Bad Naming Conventions" section)
+(Show the square pattern method)
 
-Here, we have a variable n. This is a bad name because it's not descriptive. What does 'n' stand for? We should use something like fullName instead.
+Here's a simple square. Outer loop controls rows, inner loop prints stars for each column. Run this, and you get a 5x5 square of asterisks.
 
-This variable, ANOTHER_NAME, is in all caps, which makes it look like a constant, but it isn't. This is very confusing and should be in camelCase.
+(Show the right triangle)
 
-The variable employee_id uses snake_case. While common in other languages like Python, the Java convention is to use camelCase.
+For a right triangle, the inner loop limit changes each row. Row 1 prints one star, row 2 prints two stars, and so on.
 
-And finally, the variable Name starts with a capital letter, which makes it look like a Class name. This can be very misleading.
+(Show the diamond pattern)
+
+The diamond is more complex—it has an upper half and a lower half. The nested loops control both spacing and star count to create that diamond shape.
+
+Try running the `PatternPrinting` class. Experiment with different sizes. Can you create your own pattern in the `printCustomPattern` method?
 
 [SCENE 6: CONCLUSION - 30 SECONDS]
 
-(Show Slide: Key Takeaways)
+(Show Slide 8: Key Takeaways)
 
-So, let's recap the key takeaways. Use PascalCase for all types - classes, interfaces, annotations, enums, and records. Use camelCase for variables and methods, with constructors being the one exception since they match the class name. Use UPPER_SNAKE_CASE for constants.
+Nested loops aren't just for multidimensional arrays. Use them for employee pairing, schedule generation, duplicate detection, and pattern creation.
 
-Remember that packages use lowercase.with.dots. And as we've seen, modern Java gives us great tools like var, text blocks, and enhanced switch expressions to write cleaner, more readable code.
+Remember: outer loop controls the first dimension, inner loop controls the second. Watch out for O(n²) performance, but don't let that stop you—many problems require this approach.
 
-Adopting these conventions is one of the easiest ways to make your code more professional and readable. That's all for this lesson. Thanks for watching, and I'll see you in the next video!
+Your exercise: complete the pattern printing challenges and create your own custom pattern. Master nested loops, and you'll handle complex data processing with confidence. Thanks for watching!
