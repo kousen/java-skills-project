@@ -69,3 +69,12 @@
 - Use a **validation loop** (`while` + `try-catch`) to handle bad inputs (6:35)
 - Close your `Scanner` with `try-with-resources` (6:42)
 
+## Nested loops
+
+- **Nested loops** are loops inside other loops. (00:34)
+- **Outer loop** controls the number of iterations (00:38)
+- **Inner loop** runs for each iteration of the outer loop (00:41)
+- **Use cases:** Processing 2D data, generating patterns, comparing elements (01:20)
+- **Performance:** Be cautious with large datasets (09:43)
+
+
