@@ -81,28 +81,28 @@ public class EmployeeRoster {
         System.out.println("=====================");
         
         for (int dept = 0; dept < salaries.length; dept++) {
-            double total = 0;
-            int count = 0;
-            double max = 0;
-            double min = Double.MAX_VALUE;
+            double totalSalaries = 0;
+            int countEmployees = 0;
+            double maxSalary = 0;
+            double minSalary = Double.MAX_VALUE;
             
             for (int emp = 0; emp < salaries[dept].length; emp++) {
                 if (salaries[dept][emp] > 0) {
-                    total += salaries[dept][emp];
-                    count++;
-                    max = Math.max(max, salaries[dept][emp]);
-                    min = Math.min(min, salaries[dept][emp]);
+                    totalSalaries += salaries[dept][emp];
+                    countEmployees++;
+                    maxSalary = Math.max(maxSalary, salaries[dept][emp]);
+                    minSalary = Math.min(minSalary, salaries[dept][emp]);
                 }
             }
             
-            if (count > 0) {
-                double average = total / count;
+            if (countEmployees > 0) {
+                double average = totalSalaries / countEmployees;
                 System.out.printf("\n%s Department:%n", departments[dept]);
-                System.out.printf("  Employees: %d%n", count);
-                System.out.printf("  Total Payroll: $%,.2f%n", total);
+                System.out.printf("  Employees: %d%n", countEmployees);
+                System.out.printf("  Total Payroll: $%,.2f%n", totalSalaries);
                 System.out.printf("  Average Salary: $%,.2f%n", average);
-                System.out.printf("  Highest Salary: $%,.2f%n", max);
-                System.out.printf("  Lowest Salary: $%,.2f%n", min);
+                System.out.printf("  Highest Salary: $%,.2f%n", maxSalary);
+                System.out.printf("  Lowest Salary: $%,.2f%n", minSalary);
             }
         }
     }

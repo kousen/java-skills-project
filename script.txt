@@ -1,77 +1,95 @@
 [SCENE 1: INTRODUCTION - 30 SECONDS]
 
-(Show Slide 1: Title Slide—"Nested Loops in Java")
+(Show Slide 1: Title Slide - "Two-Dimensional Arrays")
 
-Hi everyone. Welcome back to our series on essential Java skills. Today we're diving into nested loops—one of the most powerful patterns in programming for handling complex data and creating visual patterns.
+Hi everyone, and welcome back to this series on essential Java skills. In our last video, we explored nested loops. Today, we're looking at the perfect data structure to pair with them - two-dimensional arrays.
 
-(Transition to Slide 2: Why Nested Loops Matter)
+(Transition to Slide 2: Why 2D Arrays Matter)
 
-Nested loops are natural for multidimensional arrays, but we'll talk about that in the next video. Here, we'll use them for employee pairing, generating schedules, finding duplicates, and even creating visual patterns. Let's explore these practical applications.
+If you've ever worked with spreadsheets, game boards, or any grid-like data, 2D arrays are exactly what you need. They're the natural choice for organizing tabular information.
 
-[SCENE 2: UNDERSTANDING THE CONCEPT - 30 SECONDS]
+[SCENE 2: UNDERSTANDING 2D ARRAYS - 30 SECONDS]
 
-(Show Slide 3: Nested Loop Concept)
+(Show Slide 2: What is a 2D Array?)
 
-A nested loop is simply a loop inside another loop. The outer loop goes through each department, one by one. For each department, the inner loop goes through every employee in that department.
+A two-dimensional array is essentially an array of arrays. Think of it as a grid or table with rows and columns, just like a spreadsheet.
 
-(Show Slide 4: Visual Representation)
+(Continue with Slide 2)
 
-This ensures you don't miss anyone—you systematically visit every single person in the entire company. It's a methodical way to handle two-dimensional data.
+In our Employee Management System, we might use a 2D array to store employee data where each row represents a department and each column represents a specific employee within that department. It's perfect for organizing data that naturally fits into a table structure.
 
-[SCENE 3: THE CLASSIC PATTERN - 30 SECONDS]
+[SCENE 3: DECLARATION AND CREATION - 30 SECONDS]
 
-(Show Slide 5: Basic Nested Loop Pattern)
+(Show Slide 3: Declaring and Initializing 2D Arrays)
 
-Here's the fundamental nested loop pattern you'll use repeatedly.
+Declaring a 2D array uses two sets of square brackets.
 
-(Transition to IDE showing basic nested loop code)
+(Transition to IDE showing declaration examples)
 
-The outer loop controls the first dimension—maybe departments or rows. The inner loop controls the second dimension—maybe employees or columns. This pattern works whether you're processing arrays, checking game boards, or analyzing data tables.
+Here we declare an array, then create it with specific dimensions - 5 departments, 10 employees each. You can also initialize with data directly using this nested brace syntax.
 
-[SCENE 4: PRACTICAL EXAMPLES - 75 SECONDS]
+(Highlight the initialization code)
 
-(Transition to IDE showing `com.oreilly.javaskills.NestedLoopsDemo.java`)
+Notice how each inner array can represent a different department - Engineering, Marketing, Sales - with their respective employees.
 
-Let's look at practical examples in our `NestedLoopsDemo` class. These show nested loops without 2D arrays.
+[SCENE 4: ACCESSING AND MODIFYING ELEMENTS - 30 SECONDS]
 
-(Highlight the mentorship pairing method)
+(Show Slide 4: Nested Loops: The Key to Processing 2D Arrays)
 
-Here's employee mentorship pairing. The outer loop goes through each mentor, and the inner loop checks every new hire. We only pair them if they're in the same department.
+To access an element, you provide both row and column indices.
 
-(Show the work schedule generation)
+(Return to IDE showing access examples)
 
-This method generates work schedules. Outer loop: days of the week. Inner loop: shifts per day. Every combination gets covered systematically.
+Here we're getting the third employee in the first department. Remember, Java is zero-indexed, so the first row is index 0, first column is index 0.
 
-(Show the duplicate finding example)
+And here we're setting the first employee in the second department to a new value. The double bracket notation gives us precise control over our grid data.
 
-Finding duplicates uses a classic nested loop pattern. We compare each element with every element that comes after it—that's why the inner loop starts at `i + 1`.
+[SCENE 5: REAL-WORLD IMPLEMENTATION - 60 SECONDS]
 
-[SCENE 5: PATTERN CREATION EXERCISE - 60 SECONDS]
+(Transition to IDE showing `com.oreilly.javaskills.EmployeeRoster.java`)
 
-(Transition to IDE showing `com.oreilly.javaskills.PatternPrinting.java`)
+Let's look at our `EmployeeRoster` class. We have two parallel 2D arrays - one for employee names and one for salaries.
 
-Now for the fun part—creating visual patterns! This is your Try It Out exercise.
+(Highlight the populateRoster method)
 
-(Show the square pattern method)
+Here we're populating our 2D arrays. Each row represents a department - Engineering, Sales, Marketing, HR, Finance. Each column holds an employee in that department.
 
-Here's a simple square. Outer loop controls rows, inner loop prints stars for each column. Run this, and you get a 5x5 square of asterisks.
+(Show the calculateStatistics method)
 
-(Show the right triangle)
+This method demonstrates the power of nested loops with 2D arrays. The outer loop iterates through departments, the inner loop processes each employee's salary. We calculate totals, averages, and find min/max values.
 
-For a right triangle, the inner loop limit changes each row. Row 1 prints one star, row 2 prints two stars, and so on.
+(Show the demonstrateNestedLoops method)
 
-(Show the diamond pattern)
+Notice how we can search across all departments for specific criteria. Here we're finding all employees with 'John' in their name, regardless of department. The 2D structure lets us organize data logically while still processing it globally when needed.
 
-The diamond is more complex—it has an upper half and a lower half. The nested loops control both spacing and star count to create that diamond shape.
+[SCENE 6: TRY IT OUT EXERCISE - 60 SECONDS]
 
-Try running the `PatternPrinting` class. Experiment with different sizes. Can you create your own pattern in the `printCustomPattern` method?
+(Transition to IDE showing `com.oreilly.javaskills.TwoDArrayExercise.java`)
 
-[SCENE 6: CONCLUSION - 30 SECONDS]
+Now for your Try It Out exercise - quarterly sales analysis using 2D arrays!
 
-(Show Slide 8: Key Takeaways)
+(Show the basic 2D array creation)
 
-Nested loops aren't just for multidimensional arrays. Use them for employee pairing, schedule generation, duplicate detection, and pattern creation.
+We start with a 2D array of sales data - each row is an employee, each column is a quarter. This structure makes it easy to analyze performance across time periods.
 
-Remember: outer loop controls the first dimension, inner loop controls the second. Watch out for O(n²) performance, but don't let that stop you—many problems require this approach.
+(Show the analyzeSalesPerformance method)
 
-Your exercise: complete the pattern printing challenges and create your own custom pattern. Master nested loops, and you'll handle complex data processing with confidence. Thanks for watching!
+Here we calculate both row totals - annual sales per employee - and column totals - total sales per quarter. The 2D structure lets us slice the data both ways efficiently.
+
+(Show the createPerformanceMatrix method)
+
+This advanced example creates a growth rate matrix. We calculate quarter-over-quarter growth for each employee, then identify consistent performers. It's a practical example of transforming one 2D array into another for analysis.
+
+Try running the `TwoDArrayExercise` class. Experiment with the data, add your own analysis methods. Can you create a monthly sales matrix instead of quarterly?
+
+[SCENE 7: BEST PRACTICES & CONCLUSION - 30 SECONDS]
+
+(Show Slide 5: Advanced Features)
+
+Remember - Java 2D arrays can be jagged, meaning each row can have different lengths. Always check array bounds, and consider using constants for dimensions to avoid magic numbers.
+
+(Show Slide 6: Key Takeaways)
+
+2D arrays are perfect for spreadsheet-like data, game boards, image pixels, and any grid structure. Combined with nested loops, they're incredibly powerful for data analysis.
+
+Your exercise: complete the quarterly sales analysis and create your own 2D array analysis. Master 2D arrays, and you'll handle complex tabular data with confidence. Next time, we'll explore file I/O to save and load this data. Thanks for watching!

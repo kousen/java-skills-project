@@ -1,7 +1,7 @@
 # Video Script: Two-Dimensional Arrays
 
 **Goal:** 6. Utilize two-dimensional arrays to organize and process employee roster data.  
-**Target Duration:** 3-4 minutes
+**Target Duration:** 4-5 minutes
 
 ---
 
@@ -69,45 +69,68 @@
 
 ---
 
-### SCENE 5: Real-World Implementation (2:00 - 2:45)
+### SCENE 5: Real-World Implementation (2:00 - 3:00)
 
 **(Transition to IDE showing `com.oreilly.javaskills.EmployeeRoster.java`)**
 
 **YOU:**
-"Let's look at our `com.oreilly.javaskills.EmployeeRoster` class. We have two parallel 2D arrays - one for names and one for salaries."
+"Let's look at our `EmployeeRoster` class. We have two parallel 2D arrays - one for employee names and one for salaries."
 
-**(Highlight the arrays and processing methods)**
-
-**YOU:**
-"Notice how we use nested loops to process these arrays. The outer loop goes through each department, and the inner loop processes each employee in that department."
+**(Highlight the populateRoster method)**
 
 **YOU:**
-"The arrays work together - `employeeNames[dept][emp]` corresponds to `employeeSalaries[dept][emp]`. This pattern is incredibly common in real applications for organizing data by categories and subcategories."
+"Here we're populating our 2D arrays. Each row represents a department - Engineering, Sales, Marketing, HR, Finance. Each column holds an employee in that department."
+
+**(Show the calculateStatistics method)**
+
+**YOU:**
+"This method demonstrates the power of nested loops with 2D arrays. The outer loop iterates through departments, the inner loop processes each employee's salary. We calculate totals, averages, and find min/max values."
+
+**(Show the demonstrateNestedLoops method)**
+
+**YOU:**
+"Notice how we can search across all departments for specific criteria. Here we're finding all employees with 'John' in their name, regardless of department. The 2D structure lets us organize data logically while still processing it globally when needed."
 
 ---
 
-### SCENE 6: Advanced Features and Best Practices (2:45 - 3:15)
+### SCENE 6: Try It Out Exercise (3:00 - 4:00)
 
-**(Show Slide 5: Code Demo: com.oreilly.javaskills.EmployeeRoster.java)**
-
-**YOU:**
-"Here's something powerful - each row in a 2D array can have different lengths! This is called a 'jagged array'. Engineering might have 8 people, while Marketing has only 3."
-
-**(Continue with Slide 5)**
+**(Transition to IDE showing `com.oreilly.javaskills.TwoDArrayExercise.java`)**
 
 **YOU:**
-"You can also use enhanced for loops with 2D arrays. This is cleaner when you don't need the indices, just the values. The nested enhanced for loops naturally handle the two-dimensional structure."
+"Now for your **Try It Out** exercise - quarterly sales analysis using 2D arrays!"
+
+**(Show the basic 2D array creation)**
+
+**YOU:**
+"We start with a 2D array of sales data - each row is an employee, each column is a quarter. This structure makes it easy to analyze performance across time periods."
+
+**(Show the analyzeSalesPerformance method)**
+
+**YOU:**
+"Here we calculate both row totals - annual sales per employee - and column totals - total sales per quarter. The 2D structure lets us slice the data both ways efficiently."
+
+**(Show the createPerformanceMatrix method)**
+
+**YOU:**
+"This advanced example creates a growth rate matrix. We calculate quarter-over-quarter growth for each employee, then identify consistent performers. It's a practical example of transforming one 2D array into another for analysis."
+
+**YOU:**
+"Try running the `TwoDArrayExercise` class. Experiment with the data, add your own analysis methods. Can you create a monthly sales matrix instead of quarterly?"
 
 ---
 
-### SCENE 7: Conclusion (3:15 - 3:45)
+### SCENE 7: Best Practices & Conclusion (4:00 - 4:30)
+
+**(Show Slide 5: Advanced Features)**
+
+**YOU:**
+"Remember - Java 2D arrays can be jagged, meaning each row can have different lengths. Always check array bounds, and consider using constants for dimensions to avoid magic numbers."
 
 **(Show Slide 6: Key Takeaways)**
 
 **YOU:**
-"2D arrays are perfect for game boards, image data, mathematical matrices, seating charts - any tabular data where both dimensions matter."
-
-**(Continue with Slide 6)**
+"2D arrays are perfect for spreadsheet-like data, game boards, image pixels, and any grid structure. Combined with nested loops, they're incredibly powerful for data analysis."
 
 **YOU:**
-"Two-dimensional arrays are your go-to tool for grid-based data. Combined with nested loops from our previous video, you can process complex tabular information efficiently and elegantly. Next time, we'll explore file I/O operations to save and load our employee data. Thanks for watching!"
+"Your exercise: complete the quarterly sales analysis and create your own 2D array analysis. Master 2D arrays, and you'll handle complex tabular data with confidence. Next time, we'll explore file I/O to save and load this data. Thanks for watching!"
