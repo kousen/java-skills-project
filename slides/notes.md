@@ -77,4 +77,11 @@
 - **Use cases:** Processing 2D data, generating patterns, comparing elements (01:20)
 - **Performance:** Be cautious with large datasets (09:43)
 
+## 2D arrays
+
+- **2D arrays** are arrays of arrays, like a grid or table. (00:29)
+- **Declaration:** `int[][] matrix = new int[3][4];` (01:00)
+- **Example:** `int[][] matrix = {{1, 2}, {3, 4}};` (01:18)
+- **Iterating:** Use nested loops (01:30)
+- **Best practices:** Use constants for sizes, avoid hardcoding (16:34)
 
