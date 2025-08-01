@@ -59,13 +59,13 @@ public class TwoDArrayExercise {
         var employees = List.of("Alice", "Bob", "Carol", "David");
         
         System.out.println("Quarterly Sales Data:");
-        System.out.println("Employee    Q1        Q2        Q3        Q4");
-        System.out.println("-----------------------------------------------");
+        System.out.println("Employee        Q1          Q2          Q3          Q4");
+        System.out.println("----------------------------------------------------------");
         
         for (int emp = 0; emp < salesData.length; emp++) {
-            System.out.printf("%-8s", employees.get(emp));
+            System.out.printf("%-10s", employees.get(emp));
             for (int quarter = 0; quarter < salesData[emp].length; quarter++) {
-                System.out.printf("%10s", CURRENCY.format(salesData[emp][quarter]));
+                System.out.printf("%12s", CURRENCY.format(salesData[emp][quarter]));
             }
             System.out.println();
         }
@@ -142,7 +142,7 @@ public class TwoDArrayExercise {
         // Display commission report
         System.out.println("Quarterly Commission Report (8% rate):");
         System.out.println("Employee    Q1        Q2        Q3        Q4        Total");
-        System.out.println("----------------------------------------------------------");
+        System.out.println("------------------------------------------------------------");
         
         for (int emp = 0; emp < commissions.length; emp++) {
             System.out.printf("%-8s", employees.get(emp));
