@@ -1,5 +1,3 @@
-
-
 ---
 layout: cover
 ---
@@ -16,32 +14,30 @@ layout: cover
 
 # Contact Info
 
-Ken Kousen<br>
-Kousen IT, Inc.
+**Ken Kousen**<br>
+**Kousen IT, Inc.**
 
-- ken.kousen@kousenit.com
-- http://www.kousenit.com
-- http://kousenit.org (blog)
-- Social Media:
-  - [@kenkousen](https://twitter.com/kenkousen) (Twitter)
-  - [@kousenit.com](https://bsky.app/profile/kousenit.com) (Bluesky)
-  - [https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/) (LinkedIn)
-- *Tales from the jar side* (free newsletter)
-  - https://kenkousen.substack.com
-  - https://youtube.com/@talesfromthejarside
+- **ken.kousen@kousenit.com**
+- **http://www.kousenit.com**
+- **http://kousenit.org** (blog)
+- **Social Media:**
+  - **[@kenkousen](https://twitter.com/kenkousen)** (Twitter)
+  - **[@kousenit.com](https://bsky.app/profile/kousenit.com)** (Bluesky)
+  - **[https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/)** (LinkedIn)
+- ***Tales from the jar side*** (free newsletter)
+  - **https://kenkousen.substack.com**
+  - **https://youtube.com/@talesfromthejarside**
 
----
-layout: section
 ---
 
 # Why Write to Files?
 
 <v-clicks>
 
-- **Data Persistence**: Save program results and user data.
-- **Logging**: Record application events and errors.
-- **Configuration**: Create and modify settings files.
-- **Data Exchange**: Generate reports and files (like CSVs) to be used by other systems.
+- **Data Persistence**: Save program results and user data
+- **Logging**: Record application events and errors  
+- **Configuration**: Create and modify settings files
+- **Data Exchange**: Generate reports and files (like CSVs) for other systems
 
 </v-clicks>
 
@@ -100,57 +96,93 @@ try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
 
 ---
 
-# Code Demo: `SimpleFileWriter.java`
+# Traditional File I/O Example
 
-Let's compare the two approaches for writing a few lines to a file.
+From `com.oreilly.javaskills.EmployeeFileWriter.java` - creating employee reports:
+
+```java
+// The traditional approach requires layered writers
+try (PrintWriter writer = new PrintWriter(
+        new BufferedWriter(new FileWriter(REPORT_FILE)))) {
+    
+    // Write report header
+    writer.println("EMPLOYEE SALARY REPORT");
+    writer.println("Generated: " + LocalDateTime.now().format(DATE_FORMAT));
+    writer.println("=" .repeat(60));
+    
+    // Formatted employee data
+    for (Employee emp : employees) {
+        writer.printf("%-20s %-15s $%,14.2f%n", 
+            emp.name(), emp.department(), emp.salary());
+    }
+}
+```
+
+<v-click>
+
+**Key Pattern**: FileWriter → BufferedWriter → PrintWriter for efficiency and formatting
+
+</v-click>
+
+---
+
+# Try It Out: FileWriter Exercise
+
+`com.oreilly.javaskills.FileWriterExercise` demonstrates practical file operations:
 
 <div class="grid grid-cols-2 gap-8">
 
 <div>
 
-## **Modern `nio` Approach**
-```java
-Path filePath = Paths.get("output.txt");
+## **Basic Operations**
+<v-clicks>
 
-try (BufferedWriter writer = 
-    Files.newBufferedWriter(filePath)) {
-    
-    writer.write("A line of text.");
-    writer.newLine();
-}
-```
+- **Simple writing**: FileWriter with try-with-resources
+- **Buffered writing**: Wrap FileWriter in BufferedWriter  
+- **Formatted reports**: Use PrintWriter for printf
+- **Append mode**: FileWriter(filename, true)
+- **CSV generation**: Manual formatting for Excel
+
+</v-clicks>
 
 </div>
 
 <div>
 
-## **Traditional `io` Approach**
-```java
-// More layers to achieve the same result
-try (PrintWriter writer = new PrintWriter(
-    new BufferedWriter(
-        new FileWriter("output.txt")))) {
-            
-    writer.println("A line of text.");
-}
-```
+## **Example Output Files**
+<v-clicks>
+
+- Employee salary reports
+- Activity log files  
+- CSV data for spreadsheets
+- Configuration files
+- Formatted text documents
+
+</v-clicks>
 
 </div>
 
 </div>
 
----
-layout: section
 ---
 
 # Key Takeaways
 
 <v-clicks>
 
-- For new code, **prefer the `java.nio` API** (`Path`, `Files`).
-- **Always use `try-with-resources`** to ensure files are closed automatically.
-- `BufferedWriter` is efficient for writing text.
-- `writer.newLine()` is better than `\n` because it's platform-independent.
+- **Always use try-with-resources** for automatic resource management
+- **Wrap FileWriter in BufferedWriter** for better performance  
+- **Use PrintWriter for formatting** with printf and println methods
+- **Append mode**: FileWriter(filename, true) for log files
+- **Traditional I/O is still widely used** in legacy systems
 
 </v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+**Next**: See Video 7B for the modern NIO.2 approach - often just one line of code!
+
+</v-click>
+</div>
 

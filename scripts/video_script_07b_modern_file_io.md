@@ -1,148 +1,111 @@
 # Video Script: Modern File I/O with NIO.2
 
-## Introduction (0:00-0:15)
+**Goal:** 7B. Master modern file I/O using the NIO.2 API for cleaner, more efficient code.
+**Target Duration:** 4–5 minutes
 
-Welcome back! In our last video, we learned about file I/O using FileWriter and BufferedWriter. Today, I want to show you the modern way to handle files in Java - using the NIO.2 API introduced in Java 7. Trust me, once you see how much simpler this is, you'll never want to go back to the old way.
+---
 
-## The Problem with Traditional I/O (0:15-0:45)
+### SCENE 1: Introduction (0:00–0:15)
 
-Let me show you the difference. Here's how we wrote to a file the traditional way:
+**(Show Slide 1: Title Slide - "Modern File I/O with NIO.2")**
 
-[Show traditional code]
+**YOU:**
+"Welcome back! In our last video, we learned about file I/O using FileWriter and BufferedWriter. Today I want to show you the modern way to handle files in Java—using the NIO.2 API. Trust me, once you see how much simpler this is, you'll never want to go back to the old way."
 
-```java
-FileWriter writer = new FileWriter("employees.txt");
-BufferedWriter buffered = new BufferedWriter(writer);
-try {
-    buffered.write("John Doe,Engineering,75000");
-    buffered.newLine();
-} finally {
-    buffered.close(); // Don't forget this!
-}
-```
+### SCENE 2: The Problem with Traditional I/O (0:15–0:45)
 
-That's a lot of boilerplate code just to write one line to a file! And if you forget to close the writer, you'll have resource leaks.
+**(Show Slide 2: Traditional vs Modern Comparison)**
 
-Now here's the modern way:
+**YOU:**
+"Let me show you the difference. Here's traditional file writing—multiple wrapper classes, manual resource management, lots of boilerplate."
 
-```java
-Path path = Paths.get("employees.txt");
-Files.writeString(path, "John Doe,Engineering,75000");
-```
+**(Transition to code comparison on slide)**
 
-Two lines instead of eight. Much cleaner, and the resources are handled automatically.
+**YOU:**
+"Now here's the modern way: `Files.writeString(path, data)`. Two lines instead of eight! The NIO.2 API handles all the complexity for you—buffering, encoding, resource cleanup—everything."
 
-## Core NIO.2 Classes (0:45-1:15)
+### SCENE 3: Core NIO.2 Classes (0:45-1:15)
 
-The NIO.2 API revolves around three main classes. First, there's `Path` - think of it as a modern replacement for the old `File` class. It represents a location in the file system.
+**(Show Slide 3: Core NIO.2 Classes)**
 
-Then there's `Paths` - a factory class for creating Path objects. You call `Paths.get()` with a file name or path.
+**YOU:**
+"The NIO.2 API revolves around three main classes. First, `Path` - a modern replacement for the old File class. It represents a location in the file system."
 
-Finally, `Files` is where the magic happens. It's packed with static methods for every file operation you can imagine - reading, writing, copying, deleting, you name it.
+**YOU:**
+"Then there's `Paths` - a factory for creating Path objects. You call `Paths.get()` with a file name or path."
 
-## Reading Files Made Simple (1:15-1:45)
+**YOU:**
+"Finally, `Files` is where the magic happens. It's packed with static methods for every file operation you can imagine—reading, writing, copying, deleting, you name it."
 
-Reading files is incredibly simple now. Want to read an entire file as a string? One line:
+### SCENE 4: Reading and Writing Made Simple (1:15–2:15)
 
-```java
-String content = Files.readString(path);
-```
+**(Transition to IDE showing `com.oreilly.javaskills.ModernEmployeeFileManager.java`)**
 
-Want all lines as a List? Also one line:
+**YOU:**
+"Let's see the power of NIO.2. Reading an entire file? One line: `Files.readString(path)`. Need all lines as a list? `Files.readAllLines(path)`."
 
-```java
-List<String> lines = Files.readAllLines(path);
-```
+**(Show the stream processing example)**
 
-Need to process a large file line by line without loading it all into memory? Use a Stream:
+**YOU:**
+"For large files, use streams. This processes line by line without loading everything into memory. The try-with-resources ensures the stream is closed."
 
-```java
-try (Stream<String> lines = Files.lines(path)) {
-    lines.filter(line -> line.contains("Engineering"))
-         .forEach(System.out::println);
-}
-```
+**(Show the writing examples)**
 
-The try-with-resources automatically closes the stream when done.
+**YOU:**
+"Writing is equally simple. Write a string: `Files.writeString()`. Write a list of lines: `Files.write()`. No manual buffering, no resource management headaches."
 
-## Writing Files (1:45-2:15)
 
-Writing is just as simple. To write a string to a file:
+### SCENE 5: File Operations (2:15–2:45)
 
-```java
-Files.writeString(path, employeeData);
-```
+**(Show Slide 4: Common File Operations)**
 
-To write multiple lines:
+**YOU:**
+"NIO.2 makes common operations trivial. Check existence: `Files.exists(path)`. Copy files: `Files.copy()` with options. Create directories including parents: `Files.createDirectories()`."
 
-```java
-List<String> employees = Arrays.asList(
-    "Alice,Engineering,80000",
-    "Bob,Marketing,65000"
-);
-Files.write(path, employees);
-```
+**(Show file attributes example)**
 
-No manual buffering, no remembering to close resources, no try-catch blocks for basic operations.
+**YOU:**
+"You can even get detailed file attributes—size, creation time, permissions—all with clean, readable methods. Each of these would require multiple lines and error handling with the old API."
 
-## File Operations (2:15-2:45)
+### SCENE 6: Try It Out Exercise (2:45–3:45)
 
-NIO.2 makes common file operations trivial. Check if a file exists:
+**(Transition to IDE showing `com.oreilly.javaskills.ModernFileIOExercise.java`)**
 
-```java
-if (Files.exists(path)) {
-    // File exists
-}
-```
+**YOU:**
+"Time for your **Try It Out** exercise! This demonstrates the full power of NIO.2."
 
-Copy a file:
+**(Show the one-line operations)**
 
-```java
-Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-```
+**YOU:**
+"Look at this—writing and reading files in one line. Text blocks work perfectly with `writeString()`. Lists of employees? One line with `Files.write()`."
 
-Create directories:
+**(Show the stream processing)**
 
-```java
-Files.createDirectories(Paths.get("data", "backups"));
-```
+**YOU:**
+"Here's advanced stream processing - filtering employees, calculating averages, all while reading the file. This would be dozens of lines with traditional I/O."
 
-Delete a file:
+**(Show directory operations)**
 
-```java
-Files.deleteIfExists(path);
-```
+**YOU:**
+"Directory operations are a breeze. Walk entire directory trees, find files by pattern, list contents—all with clean, functional streams. Try the exercise and experience the difference!"
 
-Each of these operations would require multiple lines and careful error handling with the old API.
 
-## Real Example: Employee File Manager (2:45-3:30)
+### SCENE 7: When to Use Each (3:45–4:00)
 
-Let's see this in action with our Employee Management System. Here's a complete file manager using NIO.2:
+**(Show Slide 5: When to Use Each API)**
 
-[Show ModernEmployeeFileManager code]
+**YOU:**
+"So when should you use each API? For new development, always start with NIO.2. It's simpler, safer, more powerful. Use traditional I/O only when maintaining legacy code or when you need very specific streaming behavior."
 
-Look how clean this is! We create directories automatically, convert our employee list to CSV format using streams, and write everything in just a few lines.
+### SCENE 8: Conclusion (4:00–4:15)
 
-Loading data back is equally elegant - we read lines as a stream, split each line, and map directly to Employee objects.
+**(Show Slide 6: Key Takeaways)**
 
-## Advanced Features (3:30-3:45)
+**YOU:**
+"The NIO.2 API represents how file I/O should be done in modern Java. It's more readable, less error-prone, and incredibly powerful. Your code will be cleaner, your bugs will be fewer, and your productivity will be higher."
 
-NIO.2 also gives you powerful features like directory watching - you can monitor folders for changes in real-time. You can walk entire directory trees with `Files.walk()`. You can even memory-map large files for high-performance access.
+**YOU:**
+"Practice with the ModernFileIOExercise—try the one-line operations, stream processing, and directory walking. Once you experience NIO.2, you'll never want to go back!"
 
-## When to Use Each (3:45-4:00)
-
-So when should you use traditional I/O versus NIO.2? For new development, always start with NIO.2. It's simpler, safer, and more powerful. Use traditional I/O only when maintaining legacy code or when you need very specific streaming behavior.
-
-## Wrapping Up (4:00-4:15)
-
-The NIO.2 API represents how file I/O should be done in modern Java. It's more readable, less error-prone, and incredibly powerful. Your code will be cleaner, your bugs will be fewer, and your productivity will be higher.
-
-Next time, we'll dive into object-oriented programming and start building more sophisticated applications. Until then, embrace the modern way and happy coding!
-
-## Code Examples Referenced:
-
-1. Traditional vs modern file writing comparison
-2. Simple file reading methods
-3. ModernEmployeeFileManager class
-4. Path operations and file system utilities
-5. Directory operations and file monitoring
+**YOU:**
+"Thanks for watching! Next time, we'll dive into object-oriented programming and start building more sophisticated applications. Until then, embrace the modern way and happy coding!"

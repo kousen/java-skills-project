@@ -1,3 +1,5 @@
+package com.oreilly.javaskills;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -11,7 +13,7 @@ import java.util.stream.Stream;
 /**
  * Demonstrates modern file I/O using Java NIO.2 (java.nio.file package).
  * Shows the advantages of the modern approach over traditional File I/O.
- * This complements the traditional EmployeeFileWriter class.
+ * This complements the traditional com.oreilly.javaskills.EmployeeFileWriter class.
  */
 public class ModernEmployeeFileManager {
     

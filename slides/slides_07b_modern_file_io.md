@@ -1,27 +1,12 @@
 ---
-theme: seriph
-background: https://source.unsplash.com/collection/94734566/1920x1080
-class: text-center
-highlighter: shiki
-lineNumbers: false
-info: |
-  ## Modern File I/O with NIO.2
-  Learn the modern way to handle files in Java
-drawings:
-  persist: false
-defaults:
-  foo: true
-transition: slide-left
-title: Modern File I/O with NIO.2
+layout: cover
 ---
 
 # Modern File I/O with NIO.2
 
-The Modern Way to Handle Files in Java
-
 <div class="pt-12">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space for next page <carbon:arrow-right class="inline"/>
+  <span class="px-2 py-1 rounded">
+    Goal 7B: Master modern file I/O using the NIO.2 API for cleaner, more efficient code.
   </span>
 </div>
 
@@ -29,461 +14,264 @@ The Modern Way to Handle Files in Java
 
 # Contact Info
 
-Ken Kousen<br>
-Kousen IT, Inc.
+**Ken Kousen**<br>
+**Kousen IT, Inc.**
 
-- ken.kousen@kousenit.com
-- http://www.kousenit.com
-- http://kousenit.org (blog)
-- Social Media:
-  - [@kenkousen](https://twitter.com/kenkousen) (Twitter)
-  - [@kousenit.com](https://bsky.app/profile/kousenit.com) (Bluesky)
-  - [https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/) (LinkedIn)
-- *Tales from the jar side* (free newsletter)
-  - https://kenkousen.substack.com
-  - https://youtube.com/@talesfromthejarside
+- **ken.kousen@kousenit.com**
+- **http://www.kousenit.com**
+- **http://kousenit.org** (blog)
+- **Social Media:**
+  - **[@kenkousen](https://twitter.com/kenkousen)** (Twitter)
+  - **[@kousenit.com](https://bsky.app/profile/kousenit.com)** (Bluesky)
+  - **[https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/)** (LinkedIn)
+- ***Tales from the jar side*** (free newsletter)
+  - **https://kenkousen.substack.com**
+  - **https://youtube.com/@talesfromthejarside**
 
----
-transition: slide-left
----
+# Traditional vs Modern Comparison
 
-# Why NIO.2?
+<div class="grid grid-cols-2 gap-8">
 
-## Problems with Traditional I/O
+<div>
 
-<v-clicks>
-
-- Verbose and error-prone
-- Poor error messages
-- Limited file system operations
-
-</v-clicks>
-
-## NIO.2 Benefits (Java 7+)
-
-<v-clicks>
-
-- Simpler, more readable code
-- Better error handling
-- Rich set of file operations
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Core NIO.2 Classes
-
-## Essential Classes
-
-<v-clicks>
-
-- **Path** - Represents file/directory location
-- **Paths** - Factory for creating Path objects
-- **Files** - Utility class with static methods
-
-</v-clicks>
-
-## Modern Approach
-
-<v-clicks>
-
-- Path-based instead of File-based
-- Functional style operations
-- Built-in exception handling
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Creating Paths
-
-## Path vs String
-
+## **Traditional java.io**
 ```java
-// Traditional approach
-File file = new File("employees.txt");
-
-// Modern approach
-Path path = Paths.get("employees.txt");
-
-// Alternative syntax (Java 11+)
-Path path = Path.of("employees.txt");
-```
-
----
-transition: slide-left
----
-
-# Path Operations
-
-## Working with Paths
-
-```java
-Path employeeFile = Paths.get("data", "employees.txt");
-
-// Get components
-System.out.println("Filename: " + employeeFile.getFileName());
-System.out.println("Parent: " + employeeFile.getParent());
-System.out.println("Absolute: " + employeeFile.toAbsolutePath());
-
-// Path manipulation
-Path backup = employeeFile.resolveSibling("employees.backup");
-```
-
----
-transition: slide-left
----
-
-# Reading Files
-
-## Simple File Reading
-
-```java
-// Read entire file as string (Java 11+)
-String content = Files.readString(path);
-
-// Read all lines
-List<String> lines = Files.readAllLines(path);
-
-// Process line by line
-try (Stream<String> lines = Files.lines(path)) {
-    lines.filter(line -> line.contains("Engineering"))
-         .forEach(System.out::println);
-}
-```
-
----
-transition: slide-left
----
-
-# Writing Files
-
-## Simple File Writing
-
-```java
-// Write string to file (Java 11+)
-String employeeData = "John Doe,Engineering,75000";
-Files.writeString(path, employeeData);
-
-// Write lines
-List<String> employees = Arrays.asList(
-    "Alice,Engineering,80000",
-    "Bob,Marketing,65000"
-);
-Files.write(path, employees);
-```
-
----
-transition: slide-left
----
-
-# File Operations
-
-## Common Operations
-
-```java
-// Check if file exists
-if (Files.exists(path)) {
-    System.out.println("File found!");
-}
-
-// Create directories
-Files.createDirectories(Paths.get("data", "backups"));
-
-// Copy file
-Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-
-// Delete file
-Files.deleteIfExists(path);
-```
-
----
-transition: slide-left
----
-
-# Employee File Manager
-
-## Complete Example
-
-```java
-public class ModernEmployeeFileManager {
-    private final Path dataDir = Paths.get("employee-data");
-    private final Path employeeFile = dataDir.resolve("employees.csv");
-    
-    public void saveEmployees(List<Employee> employees) throws IOException {
-        Files.createDirectories(dataDir);
-        
-        List<String> lines = employees.stream()
-            .map(emp -> String.format("%s,%s,%.2f", 
-                emp.getName(), emp.getDepartment(), emp.getSalary()))
-            .collect(Collectors.toList());
-            
-        Files.write(employeeFile, lines);
-    }
-}
-```
-
----
-transition: slide-left
----
-
-# Reading Employee Data
-
-## Loading from CSV
-
-```java
-public List<Employee> loadEmployees() throws IOException {
-    if (!Files.exists(employeeFile)) {
-        return new ArrayList<>();
-    }
-    
-    return Files.lines(employeeFile)
-        .map(line -> line.split(","))
-        .map(parts -> new Employee(
-            parts[0],                    // name
-            parts[1],                    // department  
-            Double.parseDouble(parts[2]) // salary
-        ))
-        .collect(Collectors.toList());
-}
-```
-
----
-transition: slide-left
----
-
-# Directory Operations
-
-## Working with Directories
-
-```java
-// Create backup directory
-Path backupDir = Paths.get("backups");
-Files.createDirectories(backupDir);
-
-// List files in directory
-try (Stream<Path> files = Files.list(dataDir)) {
-    files.filter(path -> path.toString().endsWith(".csv"))
-         .forEach(System.out::println);
-}
-
-// Walk directory tree
-try (Stream<Path> walk = Files.walk(dataDir)) {
-    walk.filter(Files::isRegularFile)
-        .forEach(this::processFile);
-}
-```
-
----
-transition: slide-left
----
-
-# File Attributes
-
-## Getting File Information
-
-```java
-// Basic attributes
-System.out.println("Size: " + Files.size(path));
-System.out.println("Last modified: " + Files.getLastModifiedTime(path));
-System.out.println("Readable: " + Files.isReadable(path));
-System.out.println("Writable: " + Files.isWritable(path));
-
-// Detailed attributes
-BasicFileAttributes attrs = Files.readAttributes(path, 
-    BasicFileAttributes.class);
-System.out.println("Creation time: " + attrs.creationTime());
-```
-
----
-transition: slide-left
----
-
-# Watching for Changes
-
-## File System Monitoring
-
-```java
-WatchService watcher = FileSystems.getDefault().newWatchService();
-
-dataDir.register(watcher, 
-    StandardWatchEventKinds.ENTRY_CREATE,
-    StandardWatchEventKinds.ENTRY_MODIFY,
-    StandardWatchEventKinds.ENTRY_DELETE);
-
-// Process events
-WatchKey key = watcher.take();
-for (WatchEvent<?> event : key.pollEvents()) {
-    System.out.println("Event: " + event.kind() + 
-                      " File: " + event.context());
-}
-```
-
----
-transition: slide-left
----
-
-# Error Handling
-
-## Better Exception Messages
-
-```java
-try {
-    Files.copy(source, target);
-} catch (NoSuchFileException e) {
-    System.err.println("Source file not found: " + e.getFile());
-} catch (FileAlreadyExistsException e) {
-    System.err.println("Target already exists: " + e.getFile());
-} catch (IOException e) {
-    System.err.println("Copy failed: " + e.getMessage());
-}
-```
-
----
-transition: slide-left
----
-
-# Comparison: Old vs New
-
-## Traditional I/O
-
-```java
-// Old way - verbose and error-prone
 FileWriter writer = new FileWriter("employees.txt");
 BufferedWriter buffered = new BufferedWriter(writer);
 try {
     buffered.write("John Doe,Engineering,75000");
     buffered.newLine();
 } finally {
-    buffered.close();
+    buffered.close(); // Don't forget!
 }
 ```
 
----
-transition: slide-left
----
+<v-click>
 
-# Comparison: Old vs New
+**8 lines**, multiple wrapper classes, manual resource management
 
-## Modern NIO.2
+</v-click>
 
+</div>
+
+<div>
+
+## **Modern java.nio.file**
 ```java
-// New way - simple and clear
 Path path = Paths.get("employees.txt");
 Files.writeString(path, "John Doe,Engineering,75000");
-
-// Or with multiple lines
-List<String> lines = Arrays.asList(
-    "John Doe,Engineering,75000",
-    "Jane Smith,Marketing,65000"
-);
-Files.write(path, lines);
 ```
 
----
-transition: slide-left
----
+<v-click>
 
-# Advanced Features
+**2 lines**, automatic resource management, cleaner code
 
-## Memory-Mapped Files
+</v-click>
 
+</div>
+
+</div>
+
+# Core NIO.2 Classes
+
+<v-clicks>
+
+## **Path** - Modern replacement for File
 ```java
-// For large files - map to memory
-try (FileChannel channel = FileChannel.open(path, 
-        StandardOpenOption.READ)) {
-    
-    MappedByteBuffer buffer = channel.map(
-        FileChannel.MapMode.READ_ONLY, 0, channel.size());
-    
-    // Process buffer efficiently
+Path path = Paths.get("data", "employees.txt");  // Cross-platform paths
+```
+
+## **Paths** - Factory for creating Path objects  
+```java
+Path absolute = Paths.get("/Users/ken/data/file.txt");
+Path relative = Paths.get("reports", "2024", "summary.txt");
+```
+
+## **Files** - Static utility methods for everything
+```java
+Files.writeString(path, content);     // Write
+Files.readString(path);               // Read
+Files.copy(source, target);           // Copy
+Files.deleteIfExists(path);           // Delete
+```
+
+</v-clicks>
+
+# One-Line File Operations
+
+From `ModernFileIOExercise.java` - incredibly simple operations:
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Writing Files**
+```java
+// Write a string - ONE LINE!
+Files.writeString(path, content);
+
+// Write multiple lines - ONE LINE!
+List<String> employees = List.of(
+    "Alice,Engineering,95000",
+    "Bob,Marketing,87000"
+);
+Files.write(path, employees);
+```
+
+</div>
+
+<div>
+
+## **Reading Files**
+```java
+// Read entire file - ONE LINE!
+String content = Files.readString(path);
+
+// Read all lines - ONE LINE!
+List<String> lines = Files.readAllLines(path);
+
+// Stream large files
+try (Stream<String> lines = Files.lines(path)) {
+    lines.filter(line -> line.contains("Engineering"))
+         .forEach(System.out::println);
 }
 ```
 
----
-transition: slide-left
----
+</div>
 
-# Best Practices
+</div>
 
-## Modern File I/O Tips
+# Common File Operations
 
+NIO.2 makes everything simple and readable:
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **File Checks & Properties**
+```java
+// Check existence
+if (Files.exists(path)) { ... }
+
+// Get file attributes
+BasicFileAttributes attrs = 
+    Files.readAttributes(path, BasicFileAttributes.class);
+System.out.println("Size: " + attrs.size());
+System.out.println("Created: " + attrs.creationTime());
+```
+
+</div>
+
+<div>
+
+## **File Operations**
+```java
+// Copy files
+Files.copy(source, target, 
+    StandardCopyOption.REPLACE_EXISTING);
+
+// Create directories (including parents)
+Files.createDirectories(Paths.get("data/backups"));
+
+// Delete safely
+Files.deleteIfExists(path);
+```
+
+</div>
+
+</div>
+
+# Try It Out: Modern File I/O Exercise
+
+`com.oreilly.javaskills.ModernFileIOExercise` shows the power of NIO.2:
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Stream Processing**
 <v-clicks>
 
-- Use `Path` instead of `File`
-- Prefer `Files` utility methods
-- Use try-with-resources for streams
+- **Filter employees** by department using streams
+- **Calculate averages** from file data  
+- **Process large files** without loading all into memory
+- **Directory walking** with Files.walk()
+- **Pattern matching** with Files.find()
 
 </v-clicks>
 
----
-transition: slide-left
----
+</div>
 
-# Best Practices (continued)
+<div>
 
-## Performance & Safety
-
+## **Advanced Operations**
 <v-clicks>
 
-- Use `Files.exists()` before operations
-- Handle specific exceptions
-- Consider `Files.walk()` for large directories
+- **One-line reading/writing** with text blocks
+- **List processing** from/to files
+- **Directory tree operations**
+- **File attribute inspection**
+- **Batch file operations**
 
 </v-clicks>
 
----
-transition: slide-left
----
+</div>
 
-# When to Use Each
+</div>
 
-## Traditional I/O (FileWriter)
+# When to Use Each API
 
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Use NIO.2 (java.nio.file) When:**
 <v-clicks>
 
-- Legacy code maintenance
-- Streaming large amounts of data
-- Custom buffering requirements
+- **Writing new code** (always prefer this!)
+- **Simple file operations** (reading/writing)
+- **Directory operations** are needed
+- **Cross-platform paths** are important
+- **Modern, clean code** is the goal
 
 </v-clicks>
 
-## Modern NIO.2
+</div>
 
+<div>
+
+## **Use Traditional I/O When:**
 <v-clicks>
 
-- New development (recommended)
-- File system operations
-- Simple read/write operations
+- **Maintaining legacy code**
+- **Very specific streaming** requirements  
+- **Working with old Java versions** (pre-7)
+- **Interfacing with legacy libraries**
 
 </v-clicks>
 
----
-transition: slide-left
-layout: center
----
+</div>
 
-# Summary
+</div>
+
+# Key Takeaways
 
 <v-clicks>
 
-- NIO.2 provides simpler, more readable file operations
-- Path and Files classes are the modern approach
-- Better error handling and file system integration
-- Use NIO.2 for new development
-- Traditional I/O still has its place
+- **NIO.2 is the modern way** to handle files in Java
+- **One-line operations** for most common tasks
+- **Automatic resource management** - no manual cleanup
+- **Stream-based processing** for large files  
+- **Cross-platform paths** and better error messages
+- **Always prefer NIO.2 for new development**
 
 </v-clicks>
 
----
-transition: slide-left
-layout: center
----
+<div class="mt-8">
+<v-click>
 
-# Next: Object-Oriented Programming
+**Your Challenge:** Complete the ModernFileIOExercise and experience the difference!
 
-Building robust applications with classes and objects
+</v-click>
+</div>

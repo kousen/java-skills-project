@@ -35,7 +35,8 @@ All slides follow the **new naming convention** with topic numbers for easy refe
 - **slides_02_escape_characters.md** - String escape sequences and special characters
 - **slides_03_operator_precedence.md** - Expression evaluation and precedence rules
 - **slides_04_scanner_input.md** - Console input with Scanner class
-- **slides_05_06_2d_arrays_and_nested_loops.md** - Multidimensional data processing
+- **slides_05_nested_loops.md** - Nested loops for complex data processing (patterns, pairing, duplicates)
+- **slides_06_2d_arrays.md** - Two-dimensional arrays for tabular data (quarterly sales analysis)
 - **slides_07_file_writer.md** - Traditional file I/O with FileWriter/BufferedWriter
 - **slides_07b_modern_file_io.md** - **BONUS**: Modern NIO.2 file operations
 
@@ -89,10 +90,15 @@ npm run export      # Export to PDF
 - **StringFormatting.java** - String concatenation, formatting, text blocks, StringBuilder, String.join(), StringJoiner, escape characters, SLF4J logging
 - **com.oreilly.javaskills.OperatorPrecedenceTest.java** - JUnit tests demonstrating operator precedence rules with arithmetic, boolean, assignment, ternary, increment/decrement, modulus, and Math.pow() examples
 - **com.oreilly.javaskills.EmployeeInput.java** - Scanner input with try-with-resources, robust validation loops, and user-friendly error handling for all data types
-- **com.oreilly.javaskills.EmployeeRoster.java** - Multidimensional arrays (2D), nested loops (indexed and enhanced), parallel arrays, statistics calculations, search operations
-- **EmployeeFileWriter.java** - Traditional file I/O operations (CSV, JSON, Apache Commons IO)
+- **com.oreilly.javaskills.NestedLoopsDemo.java** - Nested loops without 2D arrays (mentorship pairing, schedules, duplicates)
+- **com.oreilly.javaskills.PatternPrinting.java** - Visual pattern creation exercise (triangles, diamonds, checkerboards)
+- **com.oreilly.javaskills.EmployeeRoster.java** - 2D arrays for tabular data with nested loop processing
+- **com.oreilly.javaskills.TwoDArrayExercise.java** - Quarterly sales analysis using 2D arrays (row/column totals, growth rates)
+- **com.oreilly.javaskills.EmployeeFileWriter.java** - Traditional file I/O (CSV, JSON with text blocks, Apache Commons IO)
+- **com.oreilly.javaskills.FileWriterExercise.java** - Traditional file I/O exercise (reports, logs, CSV, text blocks comparison)
 - **EmployeeLogger.java** - Comprehensive logging examples with SLF4J/Logback, MDC, different log levels
-- **ModernEmployeeFileManager.java** - **BONUS**: Modern NIO.2 file operations (Java 7+)
+- **com.oreilly.javaskills.ModernEmployeeFileManager.java** - **BONUS**: Modern NIO.2 file operations (Java 7+)
+- **com.oreilly.javaskills.ModernFileIOExercise.java** - Modern NIO.2 exercise (one-line operations, streams, directory walking)
 - **FileIOComparison.java** - Side-by-side comparison of traditional vs modern file I/O approaches
 - **EmployeeApiClient.java** - HTTP client for consuming REST APIs (Java 11+ HttpClient)
 - **RestServiceConcepts.java** - REST service patterns and concepts demonstration
@@ -262,13 +268,13 @@ Transform into enterprise application:
 
 ## Test Results & Module Status
 
-### ✅ Streamlined Project Results (92% Pass Rate)
-- **foundations**: 10/10 tests passing (100%) - All basic concepts with modern practices
+### ✅ Streamlined Project Results (95% Pass Rate)
+- **foundations**: 13/13 tests passing (100%) - All basic concepts with comprehensive exercises
 - **oop-core**: 13/13 tests passing (100%) - Complete OOP with Java 21 features  
 - **design-patterns**: 12/15 tests passing (80%) - Practical pattern implementations
 - **solid-principles**: Working code examples (100%) - SOLID principles demonstrations
 
-**Total: 35/38 tests passing (92% pass rate) + working SOLID examples**
+**Total: 38/41 tests passing (95% pass rate) + working SOLID examples**
 
 ### 📹 Video Content Coverage
 **27 production-ready videos covering essential Java skills:**
