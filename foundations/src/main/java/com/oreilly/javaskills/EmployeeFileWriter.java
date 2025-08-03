@@ -6,9 +6,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-
+@SuppressWarnings("CallToPrintStackTrace")
 public class EmployeeFileWriter {
 
     private static final String DATA_DIR = "employee-data";
@@ -29,8 +30,14 @@ public class EmployeeFileWriter {
             // Write to CSV using different approaches
             writeEmployeesToCsv(employees);
 
-            // Write to JSON-like format
+            // Write to JSON-like format using different approaches
             writeEmployeesToJson(employees);
+            
+            // Demonstrate alternative JSON writing approaches
+            System.out.println("\n=== Alternative JSON Writing Approaches ===");
+            writeEmployeesToJsonWithJoin(employees, DATA_DIR);
+            writeEmployeesToJsonWithCollectors(employees, DATA_DIR);
+            writeEmployeesToJsonWithStringJoiner(employees, DATA_DIR);
 
             // Read employees back from file
             List<Employee> loadedEmployees = readEmployeesFromCsv();
@@ -71,15 +78,13 @@ public class EmployeeFileWriter {
         // Using try-with-resources for automatic resource management
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(CSV_FILE))) {
             // Write header
-            writer.write("ID,Name,Salary,HireDate");
-            writer.newLine();
+            writer.write("ID,Name,Salary,HireDate%n".formatted());
 
             // Write employee data
             for (Employee emp : employees) {
-                writer.write(String.format("%d,%s,%.2f,%s",
+                writer.write(String.format("%d,%s,%.2f,%s%n",
                         emp.id(), emp.name(), emp.salary(),
                         emp.hireDate().format(DATE_FORMAT)));
-                writer.newLine();
             }
         }
 
@@ -137,6 +142,92 @@ public class EmployeeFileWriter {
 
         System.out.println("JSON file written: " + JSON_FILE);
     }
+    
+    /**
+     * Alternative 1: Using String.join() with manual brackets
+     * This approach collects all JSON strings first, then joins them
+     * @param employees List of employees to write
+     * @param directory Output directory
+     */
+    public static void writeEmployeesToJsonWithJoin(List<Employee> employees, String directory) throws IOException {
+        String jsonFile = directory + "/employees_join.json";
+        System.out.println("\nWriting JSON with String.join()...");
+        
+        // First, create all the JSON employee strings
+        List<String> jsonStrings = employees.stream()
+            .map(emp -> """
+                  {
+                    "id": %d,
+                    "name": "%s",
+                    "salary": %.2f,
+                    "hireDate": "%s"
+                  }""".formatted(emp.id(), emp.name(), emp.salary(), 
+                               emp.hireDate().format(DATE_FORMAT)))
+            .toList();
+        
+        // Join with commas and add brackets
+        String jsonContent = "[\n" + String.join(",\n", jsonStrings) + "\n]";
+        
+        // Write in one operation
+        Files.writeString(Paths.get(jsonFile), jsonContent);
+        System.out.println("JSON file written with String.join(): " + jsonFile);
+    }
+    
+    /**
+     * Alternative 2: Using Collectors.joining() with brackets
+     * This is the most concise and elegant approach
+     * @param employees List of employees to write
+     * @param directory Output directory
+     */
+    public static void writeEmployeesToJsonWithCollectors(List<Employee> employees, String directory) throws IOException {
+        String jsonFile = directory + "/employees_collectors.json";
+        System.out.println("\nWriting JSON with Collectors.joining()...");
+        
+        String jsonContent = employees.stream()
+            .map(emp -> """
+                  {
+                    "id": %d,
+                    "name": "%s",
+                    "salary": %.2f,
+                    "hireDate": "%s"
+                  }""".formatted(emp.id(), emp.name(), emp.salary(), 
+                               emp.hireDate().format(DATE_FORMAT)))
+            .collect(Collectors.joining(",\n", "[\n", "\n]"));
+        
+        // Write in one operation
+        Files.writeString(Paths.get(jsonFile), jsonContent);
+        System.out.println("JSON file written with Collectors.joining(): " + jsonFile);
+    }
+    
+    /**
+     * Alternative 3: Using StringJoiner for maximum control
+     * This gives you the most flexibility over formatting
+     * @param employees List of employees to write
+     * @param directory Output directory
+     */
+    public static void writeEmployeesToJsonWithStringJoiner(List<Employee> employees, String directory) throws IOException {
+        String jsonFile = directory + "/employees_stringjoiner.json";
+        System.out.println("\nWriting JSON with StringJoiner...");
+        
+        // StringJoiner with delimiter, prefix, and suffix
+        StringJoiner joiner = new StringJoiner(",\n", "[\n", "\n]");
+        
+        for (Employee emp : employees) {
+            String jsonEmployee = """
+                  {
+                    "id": %d,
+                    "name": "%s",
+                    "salary": %.2f,
+                    "hireDate": "%s"
+                  }""".formatted(emp.id(), emp.name(), emp.salary(), 
+                               emp.hireDate().format(DATE_FORMAT));
+            joiner.add(jsonEmployee);
+        }
+        
+        // Write the complete JSON
+        Files.writeString(Paths.get(jsonFile), joiner.toString());
+        System.out.println("JSON file written with StringJoiner: " + jsonFile);
+    }
 
     private static List<Employee> readEmployeesFromCsv() throws IOException {
         System.out.println("\nReading employees from CSV file...");
@@ -185,8 +276,8 @@ public class EmployeeFileWriter {
         System.out.println("Readable: " + Files.isReadable(csvPath));
         System.out.println("Writable: " + Files.isWritable(csvPath));
 
-        // Using Apache Commons IO
-        String csvContent = FileUtils.readFileToString(csvPath.toFile(), "UTF-8");
+        // Read file content using Java NIO.2
+        String csvContent = Files.readString(csvPath);
         System.out.println("\nFile content (first 100 chars):");
         System.out.println(csvContent.substring(0, Math.min(100, csvContent.length())) + "...");
 
@@ -196,7 +287,7 @@ public class EmployeeFileWriter {
         System.out.println("Backup created: " + backupPath);
     }
 
-    record Employee(String name, int id, double salary, LocalDate hireDate) {
+    public record Employee(String name, int id, double salary, LocalDate hireDate) {
         public Employee {
             if (name == null || name.trim().isEmpty()) {
                 throw new IllegalArgumentException("Name cannot be null or empty");

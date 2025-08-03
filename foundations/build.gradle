@@ -1,7 +1,6 @@
 dependencies {
     // Additional dependencies specific to foundations module
-    // Scanner examples, file I/O demonstrations
-    implementation 'commons-io:commons-io:2.19.0'
+    // Note: Removed Apache Commons IO - using pure Java NIO.2 instead
     
     // JSON processing for REST API demonstrations (video 20)
     implementation platform('com.fasterxml.jackson:jackson-bom:2.19.1')

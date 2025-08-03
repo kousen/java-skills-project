@@ -1,95 +1,69 @@
 [SCENE 1: INTRODUCTION - 30 SECONDS]
 
-(Show Slide 1: Title Slide - "Two-Dimensional Arrays")
+(Show Slide 1: Title Slide—"Writing to Files in Java")
 
-Hi everyone, and welcome back to this series on essential Java skills. In our last video, we explored nested loops. Today, we're looking at the perfect data structure to pair with them - two-dimensional arrays.
+Hi everyone. In this video, we'll learn how to make our programs persist data by writing content to files. This is a fundamental skill for everything from saving user data to creating logs and reports.
 
-(Transition to Slide 2: Why 2D Arrays Matter)
+(Transition to Slide 2: Why Write to Files?)
 
-If you've ever worked with spreadsheets, game boards, or any grid-like data, 2D arrays are exactly what you need. They're the natural choice for organizing tabular information.
+Writing to files allows our applications to save their state, create permanent records, and exchange data with other systems. It's a core part of almost any real-world application.
 
-[SCENE 2: UNDERSTANDING 2D ARRAYS - 30 SECONDS]
+[SCENE 2: TWO APPROACHES TO FILE I/O - 45 SECONDS]
 
-(Show Slide 2: What is a 2D Array?)
+(Show Slide 3: Two Approaches)
 
-A two-dimensional array is essentially an array of arrays. Think of it as a grid or table with rows and columns, just like a spreadsheet.
+In modern Java, there are two main APIs for file operations. The traditional java.io package has been around since the beginning. It's simple, but has some drawbacks.
 
-(Continue with Slide 2)
+The modern approach is the java.nio package, which stands for New I/O. It was introduced to address the limitations of the original API. For any new code you write, you should always prefer the java.nio package. It's more powerful, has better error handling, and is more efficient.
 
-In our Employee Management System, we might use a 2D array to store employee data where each row represents a department and each column represents a specific employee within that department. It's perfect for organizing data that naturally fits into a table structure.
+[SCENE 3: THE TRY-WITH-RESOURCES STATEMENT - 60 SECONDS]
 
-[SCENE 3: DECLARATION AND CREATION - 30 SECONDS]
+(Show Slide 4: The try-with-resources Statement)
 
-(Show Slide 3: Declaring and Initializing 2D Arrays)
+Before we write any code, we have to talk about the single most important concept for file handling in Java: the try-with-resources statement. Whenever you open a file or any other resource, you must close it when you're done to avoid resource leaks.
 
-Declaring a 2D array uses two sets of square brackets.
+In the old days, this was done in a messy finally block. Today, we use try-with-resources. By declaring the resource inside the parentheses of the try statement, you tell Java to automatically close it for you, no matter what happens. It's cleaner, safer, and non-negotiable for modern Java I/O.
 
-(Transition to IDE showing declaration examples)
+[SCENE 4: CODE DEMO - TRADITIONAL APPROACH - 45 SECONDS]
 
-Here we declare an array, then create it with specific dimensions - 5 departments, 10 employees each. You can also initialize with data directly using this nested brace syntax.
+(Transition to IDE showing com.oreilly.javaskills.EmployeeFileWriter.java)
 
-(Highlight the initialization code)
+Let's look at our com.oreilly.javaskills.EmployeeFileWriter example demonstrating the traditional approach. This shows both the power and the verbosity of traditional file I/O.
 
-Notice how each inner array can represent a different department - Engineering, Marketing, Sales - with their respective employees.
+(Highlight the try-with-resources with BufferedWriter)
 
-[SCENE 4: ACCESSING AND MODIFYING ELEMENTS - 30 SECONDS]
+Here's the key pattern: we wrap a FileWriter in a BufferedWriter for efficiency. The try-with-resources ensures proper cleanup. Notice how we manually call newLine() for platform-independent line breaks.
 
-(Show Slide 4: Nested Loops: The Key to Processing 2D Arrays)
+(Show the PrintWriter alternative)
 
-To access an element, you provide both row and column indices.
+For formatted output, we often add a PrintWriter wrapper. This gives us convenient methods like printf and println. Yes, that's three layers of writers! Each serves a purpose, but it's definitely verbose.
 
-(Return to IDE showing access examples)
+(Show the append mode example)
 
-Here we're getting the third employee in the first department. Remember, Java is zero-indexed, so the first row is index 0, first column is index 0.
+One useful feature: passing true as the second parameter to FileWriter enables append mode. This is perfect for log files where you want to add entries without overwriting existing content.
 
-And here we're setting the first employee in the second department to a new value. The double bracket notation gives us precise control over our grid data.
+[SCENE 5: TRY IT OUT EXERCISE - 45 SECONDS]
 
-[SCENE 5: REAL-WORLD IMPLEMENTATION - 60 SECONDS]
+(Transition to IDE showing com.oreilly.javaskills.FileWriterExercise.java)
 
-(Transition to IDE showing `com.oreilly.javaskills.EmployeeRoster.java`)
+Now for your Try It Out exercise. We'll create employee reports and logs using traditional file I/O.
 
-Let's look at our `EmployeeRoster` class. We have two parallel 2D arrays - one for employee names and one for salaries.
+(Show the createEmployeeReport method)
 
-(Highlight the populateRoster method)
+This method generates a formatted salary report. Notice how PrintWriter makes formatting easy with printf. We calculate totals and averages, creating a professional-looking text report.
 
-Here we're populating our 2D arrays. Each row represents a department - Engineering, Sales, Marketing, HR, Finance. Each column holds an employee in that department.
+(Show the CSV writing example)
 
-(Show the calculateStatistics method)
+Here we're writing CSV data—perfect for Excel import. The traditional API handles this well, though we need to manually format each line and remember those commas and quotes.
 
-This method demonstrates the power of nested loops with 2D arrays. The outer loop iterates through departments, the inner loop processes each employee's salary. We calculate totals, averages, and find min/max values.
+Try the exercise: create different types of files - reports, logs, configuration files. Practice with append mode for ongoing logs. Remember: always use try-with-resources!
 
-(Show the demonstrateNestedLoops method)
-
-Notice how we can search across all departments for specific criteria. Here we're finding all employees with 'John' in their name, regardless of department. The 2D structure lets us organize data logically while still processing it globally when needed.
-
-[SCENE 6: TRY IT OUT EXERCISE - 60 SECONDS]
-
-(Transition to IDE showing `com.oreilly.javaskills.TwoDArrayExercise.java`)
-
-Now for your Try It Out exercise - quarterly sales analysis using 2D arrays!
-
-(Show the basic 2D array creation)
-
-We start with a 2D array of sales data - each row is an employee, each column is a quarter. This structure makes it easy to analyze performance across time periods.
-
-(Show the analyzeSalesPerformance method)
-
-Here we calculate both row totals - annual sales per employee - and column totals - total sales per quarter. The 2D structure lets us slice the data both ways efficiently.
-
-(Show the createPerformanceMatrix method)
-
-This advanced example creates a growth rate matrix. We calculate quarter-over-quarter growth for each employee, then identify consistent performers. It's a practical example of transforming one 2D array into another for analysis.
-
-Try running the `TwoDArrayExercise` class. Experiment with the data, add your own analysis methods. Can you create a monthly sales matrix instead of quarterly?
-
-[SCENE 7: BEST PRACTICES & CONCLUSION - 30 SECONDS]
-
-(Show Slide 5: Advanced Features)
-
-Remember - Java 2D arrays can be jagged, meaning each row can have different lengths. Always check array bounds, and consider using constants for dimensions to avoid magic numbers.
+[SCENE 6: CONCLUSION - 30 SECONDS]
 
 (Show Slide 6: Key Takeaways)
 
-2D arrays are perfect for spreadsheet-like data, game boards, image pixels, and any grid structure. Combined with nested loops, they're incredibly powerful for data analysis.
+To wrap up: traditional file I/O with FileWriter and BufferedWriter is still widely used, especially in legacy code. The key patterns are: always use try-with-resources, wrap FileWriter in BufferedWriter for efficiency, and remember append mode for log files.
 
-Your exercise: complete the quarterly sales analysis and create your own 2D array analysis. Master 2D arrays, and you'll handle complex tabular data with confidence. Next time, we'll explore file I/O to save and load this data. Thanks for watching!
+While this approach works well, there's a more modern way. In our bonus video 7B, I'll show you the NIO.2 API that makes file operations incredibly simple—often just one line of code!
+
+Thanks for watching! Practice with the FileWriterExercise, and I'll see you in the next video where we explore the modern approach to file I/O.

@@ -107,7 +107,7 @@ public class ModernEmployeeFileManager {
         // Display loaded data
         System.out.println("Employee data:");
         loadedEmployees.forEach(emp -> 
-            System.out.println("  " + emp.getName() + " - " + emp.getDepartment() + " - $" + emp.getSalary()));
+            System.out.println("  " + emp.name() + " - " + emp.department() + " - $" + emp.salary()));
         
         // Filter and save specific department
         saveEmployeesByDepartment("Engineering");
@@ -126,7 +126,7 @@ public class ModernEmployeeFileManager {
         // Convert employees to CSV lines using streams
         List<String> lines = employees.stream()
             .map(emp -> String.format("%s,%s,%.2f", 
-                emp.getName(), emp.getDepartment(), emp.getSalary()))
+                emp.name(), emp.department(), emp.salary()))
             .collect(Collectors.toList());
         
         // Add header
@@ -238,7 +238,7 @@ public class ModernEmployeeFileManager {
     }
     
     /**
-     * Compares traditional vs modern file I/O approaches.
+     * Compares traditional vs. modern file I/O approaches.
      */
     public void compareApproaches() throws IOException {
         System.out.println("\n--- Traditional vs Modern Approach Comparison ---");
@@ -292,29 +292,10 @@ public class ModernEmployeeFileManager {
             System.out.println("Caught IOException: " + e.getMessage());
         }
     }
-    
+
     /**
-     * Simple Employee class for demonstration.
-     */
-    public static class Employee {
-        private final String name;
-        private final String department;
-        private final double salary;
-        
-        public Employee(String name, String department, double salary) {
-            this.name = name;
-            this.department = department;
-            this.salary = salary;
+         * Simple Employee class for demonstration.
+         */
+        public record Employee(String name, String department, double salary) {
         }
-        
-        public String getName() { return name; }
-        public String getDepartment() { return department; }
-        public double getSalary() { return salary; }
-        
-        @Override
-        public String toString() {
-            return String.format("Employee{name='%s', department='%s', salary=%.2f}", 
-                name, department, salary);
-        }
-    }
 }

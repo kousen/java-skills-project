@@ -1,0 +1,14 @@
+[
+{
+  "id": 1001,
+  "name": "Alice Johnson",
+  "salary": 95000.00,
+  "hireDate": "2020-03-15"
+},
+{
+  "id": 1002,
+  "name": "Bob Smith",
+  "salary": 87000.00,
+  "hireDate": "2019-07-22"
+}
+]

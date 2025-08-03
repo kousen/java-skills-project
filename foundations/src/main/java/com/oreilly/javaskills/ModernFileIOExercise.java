@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 /**
  * Try It Out Exercise: Modern File I/O with NIO.2
- * 
+ * <p>
  * This exercise demonstrates modern file operations using java.nio.file:
  * - Path and Files classes for cleaner code
  * - One-line file reading and writing
@@ -266,7 +266,7 @@ public class ModernFileIOExercise {
     
     /**
      * Challenge: Create your own NIO.2 scenario!
-     * 
+     * ´
      * Ideas:
      * - Watch a directory for changes
      * - Create a file backup system
