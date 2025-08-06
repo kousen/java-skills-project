@@ -15,6 +15,7 @@ import java.util.stream.Stream;
  * Shows the advantages of the modern approach over traditional File I/O.
  * This complements the traditional com.oreilly.javaskills.EmployeeFileWriter class.
  */
+@SuppressWarnings("CallToPrintStackTrace")
 public class ModernEmployeeFileManager {
     
     // Use Path instead of File for modern approach

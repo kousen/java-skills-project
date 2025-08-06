@@ -1,6 +1,6 @@
 # Text Notes to Add to Videos
 
-## Naming Conventions
+## 01 Naming Conventions
 
 - Code is read more often than it is written. (00:15)
 - Well-named code is self-documenting. (00:21)
@@ -27,7 +27,7 @@
 - Constants: UPPER_SNAKE_CASE (07:04)
 - Packages: lowercase.with.dots (07:13)
 
-## Escape Characters
+## 02 Escape Characters
 
 - Special sequences that represent characters you can't easily type. (00:10)
 - They always start with a backslash (`\\`). (00:18)
@@ -39,7 +39,7 @@
 
 - Use text blocks (`"""`) for multi-line strings to avoid most escape characters! (01:12)
 
-## Operator Precedence
+## 03 Operator Precedence
 
 - **Order of operations** for Java code. (00:10)
 - When in doubt, use parentheses! Clarity over cleverness. (00:21)
@@ -61,7 +61,7 @@
 - **Multiplication/Division** comes before **Addition/Subtraction**. (01:11)
 - **Logical AND (`&&`)** comes before **Logical OR (`||`)**. (01:27)
 
-## Scanner
+## 04 Scanner
 
 - `java.util.Scanner` makes your programs interactive (00:15)
 - Can parse primitive types—but don't do it (00:41)
@@ -69,7 +69,7 @@
 - Use a **validation loop** (`while` + `try-catch`) to handle bad inputs (6:35)
 - Close your `Scanner` with `try-with-resources` (6:42)
 
-## Nested loops
+## 05 Nested loops
 
 - **Nested loops** are loops inside other loops. (00:34)
 - **Outer loop** controls the number of iterations (00:38)
@@ -77,7 +77,7 @@
 - **Use cases:** Processing 2D data, generating patterns, comparing elements (01:20)
 - **Performance:** Be cautious with large datasets (09:43)
 
-## 2D arrays
+## 06 2D arrays
 
 - **2D arrays** are arrays of arrays, like a grid or table. (00:29)
 - **Declaration:** `int[][] matrix = new int[3][4];` (01:00)
@@ -85,11 +85,14 @@
 - **Iterating:** Use nested loops (01:30)
 - **Best practices:** Use constants for sizes, avoid hardcoding (16:34)
 
-## File writing
+## 07 File writing
 
 - **Two Approaches**: `java.nio` vs `java.io` (00:37)
 - **Always use try-with-resources** for automatic resource management (01:35)
 - **Wrap FileWriter in BufferedWriter** for better performance (13:49)
 - **Use PrintWriter for formatting** with printf and println methods (13:50)
 - **Append mode**: FileWriter(filename, true) for log files (14:05)
+
+## 08 Access Modifiers
+
 
