@@ -1,69 +1,83 @@
-[SCENE 1: INTRODUCTION - 30 SECONDS]
+1. INTRODUCTION
 
-(Show Slide 1: Title Slide—"Writing to Files in Java")
+Hi, and welcome back to our Java skills series. In this video, we're going to explore a fundamental concept in object-oriented programming: access modifiers.
 
-Hi everyone. In this video, we'll learn how to make our programs persist data by writing content to files. This is a fundamental skill for everything from saving user data to creating logs and reports.
+Access modifiers are keywords in Java that set the visibility of your classes, methods, and variables. They are the heart of encapsulation, a core principle of OOP that bundles the data (fields) and methods that operate on the data into a single unit, or class. Access modifiers help you control who can access this data, and that's a critical part of building robust and maintainable applications.
 
-(Transition to Slide 2: Why Write to Files?)
+The main idea is to give your classes and their members the most restrictive access level possible, while still getting the job done. Let's see how that works.
 
-Writing to files allows our applications to save their state, create permanent records, and exchange data with other systems. It's a core part of almost any real-world application.
+2. THE FOUR ACCESS MODIFIERS
 
-[SCENE 2: TWO APPROACHES TO FILE I/O - 45 SECONDS]
+Java has four access modifiers, each with a different level of visibility.
 
-(Show Slide 3: Two Approaches)
+First, we have `public`. When a class, method, or variable is marked as `public`, it's accessible from anywhere in your application. This is the most permissive access level, so you should use it for your main APIs—the parts of your code that you intend for other classes to use directly.
 
-In modern Java, there are two main APIs for file operations. The traditional `java.io` package has been around since the beginning. It's simple, but has some drawbacks.
+Next is `protected`. A `protected` member is accessible within its own package (which is kind of odd, but we'll come back to it) and by subclasses, even if those subclasses are in a different package. This is useful when you want to expose certain functionality to child classes for extension.
 
-The modern approach is the `java.nio` package, which stands for New I/O. It was introduced to address the limitations of the original API. For any new code you write, you should always prefer the `java.nio` package. It's more powerful, has better error handling, and is more efficient.
+Then there's the surprisiug default, which is called package-private, access level. If you don't specify any modifier, the member is only accessible within its own package. This is good for helper classes or methods that are part of an implementation but shouldn't be exposed to the outside world. It's pretty rare, though you will often see it used in tests.
 
-[SCENE 3: THE TRY-WITH-RESOURCES STATEMENT - 60 SECONDS]
+Finally, we have `private`. This is the most restrictive access level. A `private` member is only accessible from within the same class. This is the cornerstone of encapsulation. You should always make your fields private and provide public methods (getters and setters) to access and modify them. This allows you to control and validate the data.
 
-(Show Slide 4: The try-with-resources Statement)
+One thing I want to emphasize is that access modifiers have nothing to do with security. This isn't about prohibiting developers from seeing the code -- it's about preventing other classes from using something that may change without warning. This is a fundamental principle of object-oriented programming, and it's about other classes and methods being able to access your data and methods. When you mark something private, you're saying that this is an implementation detail, subject to change, so don't rely on it in your code.
 
-Before we write any code, we have to talk about the single most important concept for file handling in Java: the `try-with-resources` statement. Whenever you open a file or any other resource, you must close it when you're done to avoid resource leaks.
+3. CODE EXAMPLES
 
-In the old days, this was done in a messy `finally` block. Today, we use `try-with-resources`. By declaring the resource inside the parentheses of the `try` statement, you tell Java to automatically close it for you, no matter what happens. It's cleaner, safer, and non-negotiable for modern Java I/O.
+Let's look at some code to clarify this. We'll start with a simple `Employee` class.
 
-[SCENE 4: CODE DEMO - TRADITIONAL AND MODERN MIX - 45 SECONDS]
+(Show `oop-core/src/main/java/Employee.java` on screen)
 
-(Transition to IDE showing `com.oreilly.javaskills.FileWriterExercise.java`)
+In this `Employee` class, the `name` and `salary` fields are `private`. This means they can't be accessed directly from outside the `Employee` class. To read the name, we provide a `public` getter method, `getName`. To change the salary, we have a `public` setter, `setSalary`, which includes validation to ensure the new salary is positive. This is a perfect example of encapsulation.
 
-Let's look at our `com.oreilly.javaskills.FileWriterExercise` example. Notice how we're mixing traditional and modern approaches for educational purposes.
+Now let's see how these modifiers work between different classes and packages. We have a few classes set up in the `com.oreilly.javaskills.oop.access` and `com.oreilly.javaskills.oop.anotherpackage` packages.
 
-(Highlight the demonstrateBufferedWriter method)
+(Show the directory structure)
 
-Here's the modern way: `Files.newBufferedWriter(Paths.get(filename))`. This is cleaner than the traditional nested writer approach. We still get BufferedWriter's efficiency, but with less verbosity.
+Inside the `access` package, we have `BaseClass`. Let's look at its members.
 
-(Show the createEmployeeReport method with PrintWriter)
+(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/access/BaseClass.java`)
 
-For formatted output, we wrap the BufferedWriter in a PrintWriter. Notice we're using `Files.newBufferedWriter()` as the base—mixing modern NIO.2 with traditional PrintWriter for the best of both worlds.
+Now, let's see what `SamePackageClass` can access.
 
-(Show the append mode example)
+(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/access/SamePackageClass.java`)
 
-For appending, we use `StandardOpenOption.CREATE` and `StandardOpenOption.APPEND`. This is more explicit and type-safe than the old boolean flag approach.
+As you can see, it can access `public`, `protected`, and package-private members, but not `private` ones. Now let's go to a different package.
 
-[SCENE 5: TRY IT OUT EXERCISE - 45 SECONDS]
+(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/anotherpackage/DifferentPackageClass.java`)
 
-(Transition to IDE showing `com.oreilly.javaskills.FileWriterExercise.java`)
+From a different package, we can only access the `public` members. But what if we subclass it?
 
-Now for your Try It Out exercise. We'll create employee reports and logs using traditional file I/O.
+(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/anotherpackage/DifferentPackageSubClass.java`)
 
-(Show the createEmployeeReport method)
+Because `DifferentPackageSubClass` extends `BaseClass`, it inherits the `public` and `protected` members, so it can access them directly.
 
-This method generates a formatted salary report. Notice how PrintWriter makes formatting easy with `printf`. We calculate totals and averages, creating a professional-looking text report.
+4. TRY IT OUT EXERCISE
 
-(Show the CSV writing example)
+Now let's put this knowledge to work with a practical exercise. Open the `com.oreilly.javaskills.oop.exercise.AccessModifiersExercise.java` file in the oop-core module.
 
-Here we're writing CSV data—perfect for Excel import. The traditional API handles this well, though we need to manually format each line and remember those commas and quotes.
+(Show `oop-core/src/main/java/com.oreilly.javaskills.oop.exercise.AccessModifiersExercise.java` on screen)
 
-Try the exercise: create different types of files - reports, logs, configuration files. Practice with append mode for ongoing logs. Remember: always use try-with-resources!
+You'll see a `BankAccount` class that needs proper encapsulation. Your task is to determine the correct access modifiers for each field and method.
 
-[SCENE 6: CONCLUSION - 30 SECONDS]
+Think about this: the account holder name, balance, and account number should be private—they're internal data that shouldn't be modified directly from outside. But we need public methods like `deposit` and `withdraw` for the class to be useful.
 
-(Show Slide 6: Key Takeaways)
+The validation and logging methods are implementation details—they should be private. The `BankingService` class shows different scenarios: public constants, protected methods for subclasses, and package-private utilities.
 
-To wrap up: traditional file I/O with FileWriter and BufferedWriter is still widely used, especially in legacy code. The key patterns are: always use try-with-resources, wrap FileWriter in BufferedWriter for efficiency, and remember append mode for log files.
+Try running the exercise and see how proper encapsulation protects your data while still providing a clean, usable interface. This is the foundation of good object-oriented design.
 
-While this approach works well, there's a more modern way. In our bonus video 7B, I'll show you the NIO.2 API that makes file operations incredibly simple—often just one line of code!
+5. SUMMARY
 
-Thanks for watching! Practice with the FileWriterExercise, and I'll see you in the next video where we explore the modern approach to file I/O.
+So, to recap:
+
+`public` is for everyone.
+
+`protected` is for the package and subclasses.
+
+package-private (no keyword) is for the package only.
+
+and `private` is for the class itself.
+
+As a best practice, always start with the most restrictive access level, `private`, and only increase the visibility if you need to. This will make your code more secure, easier to maintain, and less prone to bugs.
+
+Just remember that access modifiers have nothing to do with security. They are there to identify which parts of your code are part of the public API and which are implementation details that can change without warning.
+
+That's it for access modifiers. Thanks for watching, and I'll see you in the next video.

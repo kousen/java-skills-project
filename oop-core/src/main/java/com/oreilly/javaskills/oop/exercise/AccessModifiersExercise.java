@@ -81,6 +81,7 @@ public class AccessModifiersExercise {
      */
     static class BankAccount {
         // TODO: Add appropriate access modifiers to these fields
+
         // HINT: What should be accessible from outside vs inside only?
         /* TODO: access modifier */ final String accountHolderName;
         /* TODO: access modifier */ double balance;

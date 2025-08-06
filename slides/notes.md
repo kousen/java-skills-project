@@ -95,4 +95,11 @@
 
 ## 08 Access Modifiers
 
+- Access modifiers are used for encapsulation. (00:17)
+- `public`: Open to everyone. (10:56)
+- `protected`: Open to the package and subclasses. (11:00)
+- `package-private` (no keyword): Open to the package. (11:10)
+- `private`: Open only to the class itself. (11:20)
+- Start with the most restrictive access level and increase visibility when necessary. (11:25)
+
 

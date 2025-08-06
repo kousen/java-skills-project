@@ -53,7 +53,7 @@ class AccessModifiersExerciseTest {
         // Test negative initial balance
         assertThatThrownBy(() -> new BankAccount("John", -100.0))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("cannot be negative");
+            .hasMessageContaining("Initial balance cannot be negative");
     }
     
     @Test
