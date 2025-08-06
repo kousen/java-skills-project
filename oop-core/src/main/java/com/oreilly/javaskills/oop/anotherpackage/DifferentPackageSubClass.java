@@ -3,6 +3,7 @@ package com.oreilly.javaskills.oop.anotherpackage;
 
 import com.oreilly.javaskills.oop.access.BaseClass;
 
+@SuppressWarnings("unused")
 public class DifferentPackageSubClass extends BaseClass {
     public void accessMembers() {
         System.out.println("--- Inside DifferentPackageSubClass ---");

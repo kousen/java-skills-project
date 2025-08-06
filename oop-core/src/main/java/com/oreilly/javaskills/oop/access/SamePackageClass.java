@@ -1,6 +1,7 @@
 
 package com.oreilly.javaskills.oop.access;
 
+@SuppressWarnings("unused")
 public class SamePackageClass {
     public void accessMembers() {
         BaseClass base = new BaseClass();

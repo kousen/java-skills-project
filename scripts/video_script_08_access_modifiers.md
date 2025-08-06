@@ -113,7 +113,23 @@ public class DifferentPackageSubClass extends BaseClass {
 
 ---
 
-## 4. Summary
+## 4. Try It Out Exercise
+
+**Host:** "Now let's put this knowledge to work with a practical exercise. Open the `com.oreilly.javaskills.oop.exercise.AccessModifiersExercise.java` file in the oop-core module."
+
+**(Show `oop-core/src/main/java/com.oreilly.javaskills.oop.exercise.AccessModifiersExercise.java` on screen)**
+
+**Host:** "You'll see a `BankAccount` class that needs proper encapsulation. Your task is to determine the correct access modifiers for each field and method."
+
+**Host:** "Think about this: the account holder name, balance, and account number should be private—they're internal data that shouldn't be modified directly from outside. But we need public methods like `deposit` and `withdraw` for the class to be useful."
+
+**Host:** "The validation and logging methods are implementation details—they should be private. The `BankingService` class shows different scenarios: public constants, protected methods for subclasses, and package-private utilities."
+
+**Host:** "Try running the exercise and see how proper encapsulation protects your data while still providing a clean, usable interface. This is the foundation of good object-oriented design."
+
+---
+
+## 5. Summary
 
 **Host:** "So, to recap:"
 **Host:** "**`public`** is for everyone."

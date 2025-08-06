@@ -15,19 +15,19 @@ layout: cover
 
 # Contact Info
 
-Ken Kousen<br>
-Kousen IT, Inc.
+**Ken Kousen**<br>
+**Kousen IT, Inc.**
 
-- ken.kousen@kousenit.com
-- http://www.kousenit.com
-- http://kousenit.org (blog)
-- Social Media:
-  - [@kenkousen](https://twitter.com/kenkousen) (Twitter)
-  - [@kousenit.com](https://bsky.app/profile/kousenit.com) (Bluesky)
-  - [https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/) (LinkedIn)
-- *Tales from the jar side* (free newsletter)
-  - https://kenkousen.substack.com
-  - https://youtube.com/@talesfromthejarside
+- **ken.kousen@kousenit.com**
+- **http://www.kousenit.com**
+- **http://kousenit.org** (blog)
+- **Social Media:**
+  - **[@kenkousen](https://twitter.com/kenkousen)** (Twitter)
+  - **[@kousenit.com](https://bsky.app/profile/kousenit.com)** (Bluesky)
+  - **[https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/)** (LinkedIn)
+- ***Tales from the jar side*** (free newsletter)
+  - **https://kenkousen.substack.com**
+  - **https://youtube.com/@talesfromthejarside**
 
 ---
 layout: section
@@ -126,7 +126,57 @@ public class Employee {
 ```
 
 ---
-layout: section
+
+# Try It Out: Bank Account Exercise
+
+Time to practice proper encapsulation with `com.oreilly.javaskills.oop.exercise.AccessModifiersExercise.java`!
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **BankAccount Class**
+```java
+class BankAccount {
+    // Replace TODO comments with access modifiers
+    /* TODO: access modifier */ String accountHolderName;
+    /* TODO: access modifier */ double balance;
+    /* TODO: access modifier */ String accountNumber;
+    
+    // What about the public API methods?
+    /* TODO: access modifier */ void deposit(double amount) { ... }
+    /* TODO: access modifier */ boolean withdraw(double amount) { ... }
+    
+    // Helper methods - internal implementation?
+    /* TODO: access modifier */ void validateAmount(double amount) { ... }
+    /* TODO: access modifier */ void logTransaction(String type) { ... }
+}
+```
+
+</div>
+
+<div>
+
+## **Key Questions**
+<v-clicks>
+
+- **Fields**: Should account data be directly accessible?
+- **Public API**: Which methods need external access?
+- **Helpers**: Are validation methods implementation details?
+- **Security**: How do we protect sensitive operations?
+
+</v-clicks>
+
+<v-click>
+
+**Practice**: Run the exercise and see encapsulation in action!
+
+</v-click>
+
+</div>
+
+</div>
+
 ---
 
 # Key Takeaways

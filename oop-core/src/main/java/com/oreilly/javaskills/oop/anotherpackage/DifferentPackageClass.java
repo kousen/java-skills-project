@@ -3,6 +3,7 @@ package com.oreilly.javaskills.oop.anotherpackage;
 
 import com.oreilly.javaskills.oop.access.BaseClass;
 
+@SuppressWarnings("unused")
 public class DifferentPackageClass {
     public void accessMembers() {
         BaseClass base = new BaseClass();

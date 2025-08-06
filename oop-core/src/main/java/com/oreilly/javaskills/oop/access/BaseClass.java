@@ -1,6 +1,7 @@
 
 package com.oreilly.javaskills.oop.access;
 
+@SuppressWarnings({"FieldCanBeLocal", "unused", "FieldMayBeFinal"})
 public class BaseClass {
     // Accessible from anywhere
     public String publicVar = "I am public";
