@@ -12,45 +12,45 @@ Writing to files allows our applications to save their state, create permanent r
 
 (Show Slide 3: Two Approaches)
 
-In modern Java, there are two main APIs for file operations. The traditional java.io package has been around since the beginning. It's simple, but has some drawbacks.
+In modern Java, there are two main APIs for file operations. The traditional `java.io` package has been around since the beginning. It's simple, but has some drawbacks.
 
-The modern approach is the java.nio package, which stands for New I/O. It was introduced to address the limitations of the original API. For any new code you write, you should always prefer the java.nio package. It's more powerful, has better error handling, and is more efficient.
+The modern approach is the `java.nio` package, which stands for New I/O. It was introduced to address the limitations of the original API. For any new code you write, you should always prefer the `java.nio` package. It's more powerful, has better error handling, and is more efficient.
 
 [SCENE 3: THE TRY-WITH-RESOURCES STATEMENT - 60 SECONDS]
 
 (Show Slide 4: The try-with-resources Statement)
 
-Before we write any code, we have to talk about the single most important concept for file handling in Java: the try-with-resources statement. Whenever you open a file or any other resource, you must close it when you're done to avoid resource leaks.
+Before we write any code, we have to talk about the single most important concept for file handling in Java: the `try-with-resources` statement. Whenever you open a file or any other resource, you must close it when you're done to avoid resource leaks.
 
-In the old days, this was done in a messy finally block. Today, we use try-with-resources. By declaring the resource inside the parentheses of the try statement, you tell Java to automatically close it for you, no matter what happens. It's cleaner, safer, and non-negotiable for modern Java I/O.
+In the old days, this was done in a messy `finally` block. Today, we use `try-with-resources`. By declaring the resource inside the parentheses of the `try` statement, you tell Java to automatically close it for you, no matter what happens. It's cleaner, safer, and non-negotiable for modern Java I/O.
 
-[SCENE 4: CODE DEMO - TRADITIONAL APPROACH - 45 SECONDS]
+[SCENE 4: CODE DEMO - TRADITIONAL AND MODERN MIX - 45 SECONDS]
 
-(Transition to IDE showing com.oreilly.javaskills.EmployeeFileWriter.java)
+(Transition to IDE showing `com.oreilly.javaskills.FileWriterExercise.java`)
 
-Let's look at our com.oreilly.javaskills.EmployeeFileWriter example demonstrating the traditional approach. This shows both the power and the verbosity of traditional file I/O.
+Let's look at our `com.oreilly.javaskills.FileWriterExercise` example. Notice how we're mixing traditional and modern approaches for educational purposes.
 
-(Highlight the try-with-resources with BufferedWriter)
+(Highlight the demonstrateBufferedWriter method)
 
-Here's the key pattern: we wrap a FileWriter in a BufferedWriter for efficiency. The try-with-resources ensures proper cleanup. Notice how we manually call newLine() for platform-independent line breaks.
+Here's the modern way: `Files.newBufferedWriter(Paths.get(filename))`. This is cleaner than the traditional nested writer approach. We still get BufferedWriter's efficiency, but with less verbosity.
 
-(Show the PrintWriter alternative)
+(Show the createEmployeeReport method with PrintWriter)
 
-For formatted output, we often add a PrintWriter wrapper. This gives us convenient methods like printf and println. Yes, that's three layers of writers! Each serves a purpose, but it's definitely verbose.
+For formatted output, we wrap the BufferedWriter in a PrintWriter. Notice we're using `Files.newBufferedWriter()` as the base—mixing modern NIO.2 with traditional PrintWriter for the best of both worlds.
 
 (Show the append mode example)
 
-One useful feature: passing true as the second parameter to FileWriter enables append mode. This is perfect for log files where you want to add entries without overwriting existing content.
+For appending, we use `StandardOpenOption.CREATE` and `StandardOpenOption.APPEND`. This is more explicit and type-safe than the old boolean flag approach.
 
 [SCENE 5: TRY IT OUT EXERCISE - 45 SECONDS]
 
-(Transition to IDE showing com.oreilly.javaskills.FileWriterExercise.java)
+(Transition to IDE showing `com.oreilly.javaskills.FileWriterExercise.java`)
 
 Now for your Try It Out exercise. We'll create employee reports and logs using traditional file I/O.
 
 (Show the createEmployeeReport method)
 
-This method generates a formatted salary report. Notice how PrintWriter makes formatting easy with printf. We calculate totals and averages, creating a professional-looking text report.
+This method generates a formatted salary report. Notice how PrintWriter makes formatting easy with `printf`. We calculate totals and averages, creating a professional-looking text report.
 
 (Show the CSV writing example)
 

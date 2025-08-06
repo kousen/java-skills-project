@@ -96,14 +96,14 @@ try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
 
 ---
 
-# Traditional File I/O Example
+# Mixing Traditional and Modern Approaches
 
-From `com.oreilly.javaskills.EmployeeFileWriter.java` - creating employee reports:
+From `com.oreilly.javaskills.FileWriterExercise.java` - best of both worlds:
 
 ```java
-// The traditional approach requires layered writers
+// Modern NIO.2 base with traditional PrintWriter for formatting
 try (PrintWriter writer = new PrintWriter(
-        new BufferedWriter(new FileWriter(REPORT_FILE)))) {
+        Files.newBufferedWriter(Paths.get(REPORT_FILE)))) {
     
     // Write report header
     writer.println("EMPLOYEE SALARY REPORT");
@@ -120,7 +120,7 @@ try (PrintWriter writer = new PrintWriter(
 
 <v-click>
 
-**Key Pattern**: FileWriter → BufferedWriter → PrintWriter for efficiency and formatting
+**Key Pattern**: Use `Files.newBufferedWriter()` instead of nested writers - cleaner!
 
 </v-click>
 
@@ -134,14 +134,14 @@ try (PrintWriter writer = new PrintWriter(
 
 <div>
 
-## **Basic Operations**
+## **Modern Patterns Used**
 <v-clicks>
 
-- **Simple writing**: FileWriter with try-with-resources
-- **Buffered writing**: Wrap FileWriter in BufferedWriter  
-- **Formatted reports**: Use PrintWriter for printf
-- **Append mode**: FileWriter(filename, true)
-- **CSV generation**: Manual formatting for Excel
+- **Files.newBufferedWriter()**: Clean NIO.2 approach
+- **StandardOpenOption.APPEND**: Type-safe append mode
+- **PrintWriter wrapping**: For formatted output
+- **Text blocks**: Clean multi-line content (Java 15+)
+- **List.of()**: Immutable lists (Java 9+)
 
 </v-clicks>
 
@@ -155,7 +155,7 @@ try (PrintWriter writer = new PrintWriter(
 - Employee salary reports
 - Activity log files  
 - CSV data for spreadsheets
-- Configuration files
+- Side-by-side comparison files
 - Formatted text documents
 
 </v-clicks>
@@ -163,6 +163,56 @@ try (PrintWriter writer = new PrintWriter(
 </div>
 
 </div>
+
+---
+
+# Appending to Files: Old vs New
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Traditional Approach**
+```java
+// Boolean flag for append mode
+try (BufferedWriter writer = 
+     new BufferedWriter(
+       new FileWriter(LOG_FILE, true))) {
+    
+    writer.write("[" + timestamp + "] ");
+    writer.write("Log entry");
+    writer.newLine();
+}
+```
+
+</div>
+
+<div>
+
+## **Modern NIO.2 Approach**
+```java
+// Explicit options
+try (BufferedWriter writer = 
+     Files.newBufferedWriter(
+       Paths.get(LOG_FILE),
+       StandardOpenOption.CREATE,
+       StandardOpenOption.APPEND)) {
+    
+    writer.write("[" + timestamp + "] ");
+    writer.write("Log entry");
+    writer.newLine();
+}
+```
+
+</div>
+
+</div>
+
+<v-click>
+
+**Modern advantage**: Type-safe options, more explicit intent, better error handling
+
+</v-click>
 
 ---
 

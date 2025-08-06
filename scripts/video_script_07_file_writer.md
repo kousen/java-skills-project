@@ -44,27 +44,27 @@
 
 ---
 
-### SCENE 4: Code Demo - Traditional Approach (2:15–3:00)
+### SCENE 4: Code Demo - Traditional and Modern Mix (2:15–3:00)
 
 **(Transition to IDE showing `com.oreilly.javaskills.EmployeeFileWriter.java`)**
 
 **YOU:**
-"Let's look at our `com.oreilly.javaskills.EmployeeFileWriter` example demonstrating the traditional approach. This shows both the power and the verbosity of traditional file I/O."
+"Let's look at our `com.oreilly.javaskills.EmployeeFileWriter` example to see the key patterns for file writing."
 
-**(Highlight the try-with-resources with BufferedWriter)**
-
-**YOU:**
-"Here's the key pattern: we wrap a `FileWriter` in a `BufferedWriter` for efficiency. The try-with-resources ensures proper cleanup. Notice how we manually call `newLine()` for platform-independent line breaks."
-
-**(Show the PrintWriter alternative)**
+**(Highlight the writeEmployeesToCsv method)**
 
 **YOU:**
-"For formatted output, we often add a `PrintWriter` wrapper. This gives us convenient methods like `printf` and `println`. Yes, that's three layers of writers! Each serves a purpose, but it's definitely verbose."
+"Here's the modern way: `Files.newBufferedWriter(Paths.get(filename))`. This is cleaner than the traditional nested writer approach. We still get BufferedWriter's efficiency, but with less verbosity."
 
-**(Show the append mode example)**
+**(Show the writeEmployeesToJson method with text blocks)**
 
 **YOU:**
-"One useful feature: passing `true` as the second parameter to FileWriter enables append mode. This is perfect for log files where you want to add entries without overwriting existing content."
+"Notice how we can use text blocks with file writing. This makes multi-line content much cleaner—no more escape characters or manual line breaks."
+
+**(Show the demonstrateFileOperations method)**
+
+**YOU:**
+"For file operations beyond writing, NIO.2 provides powerful one-liners: `Files.copy()`, `Files.readString()`, and file attribute checking. These used to require dozens of lines of code."
 
 ---
 
@@ -73,20 +73,20 @@
 **(Transition to IDE showing `com.oreilly.javaskills.FileWriterExercise.java`)**
 
 **YOU:**
-"Now for your **Try It Out** exercise. We'll create employee reports and logs using traditional file I/O."
+"Now for your **Try It Out** exercise. Open `FileWriterExercise.java`. You'll find several methods to implement, each building on the patterns we just saw."
 
-**(Show the createEmployeeReport method)**
-
-**YOU:**
-"This method generates a formatted salary report. Notice how PrintWriter makes formatting easy with `printf`. We calculate totals and averages, creating a professional-looking text report."
-
-**(Show the CSV writing example)**
+**(Show the method signatures without implementations)**
 
 **YOU:**
-"Here we're writing CSV data—perfect for Excel import. The traditional API handles this well, though we need to manually format each line and remember those commas and quotes."
+"Your tasks: First, implement `demonstrateBasicFileWriter` using plain FileWriter. Then progress to `demonstrateBufferedWriter` using the modern NIO.2 approach we just learned."
+
+**(Highlight the createEmployeeReport TODO)**
 
 **YOU:**
-"Try the exercise: create different types of files - reports, logs, configuration files. Practice with append mode for ongoing logs. Remember: always use try-with-resources!"
+"For the employee report, you'll combine what you've learned: use PrintWriter for formatting, calculate totals and averages, and create a professional-looking report."
+
+**YOU:**
+"The full solutions are provided, but try implementing each method yourself first. Run the tests to verify your implementation. If you get stuck, peek at the solution for hints, then try to complete it on your own. Remember: always use try-with-resources!"
 
 ---
 

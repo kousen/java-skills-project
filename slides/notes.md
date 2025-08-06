@@ -85,3 +85,11 @@
 - **Iterating:** Use nested loops (01:30)
 - **Best practices:** Use constants for sizes, avoid hardcoding (16:34)
 
+## File writing
+
+- **Two Approaches**: `java.nio` vs `java.io` (00:37)
+- **Always use try-with-resources** for automatic resource management (01:35)
+- **Wrap FileWriter in BufferedWriter** for better performance (13:49)
+- **Use PrintWriter for formatting** with printf and println methods (13:50)
+- **Append mode**: FileWriter(filename, true) for log files (14:05)
+

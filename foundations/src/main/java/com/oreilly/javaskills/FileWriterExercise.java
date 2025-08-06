@@ -1,6 +1,10 @@
 package com.oreilly.javaskills;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -40,16 +44,16 @@ public class FileWriterExercise {
             
             // Exercise 3: Create employee report
             exercise.createEmployeeReport();
-            
-            // Exercise 4: Append to log file
-            exercise.demonstrateAppending();
-            
-            // Exercise 5: Write formatted data
-            exercise.writeFormattedData();
-            
+
             // Bonus: Compare with text blocks
             exercise.compareWithTextBlocks();
-            
+
+            // Exercise 4: Append to log file
+            exercise.demonstrateAppending();
+
+            // Exercise 5: Write formatted data
+            exercise.writeFormattedData();
+
         } catch (IOException e) {
             System.err.println("Error during file operations: " + e.getMessage());
             e.printStackTrace();
@@ -59,12 +63,20 @@ public class FileWriterExercise {
     /**
      * Creates the output directory if it doesn't exist
      */
-    private void createOutputDirectory() {
+    private void createOutputDirectory() throws IOException {
+        // Old style
         File dir = new File(OUTPUT_DIR);
         if (!dir.exists()) {
             if (dir.mkdir()) {
                 System.out.println("Created output directory: " + OUTPUT_DIR);
             }
+        }
+
+        // New style
+        Path dataPath = Paths.get(OUTPUT_DIR);
+        if (!Files.exists(dataPath)) {
+            Files.createDirectories(dataPath);
+            System.out.println("Created data directory: " + OUTPUT_DIR);
         }
     }
     
@@ -77,7 +89,7 @@ public class FileWriterExercise {
         
         String filename = OUTPUT_DIR + "/basic_output.txt";
         
-        // Using try-with-resources - FileWriter implements AutoCloseable
+        // Using try-with-resources - FileWriter implements Closeable
         try (FileWriter writer = new FileWriter(filename)) {
             // Traditional approach: manual \n for line breaks
             writer.write("Employee Management System\n");
@@ -104,7 +116,7 @@ public class FileWriterExercise {
         String filename = OUTPUT_DIR + "/buffered_output.txt";
         
         // Wrap FileWriter in BufferedWriter for better performance
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filename))) {
             writer.write("Employee List");
             writer.newLine();  // Platform-independent line separator
             writer.write("=============");
@@ -139,8 +151,8 @@ public class FileWriterExercise {
         // Create sample employees
         List<Employee> employees = createSampleEmployees();
         
-        // Use PrintWriter for convenient formatting methods
-        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(REPORT_FILE)))) {
+        // Use PrintWriter for convenient formatting method
+        try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(Paths.get(REPORT_FILE)))) {
             // Write report header
             writer.println("EMPLOYEE SALARY REPORT");
             writer.println("Generated: " + LocalDateTime.now().format(DATE_FORMAT));
@@ -172,7 +184,47 @@ public class FileWriterExercise {
         System.out.println("Generated employee report: " + REPORT_FILE);
         System.out.println("Used PrintWriter for convenient formatting\n");
     }
-    
+
+    /**
+     * Bonus: Compare traditional approach with text blocks
+     */
+    public void compareWithTextBlocks() throws IOException {
+        System.out.println("BONUS: TRADITIONAL vs TEXT BLOCKS:");
+        System.out.println("----------------------------------");
+
+        String traditionalFile = OUTPUT_DIR + "/traditional_approach.txt";
+        String modernFile = OUTPUT_DIR + "/modern_approach.txt";
+
+        // Traditional approach - multiple write calls
+        try (FileWriter writer = new FileWriter(traditionalFile)) {
+            writer.write("Employee Report\n");
+            writer.write("================\n");
+            writer.write("Generated: " + LocalDateTime.now().format(DATE_FORMAT) + "\n\n");
+            writer.write("Name: Alice Johnson\n");
+            writer.write("Department: Engineering\n");
+            writer.write("Salary: $95,000\n");
+        }
+
+        // Modern approach - text block with traditional FileWriter
+        try (FileWriter writer = new FileWriter(modernFile)) {
+            String content = """
+                Employee Report
+                ================
+                Generated: %s
+                
+                Name: Alice Johnson
+                Department: Engineering
+                Salary: $95,000
+                """.formatted(LocalDateTime.now().format(DATE_FORMAT));
+
+            writer.write(content);
+        }
+
+        System.out.println("Traditional approach: " + traditionalFile);
+        System.out.println("With text blocks: " + modernFile);
+        System.out.println("Both create identical files, but text blocks are much cleaner!\n");
+    }
+
     /**
      * Exercise 4: Append to existing files
      */
@@ -180,9 +232,8 @@ public class FileWriterExercise {
         System.out.println("4. APPENDING TO FILES:");
         System.out.println("----------------------");
         
-        // Append mode: FileWriter(filename, true)
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(LOG_FILE, true))) {  // true = append mode
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(LOG_FILE),
+                StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
             
             writer.write("[" + LocalDateTime.now().format(DATE_FORMAT) + "] ");
             writer.write("Application started");
@@ -211,7 +262,7 @@ public class FileWriterExercise {
         String csvFile = OUTPUT_DIR + "/employees.csv";
         List<Employee> employees = createSampleEmployees();
         
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(csvFile))) {
             // Write CSV header
             writer.write("ID,Name,Department,Salary,Bonus");
             writer.newLine();
@@ -237,6 +288,7 @@ public class FileWriterExercise {
         System.out.println("CSV format suitable for Excel/spreadsheet import\n");
     }
     
+
     /**
      * Create sample employees for demonstrations
      */
@@ -249,63 +301,7 @@ public class FileWriterExercise {
             new Employee("Eva Brown", "Finance", 78000)
         );
     }
-    
-    /**
-     * Bonus: Compare traditional approach with text blocks
-     */
-    public void compareWithTextBlocks() throws IOException {
-        System.out.println("BONUS: TRADITIONAL vs TEXT BLOCKS:");
-        System.out.println("----------------------------------");
-        
-        String traditionalFile = OUTPUT_DIR + "/traditional_approach.txt";
-        String modernFile = OUTPUT_DIR + "/modern_approach.txt";
-        
-        // Traditional approach - multiple write calls
-        try (FileWriter writer = new FileWriter(traditionalFile)) {
-            writer.write("Employee Report\n");
-            writer.write("================\n");
-            writer.write("Generated: " + LocalDateTime.now().format(DATE_FORMAT) + "\n\n");
-            writer.write("Name: Alice Johnson\n");
-            writer.write("Department: Engineering\n");
-            writer.write("Salary: $95,000\n");
-        }
-        
-        // Modern approach - text block with traditional FileWriter
-        try (FileWriter writer = new FileWriter(modernFile)) {
-            String content = """
-                Employee Report
-                ================
-                Generated: %s
-                
-                Name: Alice Johnson
-                Department: Engineering
-                Salary: $95,000
-                """.formatted(LocalDateTime.now().format(DATE_FORMAT));
-            
-            writer.write(content);
-        }
-        
-        System.out.println("Traditional approach: " + traditionalFile);
-        System.out.println("With text blocks: " + modernFile);
-        System.out.println("Both create identical files, but text blocks are much cleaner!\n");
-    }
 
-    /**
-     * Challenge: Create your own file writing scenario!
-     * <p>
-     * Ideas:
-     * - Write an HTML report with employee data
-     * - Create a configuration file
-     * - Generate a Markdown document
-     * - Write JSON-formatted data manually
-     * - Create a multi-file report (summary and details)
-     */
-    @SuppressWarnings({"unused", "RedundantThrows"})
-    public void customFileWriting() throws IOException {
-        // TODO: Implement your own file writing scenario
-        System.out.println("\nChallenge: Create your own file writing scenario!");
-    }
-    
     /**
      * Simple Employee record for demonstrations
      */
