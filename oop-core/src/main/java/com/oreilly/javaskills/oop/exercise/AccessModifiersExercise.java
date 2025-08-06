@@ -10,7 +10,7 @@ package com.oreilly.javaskills.oop.exercise;
  * - private: accessible within the same class only
  * <p>
  * Instructions:
- * 1. Replace each "/* TODO: access modifier */" comment with the appropriate access modifier
+ * 1. Replace each "TODO: access modifier" comment with the appropriate access modifier
  * 2. Consider what should be accessible from outside vs internal implementation
  * 3. Think about which methods are part of the public API vs helper methods
  * 4. Run the program to test your choices (it should compile and run successfully)

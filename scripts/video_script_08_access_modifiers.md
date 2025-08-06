@@ -7,7 +7,7 @@
 
 **Host:** "Access modifiers are keywords in Java that set the visibility of your classes, methods, and variables. They are the heart of encapsulation, a core principle of OOP that bundles the data (fields) and methods that operate on the data into a single unit, or class. Access modifiers help you control who can access this data, and that's a critical part of building robust and maintainable applications."
 
-**Host:** "The main idea is to give your classes and their members the most restrictive access level possible. Let's see how that works."
+**Host:** "The main idea is to give your classes and their members the most restrictive access level possible, while still getting the job done. Let's see how that works."
 
 ---
 
@@ -17,17 +17,19 @@
 
 **Host:** "First, we have **`public`**. When a class, method, or variable is marked as `public`, it's accessible from anywhere in your application. This is the most permissive access level, so you should use it for your main APIs—the parts of your code that you intend for other classes to use directly."
 
-**Host:** "Next is **`protected`**. A `protected` member is accessible within its own package and by subclasses, even if those subclasses are in a different package. This is useful when you want to expose certain functionality to child classes for extension."
+**Host:** "Next is **`protected`**. A `protected` member is accessible within its own package (which is kind of odd, but we'll come back to it) and by subclasses, even if those subclasses are in a different package. This is useful when you want to expose certain functionality to child classes for extension."
 
-**Host:** "Then there's the default, or **package-private**, access level. If you don't specify any modifier, the member is only accessible within its own package. This is great for helper classes or methods that are part of an implementation but shouldn't be exposed to the outside world."
+**Host:** "Then there's the surprisiug default, which is called **package-private**, access level. If you don't specify any modifier, the member is only accessible within its own package. This is good for helper classes or methods that are part of an implementation but shouldn't be exposed to the outside world. It's pretty rare, though you will often see it used in tests."
 
 **Host:** "Finally, we have **`private`**. This is the most restrictive access level. A `private` member is only accessible from within the same class. This is the cornerstone of encapsulation. You should always make your fields private and provide public methods (getters and setters) to access and modify them. This allows you to control and validate the data."
+
+**Host:** "One thing I want to emphasize is that access modifiers have nothing to do with security. This isn't about prohibiting developers from seeing the code -- it's about preventing other classes from using something that may change without warning. This is a fundamental principle of object-oriented programming, and it's about other classes and methods being able to access your data and methods. When you mark something private, you're saying that this is an implementation detail, subject to change, so don't rely on it in your code."
 
 ---
 
 ## 3. Code Examples
 
-**Host:** "Let's look at some code to make this clearer. We'll start with a simple `Employee` class."
+**Host:** "Let's look at some code to clarify this. We'll start with a simple `Employee` class."
 
 **(Show `oop-core/src/main/java/Employee.java` on screen)**
 
@@ -138,5 +140,7 @@ public class DifferentPackageSubClass extends BaseClass {
 **Host:** "and **`private`** is for the class itself."
 
 **Host:** "As a best practice, always start with the most restrictive access level, `private`, and only increase the visibility if you need to. This will make your code more secure, easier to maintain, and less prone to bugs."
+
+**Host:** "Just remember that access modifiers have nothing to do with security. They are there to identify which parts of your code are part of the public API and which are implementation details that can change without warning."
 
 **Host:** "That's it for access modifiers. Thanks for watching, and I'll see you in the next video."
