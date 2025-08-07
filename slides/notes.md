@@ -101,5 +101,11 @@
 - `package-private` (no keyword): Open to the package. (11:10)
 - `private`: Open only to the class itself. (11:20)
 - Start with the most restrictive access level and increase visibility when necessary. (11:25)
+## 09 Composition
+
+- Composition is a powerful way to build complex objects by combining simpler ones. (00:12)
+- It models the "has-a" relationship (e.g., a `Department` has `Employee`s). (00:18)
+- **Favor composition over inheritance** is a widely accepted design principle. (00:48)
+
 
 
