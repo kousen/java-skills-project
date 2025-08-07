@@ -1,83 +1,45 @@
-1. INTRODUCTION
+Hello, and welcome to our next lesson in the Java skills series. Today we're talking about a design principle that is fundamental to object-oriented programming: object composition.
 
-Hi, and welcome back to our Java skills series. In this video, we're going to explore a fundamental concept in object-oriented programming: access modifiers.
+Composition is how you build classes that are made up of other classes. It models what we call a 'has-a' relationship. For instance, you could say that a Car 'has-a' Engine. The Car class, in this case, would contain an instance of the Engine class. This is a powerful alternative to inheritance, which models an 'is-a' relationship.
 
-Access modifiers are keywords in Java that set the visibility of your classes, methods, and variables. They are the heart of encapsulation, a core principle of OOP that bundles the data (fields) and methods that operate on the data into a single unit, or class. Access modifiers help you control who can access this data, and that's a critical part of building robust and maintainable applications.
+A common piece of advice you'll hear is to 'favor composition over inheritance.' In this video, we'll explore why that is and how to use composition effectively in your own code.
 
-The main idea is to give your classes and their members the most restrictive access level possible, while still getting the job done. Let's see how that works.
+Let's quickly compare inheritance and composition. Inheritance is an 'is-a' relationship. For example, a Manager is an Employee. This creates a tight bond between the Manager and Employee classes. While useful, inheritance can sometimes lead to rigid and complicated class structures.
 
-2. THE FOUR ACCESS MODIFIERS
+Composition, on the other hand, is a 'has-a' relationship. An Employee has an Address. This is a more flexible arrangement. The Employee class contains an Address object, but the two are not as tightly linked. This promotes what we call 'loose coupling,' making your classes smaller, more focused, and easier to maintain.
 
-Java has four access modifiers, each with a different level of visibility.
+Let's look at a practical example. We have an Employee class and an Address record.
 
-First, we have `public`. When a class, method, or variable is marked as `public`, it's accessible from anywhere in your application. This is the most permissive access level, so you should use it for your main APIs—the parts of your code that you intend for other classes to use directly.
+(Show oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Address.java on screen)
 
-Next is `protected`. A `protected` member is accessible within its own package (which is kind of odd, but we'll come back to it) and by subclasses, even if those subclasses are in a different package. This is useful when you want to expose certain functionality to child classes for extension.
+The Address record is a simple data carrier with fields for street, city, state, and zip. Notice how records can also have business methods like getMailingLabel() and isInState() - they're not just passive data holders.
 
-Then there's the surprisiug default, which is called package-private, access level. If you don't specify any modifier, the member is only accessible within its own package. This is good for helper classes or methods that are part of an implementation but shouldn't be exposed to the outside world. It's pretty rare, though you will often see it used in tests.
+(Show oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Employee.java on screen)
 
-Finally, we have `private`. This is the most restrictive access level. A `private` member is only accessible from within the same class. This is the cornerstone of encapsulation. You should always make your fields private and provide public methods (getters and setters) to access and modify them. This allows you to control and validate the data.
+The Employee class has a name and a salary, but it also has an Address. See how the address field is an instance of the Address record? That's composition. When we create an Employee, we set its address using the setAddress() method.
 
-One thing I want to emphasize is that access modifiers have nothing to do with security. This isn't about prohibiting developers from seeing the code -- it's about preventing other classes from using something that may change without warning. This is a fundamental principle of object-oriented programming, and it's about other classes and methods being able to access your data and methods. When you mark something private, you're saying that this is an implementation detail, subject to change, so don't rely on it in your code.
+This is a much cleaner and more flexible design than, say, adding all the address fields directly to the Employee class.
 
-3. CODE EXAMPLES
+Composition is also great for modeling one-to-many relationships. For example, a Department can have multiple Employees.
 
-Let's look at some code to clarify this. We'll start with a simple `Employee` class.
+(Show oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Department.java on screen)
 
-(Show `oop-core/src/main/java/Employee.java` on screen)
+In our Department class, we have a List of Employee objects. This is another example of composition. The Department 'has-a' list of employees. The Department class has methods to add an employee and to get the list of all employees.
 
-In this `Employee` class, the `name` and `salary` fields are `private`. This means they can't be accessed directly from outside the `Employee` class. To read the name, we provide a `public` getter method, `getName`. To change the salary, we have a `public` setter, `setSalary`, which includes validation to ensure the new salary is positive. This is a perfect example of encapsulation.
+Now it's your turn to practice composition. Open the CompositionExercise.java file in the com.oreilly.javaskills.oop.exercise package.
 
-Now let's see how these modifiers work between different classes and packages. We have a few classes set up in the `com.oreilly.javaskills.oop.access` and `com.oreilly.javaskills.oop.anotherpackage` packages.
+(Show oop-core/src/main/java/com/oreilly/javaskills/oop/exercise/CompositionExercise.java on screen)
 
-(Show the directory structure)
+This exercise has two parts. First, there's a demo section that uses the same Employee, Address, and Department classes we've been working with throughout our videos. This shows you composition with classes you already know well.
 
-Inside the `access` package, we have `BaseClass`. Let's look at its members.
+Watch how we create departments and add employees to them. Notice that each Employee 'has-a' home address, and each Department 'has' employees. We're building complex relationships by combining these familiar objects.
 
-(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/access/BaseClass.java`)
+The second part is your hands-on practice with ProjectTeam and TeamMember classes. Here you'll see how composition creates flexible structures. A ProjectTeam 'has' members, and each TeamMember 'has' tasks.
 
-Now, let's see what `SamePackageClass` can access.
+This two-part approach gives you both a demo with familiar classes and an exercise with new classes. Run it and see how composition works in both contexts. You'll also see some department analytics in action - things like budget management, payroll calculations, and employee reporting. This shows how composition enables rich business functionality. Then try creating your own composition examples!
 
-(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/access/SamePackageClass.java`)
+To sum up, object composition is a powerful tool in your toolbox.
 
-As you can see, it can access `public`, `protected`, and package-private members, but not `private` ones. Now let's go to a different package.
+It lets you build complex objects by combining simpler ones, modeling the 'has-a' relationship. It generally leads to more flexible, reusable, and maintainable code than inheritance. Remember the principle: favor composition over inheritance. It will help you design better, more robust Java applications.
 
-(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/anotherpackage/DifferentPackageClass.java`)
-
-From a different package, we can only access the `public` members. But what if we subclass it?
-
-(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/anotherpackage/DifferentPackageSubClass.java`)
-
-Because `DifferentPackageSubClass` extends `BaseClass`, it inherits the `public` and `protected` members, so it can access them directly.
-
-4. TRY IT OUT EXERCISE
-
-Now let's put this knowledge to work with a practical exercise. Open the `com.oreilly.javaskills.oop.exercise.AccessModifiersExercise.java` file in the oop-core module.
-
-(Show `oop-core/src/main/java/com.oreilly.javaskills.oop.exercise.AccessModifiersExercise.java` on screen)
-
-You'll see a `BankAccount` class that needs proper encapsulation. Your task is to determine the correct access modifiers for each field and method.
-
-Think about this: the account holder name, balance, and account number should be private—they're internal data that shouldn't be modified directly from outside. But we need public methods like `deposit` and `withdraw` for the class to be useful.
-
-The validation and logging methods are implementation details—they should be private. The `BankingService` class shows different scenarios: public constants, protected methods for subclasses, and package-private utilities.
-
-Try running the exercise and see how proper encapsulation protects your data while still providing a clean, usable interface. This is the foundation of good object-oriented design.
-
-5. SUMMARY
-
-So, to recap:
-
-`public` is for everyone.
-
-`protected` is for the package and subclasses.
-
-package-private (no keyword) is for the package only.
-
-and `private` is for the class itself.
-
-As a best practice, always start with the most restrictive access level, `private`, and only increase the visibility if you need to. This will make your code more secure, easier to maintain, and less prone to bugs.
-
-Just remember that access modifiers have nothing to do with security. They are there to identify which parts of your code are part of the public API and which are implementation details that can change without warning.
-
-That's it for access modifiers. Thanks for watching, and I'll see you in the next video.
+Thanks for watching. Join us next time as we continue to explore the world of Java development.

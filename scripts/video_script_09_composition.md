@@ -3,7 +3,7 @@
 
 ## 1. Introduction
 
-**Host:** "Hello, and welcome to our next lesson in the Java skills series. Today, we're talking about a design principle that is fundamental to object-oriented programming: object composition."
+**Host:** "Hello, and welcome to our next lesson in the Java skills series. Today we're talking about a design principle that is fundamental to object-oriented programming: object composition."
 
 **Host:** "Composition is how you build classes that are made up of other classes. It models what we call a 'has-a' relationship. For instance, you could say that a `Car` 'has-a' `Engine`. The `Car` class, in this case, would contain an instance of the `Engine` class. This is a powerful alternative to inheritance, which models an 'is-a' relationship."
 
@@ -21,15 +21,15 @@
 
 ## 3. Code Example: Employee and Address
 
-**Host:** "Let's look at a practical example. We have an `Employee` class and an `Address` class."
+**Host:** "Let's look at a practical example. We have an `Employee` class and an `Address` record."
 
-**(Show `oop-core/src/main/java/Address.java` on screen)**
+**(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Address.java` on screen)**
 
-**Host:** "The `Address` class is a simple data carrier with fields for street, city, state, and zip."
+**Host:** "The `Address` record is a simple data carrier with fields for street, city, state, and zip. Notice how records can also have business methods like `getMailingLabel()` and `isInState()` - they're not just passive data holders."
 
-**(Show `oop-core/src/main/java/Employee.java` on screen)**
+**(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Employee.java` on screen)**
 
-**Host:** "The `Employee` class has a name and a salary, but it also has an `Address`. See how the `address` field is an instance of the `Address` class? That's composition. When we create an `Employee`, we pass in an `Address` object."
+**Host:** "The `Employee` class has a name and a salary, but it also has an `Address`. See how the `address` field is an instance of the `Address` record? That's composition. When we create an `Employee`, we set its address using the `setAddress()` method."
 
 ```java
 // Inside the Employee class
@@ -50,7 +50,7 @@ public Employee(String name, double salary, Address address) {
 
 **Host:** "Composition is also great for modeling one-to-many relationships. For example, a `Department` can have multiple `Employee`s."
 
-**(Show `oop-core/src/main/java/Department.java` on screen)**
+**(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Department.java` on screen)**
 
 **Host:** "In our `Department` class, we have a `List` of `Employee` objects. This is another example of composition. The `Department` 'has-a' list of employees. The `Department` class has methods to add an employee and to get the list of all employees."
 
@@ -77,7 +77,7 @@ public void addEmployee(Employee employee) {
 
 **Host:** "The second part is your hands-on practice with ProjectTeam and TeamMember classes. Here you'll see how composition creates flexible structures. A ProjectTeam 'has' members, and each TeamMember 'has' tasks."
 
-**Host:** "This two-part approach gives you both a demo with familiar classes and an exercise with new classes. Run it and see how composition works in both contexts. Then try creating your own composition examples!"
+**Host:** "This two-part approach gives you both a demo with familiar classes and an exercise with new classes. Run it and see how composition works in both contexts. You'll also see some department analytics in action - things like budget management, payroll calculations, and employee reporting. This shows how composition enables rich business functionality. Then try creating your own composition examples!"
 
 ---
 

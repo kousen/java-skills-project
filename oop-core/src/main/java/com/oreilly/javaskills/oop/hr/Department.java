@@ -1,9 +1,6 @@
 package com.oreilly.javaskills.oop.hr;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Department {
     private final String name;
@@ -129,7 +126,7 @@ public class Department {
     
     public Employee getHighestPaidEmployee() {
         return employees.stream()
-                .max((e1, e2) -> Double.compare(e1.getSalary(), e2.getSalary()))
+                .max(Comparator.comparingDouble(Employee::getSalary))
                 .orElse(null);
     }
     

@@ -1,6 +1,12 @@
 package com.oreilly.javaskills.oop.hr;
 
-public record Address(String street, String city, String state, String zipCode, String country) {
+public record Address(
+        String street,
+        String city,
+        String state,
+        String zipCode,
+        String country
+) {
     
     // Additional constructor for convenience (defaults to USA)
     public Address(String street, String city, String state, String zipCode) {
@@ -53,10 +59,5 @@ public record Address(String street, String city, String state, String zipCode, 
         if (other == null) return false;
         return city.equalsIgnoreCase(other.city) && 
                state.equalsIgnoreCase(other.state);
-    }
-    
-    @Override
-    public String toString() {
-        return getMailingLabel();
     }
 }

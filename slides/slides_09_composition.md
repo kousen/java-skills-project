@@ -98,20 +98,19 @@ public class Employee {
 
 Let's see how composition works in practice.
 
-**(Show `oop-core/src/main/java/Address.java`)**
+**(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Address.java`)**
 
 ```java
-public class Address {
-    private String street;
-    private String city;
-    private String state;
-    private String zip;
-
-    // constructor, getters, setters...
+public record Address(String street, String city, 
+                     String state, String zipCode, String country) {
+    
+    // Records can have business methods too!
+    public String getMailingLabel() { ... }
+    public boolean isInState(String targetState) { ... }
 }
 ```
 
-**(Show `oop-core/src/main/java/Employee.java`)**
+**(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Employee.java`)**
 
 ```java
 public class Employee {
@@ -135,7 +134,7 @@ public class Employee {
 
 Composition can also model one-to-many relationships.
 
-**(Show `oop-core/src/main/java/Department.java`)**
+**(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/hr/Department.java`)**
 
 ```java
 import java.util.List;
@@ -211,7 +210,7 @@ class TeamMember {
 
 <v-click>
 
-**Two-Part Learning:** Demo reinforces concepts, Exercise builds skills. Try your own composition examples too!
+**Two-Part Learning:** Demo reinforces concepts, Exercise builds skills. Watch for department analytics (budget, payroll) showing composition's business value!
 
 </v-click>
 

@@ -1,12 +1,10 @@
+package com.oreilly.javaskills.oop.hr;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.BeforeEach;
 import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDate;
-
-import com.oreilly.javaskills.oop.hr.Employee;
-import com.oreilly.javaskills.oop.hr.Address;
-import com.oreilly.javaskills.oop.hr.Department;
 
 @DisplayName("Employee Tests")
 class EmployeeTest {
@@ -160,5 +158,84 @@ class EmployeeTest {
             .contains("Name=Alice Johnson")
             .contains("Salary=$75000.00")
             .contains("Years=");
+    }
+    
+    @Test
+    @DisplayName("Should update name with validation")
+    void shouldUpdateNameWithValidation() {
+        // Valid name update
+        employee.setName("Bob Smith");
+        assertThat(employee.getName()).isEqualTo("Bob Smith");
+        
+        // Should trim whitespace
+        employee.setName("  Carol Jones  ");
+        assertThat(employee.getName()).isEqualTo("Carol Jones");
+        
+        // Should reject null name
+        assertThatThrownBy(() -> employee.setName(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Employee name cannot be null or empty");
+            
+        // Should reject empty name
+        assertThatThrownBy(() -> employee.setName(""))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Employee name cannot be null or empty");
+            
+        // Should reject whitespace-only name
+        assertThatThrownBy(() -> employee.setName("   "))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Employee name cannot be null or empty");
+    }
+    
+    @Test
+    @DisplayName("Should update salary with validation")
+    void shouldUpdateSalaryWithValidation() {
+        // Valid salary update
+        employee.setSalary(85000);
+        assertThat(employee.getSalary()).isEqualTo(85000);
+        
+        // Can set salary to zero
+        employee.setSalary(0);
+        assertThat(employee.getSalary()).isEqualTo(0);
+        
+        // Should reject negative salary
+        assertThatThrownBy(() -> employee.setSalary(-1000))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Salary cannot be negative");
+    }
+    
+    @Test
+    @DisplayName("Should update active status")
+    void shouldUpdateActiveStatus() {
+        // Employee starts as active
+        assertThat(employee.isActive()).isTrue();
+        
+        // Can deactivate
+        employee.setActive(false);
+        assertThat(employee.isActive()).isFalse();
+        
+        // Can reactivate
+        employee.setActive(true);
+        assertThat(employee.isActive()).isTrue();
+    }
+    
+    @Test
+    @DisplayName("Should handle employee lifecycle changes")
+    void shouldHandleEmployeeLifecycleChanges() {
+        // Promote employee with raise and title change
+        employee.setName("Alice Johnson - Senior Developer");
+        employee.setSalary(95000);
+        
+        assertThat(employee.getName()).contains("Senior Developer");
+        assertThat(employee.getSalary()).isEqualTo(95000);
+        
+        // Later, employee leaves company
+        employee.setActive(false);
+        assertThat(employee.isActive()).isFalse();
+        
+        // Employee summary should still show final state
+        String summary = employee.getEmployeeSummary();
+        assertThat(summary).contains("Senior Developer");
+        assertThat(summary).contains("$95000.00");
     }
 }
