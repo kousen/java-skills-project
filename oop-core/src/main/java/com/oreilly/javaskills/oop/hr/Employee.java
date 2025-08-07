@@ -1,3 +1,5 @@
+package com.oreilly.javaskills.oop.hr;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Objects;
@@ -127,7 +129,7 @@ public class Employee {
                       id, name, salary, getYearsOfService()));
         
         if (address != null) {
-            summary.append(", Address=").append(address.getCity());
+            summary.append(", Address=").append(address.city());
         }
         
         if (department != null) {

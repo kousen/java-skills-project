@@ -5,9 +5,10 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 
 ## 🎬 PRODUCTION STATUS: READY FOR RECORDING
 
-**All content complete and production-ready as of July 2025:**
+**All content complete and production-ready as of August 2025:**
 - ✅ **27 complete video topics** with comprehensive slides, scripts, and working code
 - ✅ **Professional video production formatting** with scene structure and slide callouts
+- ✅ **Try It Out exercises** with comprehensive solutions for hands-on learning
 - ✅ **No production blockers** - all slide references verified and coordinated
 - ✅ **Self-contained topics** perfect for skill-gap filling approach
 - ✅ **Complete supporting materials** - Git workflows, CI/CD pipelines, PR templates
@@ -189,11 +190,12 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - **Latest 2025 dependencies**: Apache Commons IO 2.19.0, SLF4J 2.0.17, Logback 1.5.18
 - **Perfect for recording**: All examples work, comprehensive test coverage
 
-### ✅ **oop-core** - COMPLETE & FULLY TESTED (13/13 tests passing)  
+### ✅ **oop-core** - COMPLETE & FULLY TESTED (15/15 tests passing)  
 - **4 comprehensive classes**: Employee, Address, Department, ModernJavaFeatures
+- **2 Try It Out exercises**: AccessModifiersExercise (Video 08), CompositionExercise (Video 09)
 - **Modern Java features**: Records, pattern matching, text blocks, var keyword
 - **Covers videos 8-12**: Complete object-oriented programming foundations
-- **Perfect for recording**: All concepts demonstrable with working code
+- **Perfect for recording**: All concepts demonstrable with working code + hands-on exercises
 
 ### ✅ **design-patterns** - COMPLETE & MOSTLY TESTED (12/15 tests passing)
 - **3 essential patterns**: Singleton (DatabaseConnection), Strategy (SalaryCalculator), Factory (EmployeeFactory)  
@@ -415,8 +417,8 @@ testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 - **Ready for video recording in any order**
 
 ### ✅ Ready to Record (100% Working)
-- **foundations** - All 6 classes working with latest 2025 dependencies, plus accompanying slides
-- **oop-core** - Complete OOP progression with modern Java 21 features
+- **foundations** - All 18 classes working with latest 2025 dependencies, plus accompanying slides
+- **oop-core** - Complete OOP progression with modern Java 21 features + Try It Out exercises for videos 08 & 09
 - **design-patterns** - Three solid pattern implementations using current best practices
 
 ### 🔧 Needs 5-Minute Fixes  
@@ -437,7 +439,7 @@ All content verified and production-ready:
 
 ```
 ✅ foundations:      13/13 tests passing (100%) - all concepts demonstrable
-✅ oop-core:        13/13 tests passing (100%) - complete OOP examples
+✅ oop-core:        15/15 tests passing (100%) - complete OOP + Try It Out exercises for videos 08 & 09
 ✅ design-patterns: 12/15 tests passing (80%)  - patterns work perfectly  
 ✅ security:        All imports fixed        (100%) - crypto examples working
 ✅ web-services:    Building successfully   (100%) - REST/reactive ready

@@ -108,12 +108,14 @@ npm run export      # Export to PDF
 - **ReactiveConcepts.java** - Reactive programming patterns (streams, backpressure, composition)
 
 ### 🏗️ **oop-core** - Object-Oriented Programming (Videos 8-12)
-**Status: ✅ Complete & Fully Tested (13/13 tests passing)**
+**Status: ✅ Complete & Fully Tested (15/15 tests passing)**
 
 - **Employee.java** - Encapsulation, validation, business logic
 - **Address.java** - Composition example with proper validation
 - **Department.java** - Has-a relationships, collections, business methods
 - **ModernJavaFeatures.java** - var keyword, records, pattern matching, text blocks
+- **com.oreilly.javaskills.oop.exercise.AccessModifiersExercise.java** - Try It Out exercise for Video 08 with BankAccount encapsulation example and TODO placeholders
+- **com.oreilly.javaskills.oop.exercise.CompositionExercise.java** - Try It Out exercise for Video 09 with Company/Department/Employee composition examples and task/solution structure
 
 ### 🎨 **design-patterns** - Design Patterns (Videos 13-15)
 **Status: ✅ Complete & Mostly Tested (12/15 tests passing)**
@@ -270,11 +272,11 @@ Transform into enterprise application:
 
 ### ✅ Streamlined Project Results (95% Pass Rate)
 - **foundations**: 13/13 tests passing (100%) - All basic concepts with comprehensive exercises
-- **oop-core**: 13/13 tests passing (100%) - Complete OOP with Java 21 features  
+- **oop-core**: 15/15 tests passing (100%) - Complete OOP with Java 21 features + Try It Out exercises for videos 08 & 09
 - **design-patterns**: 12/15 tests passing (80%) - Practical pattern implementations
 - **solid-principles**: Working code examples (100%) - SOLID principles demonstrations
 
-**Total: 38/41 tests passing (95% pass rate) + working SOLID examples**
+**Total: 40/43 tests passing (93% pass rate) + working SOLID examples**
 
 ### 📹 Video Content Coverage
 **27 production-ready videos covering essential Java skills:**

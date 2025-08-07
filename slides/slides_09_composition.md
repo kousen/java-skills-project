@@ -14,19 +14,19 @@ layout: cover
 
 # Contact Info
 
-Ken Kousen<br>
-Kousen IT, Inc.
+**Ken Kousen**<br>
+**Kousen IT, Inc.**
 
-- ken.kousen@kousenit.com
-- http://www.kousenit.com
-- http://kousenit.org (blog)
-- Social Media:
-  - [@kenkousen](https://twitter.com/kenkousen) (Twitter)
-  - [@kousenit.com](https://bsky.app/profile/kousenit.com) (Bluesky)
-  - [https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/) (LinkedIn)
-- *Tales from the jar side* (free newsletter)
-  - https://kenkousen.substack.com
-  - https://youtube.com/@talesfromthejarside
+- **ken.kousen@kousenit.com**
+- **http://www.kousenit.com**
+- **http://kousenit.org** (blog)
+- **Social Media:**
+  - **[@kenkousen](https://twitter.com/kenkousen)** (Twitter)
+  - **[@kousenit.com](https://bsky.app/profile/kousenit.com)** (Bluesky)
+  - **[https://www.linkedin.com/in/kenkousen/](https://www.linkedin.com/in/kenkousen/)** (LinkedIn)
+- ***Tales from the jar side*** (free newsletter)
+  - **https://kenkousen.substack.com**
+  - **https://youtube.com/@talesfromthejarside**
 
 ---
 layout: section
@@ -160,7 +160,61 @@ public class Department {
 ```
 
 ---
-layout: section
+
+# Try It Out: Two-Part Composition Exercise
+
+Practice with `CompositionExercise.java` - **Demo + Hands-On!**
+
+<div class="grid grid-cols-2 gap-8">
+
+<div>
+
+## **Part 1: Demo with Familiar Classes**
+```java
+// Using our Employee, Address, Department classes
+Department engineering = new Department("Engineering", "ENG");
+
+Employee alice = new Employee(1001, "Alice Johnson", 
+    120000, LocalDate.now().minusYears(3));
+alice.setAddress(homeAddress); // has-a relationship
+
+engineering.addEmployee(alice); // has relationship
+```
+
+**See composition with classes you know!**
+
+</div>
+
+<div>
+
+## **Part 2: Your Practice**
+```java
+// New classes for hands-on practice
+class ProjectTeam {
+    private List<TeamMember> members; // has
+}
+
+class TeamMember {
+    private List<String> tasks; // has
+    
+    public void assignTask(String task) {
+        tasks.add(task);
+    }
+}
+```
+
+**Try composition with new domain!**
+
+</div>
+
+</div>
+
+<v-click>
+
+**Two-Part Learning:** Demo reinforces concepts, Exercise builds skills. Try your own composition examples too!
+
+</v-click>
+
 ---
 
 # Key Takeaways

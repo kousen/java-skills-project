@@ -65,7 +65,23 @@ public void addEmployee(Employee employee) {
 
 ---
 
-## 5. Summary
+## 5. Try It Out Exercise
+
+**Host:** "Now it's your turn to practice composition. Open the `CompositionExercise.java` file in the `com.oreilly.javaskills.oop.exercise` package."
+
+**(Show `oop-core/src/main/java/com/oreilly/javaskills/oop/exercise/CompositionExercise.java` on screen)**
+
+**Host:** "This exercise has two parts. First, there's a demo section that uses the same Employee, Address, and Department classes we've been working with throughout our videos. This shows you composition with classes you already know well."
+
+**Host:** "Watch how we create departments and add employees to them. Notice that each Employee 'has-a' home address, and each Department 'has' employees. We're building complex relationships by combining these familiar objects."
+
+**Host:** "The second part is your hands-on practice with ProjectTeam and TeamMember classes. Here you'll see how composition creates flexible structures. A ProjectTeam 'has' members, and each TeamMember 'has' tasks."
+
+**Host:** "This two-part approach gives you both a demo with familiar classes and an exercise with new classes. Run it and see how composition works in both contexts. Then try creating your own composition examples!"
+
+---
+
+## 6. Summary
 
 **Host:** "To sum up, object composition is a powerful tool in your toolbox."
 

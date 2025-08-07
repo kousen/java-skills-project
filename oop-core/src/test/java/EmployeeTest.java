@@ -4,6 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDate;
 
+import com.oreilly.javaskills.oop.hr.Employee;
+import com.oreilly.javaskills.oop.hr.Address;
+import com.oreilly.javaskills.oop.hr.Department;
+
 @DisplayName("Employee Tests")
 class EmployeeTest {
     
