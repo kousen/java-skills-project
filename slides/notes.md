@@ -107,5 +107,9 @@
 - It models the "has-a" relationship (e.g., a `Department` has `Employee`s). (00:18)
 - **Favor composition over inheritance** is a widely accepted design principle. (00:48)
 
+## 10 Var Keyword
 
+- The `var` reserved type name added in Java 10.
+- Type still inferred at compile time.
+- Only allowed for local variables (00:30)
 

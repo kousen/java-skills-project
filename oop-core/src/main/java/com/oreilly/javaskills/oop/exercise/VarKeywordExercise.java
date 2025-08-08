@@ -3,6 +3,10 @@ package com.oreilly.javaskills.oop.exercise;
 import com.oreilly.javaskills.oop.hr.Department;
 import com.oreilly.javaskills.oop.hr.Employee;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +34,7 @@ import java.util.Map;
  * - var is especially useful with complex generic types
  * - var improves readability when the type is obvious from context
  * - var should be used when it clarifies code, not just to save typing
+ * - Java 11 added var support in lambda parameters to enable annotations
  * <p>
  * When to Use var:
  * - Complex generic types: Map&lt;String, List&lt;Employee&gt;&gt;
@@ -44,6 +49,17 @@ import java.util.Map;
  */
 public class VarKeywordExercise {
 
+    /**
+     * Local definition of @Valid annotation for demonstration purposes.
+     * In real applications, this comes from Jakarta Bean Validation API.
+     */
+    @SuppressWarnings("unused")
+    @Target({ElementType.PARAMETER, ElementType.LOCAL_VARIABLE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Valid {
+        String message() default "Invalid parameter";
+    }
+
     public static void main(String[] args) {
         System.out.println("=== var Keyword Exercise ===\n");
         
@@ -51,6 +67,7 @@ public class VarKeywordExercise {
         demonstrateBasicVarUsage();
         demonstrateVarWithCollections();
         demonstrateVarWithComplexTypes();
+        demonstrateVarInLambdaParameters();
         
         System.out.println("\n=== EXERCISE TASKS ===");
         exerciseTasks();
@@ -91,7 +108,7 @@ public class VarKeywordExercise {
         Map<String, Department> departmentMap = new HashMap<>();
         
         System.out.println("\nAFTER (var eliminates repetition):");
-        // ... your solution here ...
+        // ... your solution here (you'll need to comment out the BEFORE declarations) ...
 
         // Populate with sample data
         var alice = new Employee(1001, "Alice Johnson",
@@ -177,6 +194,42 @@ public class VarKeywordExercise {
     }
     
     /**
+     * SECTION 4: var in Lambda Parameters (Java 11+)
+     * Shows how Java 11 added var support in lambda parameters to enable annotations
+     */
+    private static void demonstrateVarInLambdaParameters() {
+        System.out.println("4. VAR IN LAMBDA PARAMETERS (JAVA 11+):");
+        System.out.println("---------------------------------------");
+        
+        // Create sample data
+        var employees = new ArrayList<Employee>();
+        employees.add(new Employee(1001, "Alice Johnson",
+                120000, LocalDate.now().minusYears(3)));
+        employees.add(new Employee(1002, "Bob Smith",
+                95000, LocalDate.now().minusYears(2)));
+        employees.add(new Employee(1003, "Charlie Wilson",
+                105000, LocalDate.now().minusYears(1)));
+
+        // Without validation:
+        employees.stream()
+                .filter(emp -> emp.getSalary() > 100000)  // Java 11+ feature
+                .map(emp -> emp.getName().toUpperCase())
+                .forEach(System.out::println);
+
+        // With validation, in Java 10:
+        employees.stream()
+                .filter((@Valid Employee emp) -> emp.getSalary() > 100000)  // Java 11+ feature
+                .map((@Valid Employee emp) -> emp.getName().toUpperCase())
+                .forEach(System.out::println);
+        
+        // With validation, using var in Java 11+:
+        employees.stream()
+            .filter((@Valid var emp) -> emp.getSalary() > 100000)  // Java 11+ feature
+            .map((@Valid var emp) -> emp.getName().toUpperCase())
+            .forEach(name -> System.out.println("High earner: " + name));
+    }
+    
+    /**
      * EXERCISE TASKS: Your turn to practice with var
      * <p>
      * TASKS TO COMPLETE:
@@ -188,7 +241,7 @@ public class VarKeywordExercise {
      * SOLUTION BELOW (try first, then check):
      */
     private static void exerciseTasks() {
-        System.out.println("4. YOUR EXERCISE TASKS:");
+        System.out.println("5. YOUR EXERCISE TASKS:");
         System.out.println("----------------------");
         
         System.out.println("TASK 1: Convert these to use var where appropriate:");
@@ -200,6 +253,8 @@ public class VarKeywordExercise {
          Map<String, Integer> salaryRanges = new HashMap<>();
         
         // YOUR SOLUTIONS:
+
+
         System.out.println("✓ Converted explicit types to var");
         System.out.printf("Company name: %s%n", companyName);
         System.out.printf("Founding date: %s%n", foundingDate);

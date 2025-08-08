@@ -81,7 +81,35 @@ for (var employee : employees) {
 
 ---
 
-## 5. Summary
+## 5. Java 11 Enhancement: `var` in Lambda Parameters
+
+**Host:** "There's one more important enhancement to `var` that came in Java 11. You can now use `var` in lambda parameters, and the main reason for this was to enable annotations on lambda parameters."
+
+**Host:** "Before Java 11, if you wanted to annotate a lambda parameter, you had to use the explicit type. For example, if you wanted to use a validation annotation like `@Valid` from Bean Validation, you'd write:"
+
+```java
+employees.stream()
+    .filter((@Valid Employee emp) -> emp.getSalary() > 100000)
+    .collect(toList());
+```
+
+**Host:** "With Java 11, you can use `var` and still add annotations:"
+
+```java
+employees.stream()
+    .filter((@Valid var emp) -> emp.getSalary() > 100000)
+    .collect(toList());
+```
+
+**Host:** "This might seem like a small thing, but it's actually very useful in enterprise applications where you're using frameworks like Spring Boot with Bean Validation. The annotation tells the framework to validate the parameter, and static analysis tools can also detect potential validation issues."
+
+**(Show the VarKeywordExercise.java file, section 4)**
+
+**Host:** "In our exercise file, you can see this in action. We define a simple `@Valid` annotation for demonstration, and then use it with `var` in lambda parameters. This was the primary motivation for adding `var` support to lambda parameters in Java 11."
+
+---
+
+## 6. Summary
 
 **Host:** "To wrap up, `var` is a great tool for making your local variable declarations more concise. The type is still checked at compile time, so you don't lose any type safety. Use it to make your code more readable, especially with those long, complicated generic types."
 

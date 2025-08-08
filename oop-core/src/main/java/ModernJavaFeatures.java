@@ -1,6 +1,5 @@
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public class ModernJavaFeatures {
     
@@ -17,7 +16,7 @@ public class ModernJavaFeatures {
         System.out.println("\n--- var keyword (Java 10+) ---");
         
         // Type inference with var
-        var employeeName = "Alice Johnson";  // String
+        var employeeName = "Alice Johnson"; // String
         var employeeId = 12345;             // int
         var salary = 75000.50;              // double
         var isActive = true;                // boolean
@@ -38,7 +37,9 @@ public class ModernJavaFeatures {
         );
         
         System.out.println("\nEmployee list size: " + employees.size());
-        
+        System.out.println(employees.getClass().getName());
+
+        System.out.println("\nEmployee list contents:");
         // var in enhanced for loop
         for (var employee : employees) {
             System.out.println("  " + employee);
@@ -51,37 +52,26 @@ public class ModernJavaFeatures {
         // Creating record instances
         var alice = new EmployeeRecord("Alice Johnson", 1001, 75000);
         var bob = new EmployeeRecord("Bob Smith", 1002, 80000);
-        var aliceClone = new EmployeeRecord("Alice Johnson", 1001, 75000);
-        
+
         System.out.println("Record examples:");
         System.out.println("Alice: " + alice);
         System.out.println("Bob: " + bob);
         
-        // Records provide equals(), hashCode(), toString() automatically
-        System.out.println("Alice equals Alice clone: " + alice.equals(aliceClone));
-        System.out.println("Alice equals Bob: " + alice.equals(bob));
-        System.out.println("Alice hashCode: " + alice.hashCode());
-        System.out.println("Alice clone hashCode: " + aliceClone.hashCode());
-        
-        // Records provide accessor methods
-        System.out.println("Alice's name: " + alice.name());
-        System.out.println("Alice's ID: " + alice.id());
-        System.out.println("Alice's salary: $" + alice.salary());
-        
-        // Records can have methods
-        System.out.println("Alice's formatted info: " + alice.getFormattedInfo());
-        System.out.println("Alice qualifies for bonus: " + alice.qualifiesForBonus());
-        
         // Complex record with nested data
         var address = new AddressRecord("123 Main St", "Anytown", "ST", "12345");
-        var employee = new DetailedEmployeeRecord("Carol Davis", 1003, 85000, address, LocalDate.of(2020, 1, 15));
+        var employee = new DetailedEmployeeRecord("Carol Davis", 1003,
+                85000, address, LocalDate.of(2020, 1, 15));
         
         System.out.println("Detailed employee: " + employee);
         System.out.println("Employee city: " + employee.address().city());
     }
-    
+
+    // Pattern matching in instanceof (Java 15)
+    // https://openjdk.java.net/jeps/394
+    // Pattern matching in switch (Java 21+)
+    // https://openjdk.java.net/jeps/441
     private static void demonstratePatternMatching() {
-        System.out.println("\n--- Pattern Matching (Java 17+) ---");
+        System.out.println("\n--- Pattern Matching in switch (Java 21+) ---");
         
         Object[] data = {
             "Hello World",
@@ -158,7 +148,7 @@ public class ModernJavaFeatures {
         System.out.println(jsonLike);
     }
     
-    // Record definitions
+    // Records (Java 16)
     record EmployeeRecord(String name, int id, double salary) {
         // Compact constructor for validation
         public EmployeeRecord {
