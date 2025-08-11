@@ -113,3 +113,11 @@
 - Type still inferred at compile time.
 - Only allowed for local variables (00:30)
 
+## 11 Records
+
+- Records are a new feature in Java 16. (00:10)
+- They are immutable (00:22)
+- The canonical constructor appears before the body.
+- They autogenerate toString(), equals(), and hashCode() methods.
+- Compact constructors are used for validation
+
