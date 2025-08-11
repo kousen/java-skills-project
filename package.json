@@ -10,8 +10,14 @@
   },
   "private": true,
   "devDependencies": {
-    "@slidev/cli": "^51.8.1",
-    "@slidev/theme-seriph": "^0.25.0",
-    "playwright-chromium": "^1.53.1"
+    "@katzumi/slidev-addon-qrcode": "^0.0.17",
+    "@slidev/cli": "^52.1.0",
+    "@slidev/theme-apple-basic": "^0.25.1",
+    "playwright-chromium": "^1.53.1",
+    "slidev-addon-components": "^0.0.1",
+    "slidev-addon-d2-diagram": "^1.0.1",
+    "slidev-addon-fancy-arrow": "^0.10.0",
+    "slidev-addon-java-runner": "^0.1.1",
+    "slidev-addon-tldraw": "^0.4.2"
   }
 }

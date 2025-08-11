@@ -29,7 +29,7 @@ Kousen IT, Inc.
   - https://youtube.com/@talesfromthejarside
 
 ---
-layout: section
+layout: default
 ---
 
 # What Are Records?
@@ -165,7 +165,7 @@ public record EmployeeRecord(String name, int id, double salary) {
 ```
 
 ---
-layout: section
+layout: default
 ---
 
 # Key Takeaways
