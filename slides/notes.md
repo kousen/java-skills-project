@@ -121,3 +121,10 @@
 - They autogenerate toString(), equals(), and hashCode() methods.
 - Compact constructors are used for validation
 
+## 12 Reflection
+
+- Reflection uses the Class class
+- Call getDeclaredMethods() to get all methods in the class
+- Call getDeclaredFields() to get all fields in the class
+- 
+

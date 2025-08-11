@@ -1,66 +1,111 @@
 [SCENE 1: INTRODUCTION]
 
-Hello and welcome! In this lesson, we're going to dive into one of the most exciting features added to Java in recent years: Records.
+Welcome to our lesson on one of Java's most powerful and fascinating features: the Reflection API.
 
-Introduced as a standard feature in Java 16, records provide a highly concise syntax for creating classes that are transparent carriers for immutable data. In other words, they are a fantastic way to model things like Data Transfer Objects (DTOs) or any simple, plain old Java object (POJO) that just holds data.
+Reflection allows a Java program to examine and modify its own structure and behavior at runtime. Think of it as giving your code a mirror to look at itself. With reflection, you can inspect classes, methods, and fields, create objects, and call methods - all without knowing their names at compile time.
 
-Before records, you had to write a lot of boilerplate code: a constructor, getters for every field, and you had to override equals, hashCode, and toString. With records, you get all of that for free. Let's see how.
+This is the foundation that powers many of the frameworks you use every day, like Spring, Hibernate, and JUnit. They use reflection to discover your classes and work with them dynamically. But as we'll see, with great power comes great responsibility.
 
-[SCENE 2: THE OLD WAY VS. THE NEW WAY]
+[SCENE 2: WHAT IS REFLECTION AND WHY USE IT?]
 
-Let's say you wanted to create a simple Employee class. Before records, you'd have to write a class like this...
+So what exactly is reflection? It's an API that lets programs inspect and manipulate themselves at runtime. You can examine classes, interfaces, fields, and methods on the fly.
 
-(Show a slide with the verbose POJO example)
+Why would you want to do this? Well, it enables incredible flexibility. You can create objects dynamically, invoke methods by name, and even access private fields. It's essential for frameworks that need to work with code they don't know about at compile time.
 
-You have the final fields, the constructor, the getters, and then you still need to implement equals, hashCode, and toString, which can be dozens of lines of code. It's a lot of ceremony for a simple data class.
+But here's an important warning: reflection can be slow, and it can break encapsulation. Use it wisely and only when you truly need that dynamic capability.
 
-Now, here is the exact same thing, but written as a record:
+[SCENE 3: CORE CLASSES: THE CLASS OBJECT]
 
-public record EmployeeRecord(String name, int id, double salary) { }
+The heart of reflection is the `Class` object. This represents a class or interface and is your entry point for all reflection operations.
 
-And that's it. Seriously. That one line of code generates all the same functionality: the private final fields, the public constructor, the accessor methods, and the equals, hashCode, and toString methods. It's a huge improvement.
+There are three main ways to get a `Class` object. You can use the class literal like `String.class`, call `getClass()` on an instance, or use `Class.forName()` with the fully qualified class name.
 
-[SCENE 3: KEY FEATURES OF RECORDS]
+Now here's something crucial to understand: there's a big difference between using `.class` and `.getClass()`, especially with inheritance.
 
-So let's break down what you get. Records are immutable by default; all the fields you declare in the header are implicitly final. The syntax is incredibly concise. And you get all those standard methods generated for you by the compiler.
+[SCENE 4: .CLASS VS .GETCLASS() - A CRITICAL DIFFERENCE]
 
-It's important to know that records can't extend other classes, because they implicitly extend a special class called java.lang.Record. However, they can implement interfaces, and you can add your own static and instance methods to them.
+Let me show you why this matters. When you use `.class`, you get the compile-time type. But when you use `.getClass()`, you get the actual runtime type.
 
-[SCENE 4: CODE DEMO]
+This becomes crucial with polymorphism. If you have an `Animal` reference pointing to a `Dog` object, `Animal.class` gives you the `Animal` class, but `someAnimal.getClass()` gives you the `Dog` class - the actual runtime type.
 
-Let's look at our ModernJavaFeatures.java file to see records in action.
+This is why frameworks always use `.getClass()` - they need to discover the real type of objects to find all their methods and annotations.
 
-(Show oop-core/src/main/java/ModernJavaFeatures.java on screen)
+[SCENE 5: WORKING WITH FIELDS]
 
-Here we define a simple EmployeeRecord. We can instantiate it just like a regular class. Notice how we can access the fields with methods like alice.name() and alice.salary(). The accessor methods don't have the 'get' prefix, which is a stylistic difference from the old JavaBean convention.
+The `Field` class represents a field in a class. You can use it to get field information, read values, and even modify them.
 
-var alice = new EmployeeRecord("Alice Johnson", 1001, 75000);
-System.out.println("Name: " + alice.name()); // Accessor
+You can get all declared fields with `getDeclaredFields()`, or a specific field with `getDeclaredField()`. Once you have a field, you can read its value with `get()` and modify it with `set()`.
 
-// The auto-generated toString() gives a nice output
-System.out.println(alice);
+[SCENE 6: WORKING WITH METHODS]
 
-The toString method is provided automatically, and so is equals. If we create two records with the exact same data, the equals method will correctly return true.
+Similarly, the `Method` class represents a method. You can invoke methods dynamically, which is incredibly powerful for framework development.
 
-[SCENE 5: CUSTOMIZING RECORDS]
+Get methods with `getDeclaredMethods()` or `getMethod()`, then invoke them with the `invoke()` method, passing in the target object and any parameters.
 
-What if you need to add validation? You can do that by implementing a 'compact constructor'.
+[SCENE 7: WORKING WITH CONSTRUCTORS]
 
-public record EmployeeRecord(String name, int id, double salary) {
-    // Compact constructor for validation
-    public EmployeeRecord {
-        if (salary < 0) {
-            throw new IllegalArgumentException("Salary cannot be negative");
-        }
-    }
-}
+The `Constructor` class lets you create new instances dynamically. This is how frameworks like Spring can instantiate your classes without knowing their names at compile time.
 
-This special constructor allows you to run checks before the fields are assigned. You can also add any other methods you need, just like a regular class.
+Get a constructor with `getConstructor()`, specifying the parameter types, then create instances with `newInstance()`.
 
-[SCENE 6: SUMMARY]
+[SCENE 8: ACCESSING PRIVATE MEMBERS - BREAKING ENCAPSULATION]
 
-To wrap it up, Java Records are a game-changer for creating simple, immutable data carriers. They drastically reduce boilerplate, making your code cleaner, clearer, and less error-prone.
+One of reflection's most powerful and dangerous features is the ability to access private members. You can bypass Java's access control by calling `setAccessible(true)` on fields and methods.
 
-Use them whenever you need a simple aggregate of data, like for DTOs, API responses, or internal data structures. They are a powerful and elegant feature of modern Java.
+This lets you read and modify private fields, and invoke private methods. It's a security risk, so use it carefully and understand the implications.
 
-Thanks for tuning in. I'll see you in the next lesson!
+[SCENE 9: CODE DEMO: OUR REFLECTIONEXERCISE]
+
+Let's see all this in action with our comprehensive ReflectionExercise. This demonstrates every concept we've discussed.
+
+(Show `foundations/src/main/java/com.oreilly.javaskills.ReflectionExercise.java` on screen)
+
+The exercise shows basic class introspection, the difference between `.class` and `.getClass()` with inheritance, field and method access, constructor usage, and even accessing private members.
+
+[SCENE 10: FRAMEWORK PATTERNS: ANNOTATION PROCESSING]
+
+One of the most important uses of reflection is annotation processing. Frameworks scan for annotations like `@Entity`, `@Service`, or `@Controller` to understand how to handle your classes.
+
+Our exercise demonstrates this with custom annotations. It shows how frameworks discover annotated methods and process them differently based on their metadata.
+
+[SCENE 11: THE INHERITANCE CHALLENGE FOR FRAMEWORKS]
+
+Here's where the `.class` vs `.getClass()` difference becomes critical. When frameworks process polymorphic collections, they need to discover all methods, including those in subclasses.
+
+Using the wrong approach means missing important annotations and methods. This is why frameworks always use `.getClass()` to get the actual runtime type.
+
+[SCENE 12: FRAMEWORK SIMULATION IN ACTION]
+
+Now let's see the most impressive part of our ReflectionExercise - how it simulates real framework behavior with polymorphic objects.
+
+The exercise creates an array with both regular employees and salaried employees, then processes them using reflection. This demonstrates exactly how frameworks like Spring discover and process different object types at runtime.
+
+Notice how it uses `getClass()` instead of the static type - this ensures it finds all methods in subclasses, including their unique annotations. This is the core pattern that powers dependency injection, ORM mapping, and configuration processing in enterprise frameworks.
+
+[SCENE 13: PERFORMANCE AND SECURITY CONSIDERATIONS]
+
+Reflection comes with important considerations. It's significantly slower than direct method calls, so use caching when possible and avoid it in performance-critical paths.
+
+Security-wise, reflection can bypass access control, potentially exposing sensitive data or allowing unauthorized operations. Always validate inputs and consider using security managers in production.
+
+[SCENE 14: WHEN TO USE AND WHEN TO AVOID REFLECTION]
+
+Use reflection for framework development, testing utilities, configuration systems, and dynamic code generation. It's perfect when you need to work with unknown types at compile time.
+
+Avoid it in normal application code, performance-critical paths, and when type safety is crucial. For simple object creation or method calls, prefer direct approaches.
+
+[SCENE 15: BEST PRACTICES]
+
+Here are key best practices: Cache `Class` objects when possible to avoid repeated lookups. Handle exceptions properly since reflection operations can fail. Validate before accessing private members, and always document why reflection is necessary.
+
+[SCENE 16: SUMMARY]
+
+Let's wrap up. The Reflection API is a powerful tool for runtime code inspection and manipulation. It's essential for framework development and enables incredible flexibility.
+
+Remember the key classes: `Class` for entry point, `Method` for dynamic invocation, `Field` for data access, and `Constructor` for object creation.
+
+The critical distinction between `.class` and `.getClass()` matters especially for framework development where you need actual runtime types.
+
+Use reflection wisely - it's powerful but comes with performance and security trade-offs. Prefer direct code when possible, but don't hesitate to use reflection when you need that dynamic capability.
+
+Try out the ReflectionExercise to get hands-on experience with all these concepts. Thanks for watching, and see you next time!
