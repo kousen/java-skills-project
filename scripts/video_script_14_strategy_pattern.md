@@ -3,91 +3,134 @@
 
 ## 1. Introduction
 
-**Host:** "Hello, and welcome to our lesson on another fundamental design pattern: the Strategy pattern."
+**Host:** "Hello, and welcome to our lesson on the Strategy design pattern—the perfect solution for complex business rules."
 
-**Host:** "The Strategy pattern is a behavioral pattern. It’s all about defining a family of algorithms, encapsulating each one, and making them interchangeable. This means you can change the algorithm an object uses at runtime, without changing the object itself. It’s a classic pattern, described by the 'Gang of Four' in their original design patterns book, and it’s used everywhere in software design."
+**Host:** "Strategy is a behavioral pattern, which means it focuses on how objects interact and distribute responsibilities. What makes it special is that it's designed specifically for handling complex business logic that changes frequently."
 
-**Host:** "The core idea is to take a set of related algorithms and put them behind a common interface, so the client code can work with any of them."
+**Host:** "Think about it—in real applications, business rules are constantly evolving. Tax calculations change, pricing strategies shift; payroll rules get updated. Without the Strategy pattern, you end up with giant if/else blocks that are nightmares to maintain. Strategy pattern isolates these complex rules, making them easy to modify, test, and extend."
+
+**Host:** "Today, we'll see how modern lambda expressions make implementing Strategy even more powerful for handling business complexity."
 
 ---
 
 ## 2. The Components of the Strategy Pattern
 
-**Host:** "The Strategy pattern has three main parts."
+**Host:** "Before we look at implementation, let's understand why Strategy is perfect for business rules."
 
-**Host:** "First, you have the **Strategy interface**. This interface defines a single method that all your different algorithms will implement. It's the contract that all strategies must follow."
+**Host:** "Imagine a payroll system. You have hourly workers with overtime calculations, salaried employees with bonuses and deductions, sales staff with commission tiers, and contractors with daily rates and weekend premiums. Without Strategy, you'd have a massive method full of if/else statements—and every time business rules change, you'd be modifying that same method."
 
-**Host:** "Second, you have the **Concrete Strategy classes**. These are the individual classes that implement the Strategy interface. Each one provides a different version of the algorithm. For example, you might have one strategy for sorting quickly, and another for sorting with low memory usage."
+**Host:** "Strategy pattern lets you isolate each type of calculation. Each business rule becomes its own strategy. When rules change - and they will—you modify or replace just that one strategy without touching anything else."
 
-**Host:** "Third, you have the **Context**. This is the class that needs to use one of the algorithms. The Context holds a reference to a Strategy object, but it doesn't know which specific strategy it is. It just calls the method on the interface, and the strategy object does the real work."
+**Host:** "The modern approach uses lambda expressions instead of traditional interfaces. We use `Function<PayrollData, Double>` - it takes all the payroll information and returns the calculated amount. This makes creating and modifying business rules incredibly simple."
+
+**(Show the Mermaid diagrams comparing traditional vs modern approaches)**
+
+**Host:** "Look at these diagrams. The traditional approach needs multiple concrete classes implementing an interface. The modern approach uses static lambda expressions in one class. Same flexibility, much less code. The lambda expressions literally replace all those concrete strategy classes."
 
 ---
 
-## 3. Code Demo: A Payroll System
+## 3. Code Demo: Modern Lambda-based Payroll System
 
-**Host:** "Let's make this concrete with a payroll system example from our project. We need to calculate the pay for different types of employees: some are paid hourly, some are salaried, and some work on commission. This is a perfect use case for the Strategy pattern."
+**Host:** "Let's see this in action with a real payroll system that has to handle complex, changing business rules."
 
 **(Show `design-patterns/src/main/java/SalaryCalculator.java` on screen)**
 
-**Host:** "First, we define our `SalaryCalculationStrategy` interface. It has one method, `calculatePay`."
+**Host:** "First, we create a data container using a record. This holds all the information any strategy might need."
 
 ```java
-public interface SalaryCalculationStrategy {
-    double calculatePay(StrategyEmployee employee, int hoursWorked);
+record PayrollData(StrategyEmployee employee, Integer hoursWorked, 
+                   Double salesAmount, Double hourlyRate, 
+                   Double annualSalary, Double baseSalary, 
+                   Double commissionRate) {
+    // Multiple constructors for different employee types
 }
 ```
 
-**Host:** "Next, we create our concrete strategies. We have `HourlyRateStrategy`, `SalariedRateStrategy`, and `CommissionRateStrategy`. Each one implements the `calculatePay` method with its own specific logic."
+**Host:** "Next, instead of creating separate classes, we define our strategies as lambda expressions. Look how clean this is":
+
+```java
+public static final Function<PayrollData, Double> HOURLY = data -> {
+    if (data.hoursWorked() == null || data.hourlyRate() == null) {
+        throw new IllegalArgumentException("Hours worked and hourly rate required");
+    }
+    
+    int hours = data.hoursWorked();
+    double rate = data.hourlyRate();
+    
+    if (hours <= 0) return 0.0;
+    if (hours <= 40) {
+        return hours * rate;
+    } else {
+        return (40 * rate) + ((hours - 40) * rate * 1.5); // 1.5x overtime
+    }
+};
+```
 
 ---
 
-## 4. The Context Class
+## 4. The Modern Context Class
 
-**Host:** "Now for our Context. We have a class called `PayrollProcessor`. It has a field to hold a `SalaryCalculationStrategy` object."
+**Host:** "Our modern Context class is much simpler. Instead of a custom interface, we use the standard `Function` interface."
 
 ```java
-public class PayrollProcessor {
-    private SalaryCalculationStrategy calculationStrategy;
-
-    public void setCalculationStrategy(SalaryCalculationStrategy strategy) {
-        this.calculationStrategy = strategy;
+class PayrollProcessor {
+    private Function<PayrollData, Double> payCalculator;
+    private String calculatorDescription;
+    
+    public PayrollProcessor(Function<PayrollData, Double> calculator, 
+                           String description) {
+        this.payCalculator = calculator;
+        this.calculatorDescription = description;
     }
-
-    public double processPayroll(StrategyEmployee employee, int hoursWorked) {
-        // ...
-        return calculationStrategy.calculatePay(employee, hoursWorked);
+    
+    public double processPayroll(PayrollData data) {
+        return payCalculator.apply(data);
     }
 }
 ```
 
-**Host:** "The `PayrollProcessor` doesn't know or care about the details of the calculation. It just delegates the job to whatever strategy object it has been given. This is incredibly flexible."
+**Host:** "The `PayrollProcessor` still doesn't know the calculation details - it just applies whatever function it's been given. But now we can use any lambda expression or method reference as a strategy."
 
 ---
 
-## 5. Switching Strategies at Runtime
+## 5. Lambda Strategy Examples in Action
 
-**Host:** "The real magic happens when we put it all together. We can create a `PayrollProcessor` and then change its behavior on the fly just by giving it a different strategy."
+**Host:** "Now here's where the lambda approach really shines. We can use predefined strategies, create custom lambdas inline, or even use method references."
 
 ```java
-PayrollProcessor processor = new PayrollProcessor();
+// Using predefined strategies
+var processor = new PayrollProcessor(PayrollCalculations.HOURLY, "Hourly");
+processor.processPayroll(new PayrollData(employee, 45, 25.0));
 
-// Calculate pay using the hourly strategy
-processor.setCalculationStrategy(new HourlyRateStrategy(25.0));
-processor.processPayroll(employee, 40);
+// Custom lambda for contractors
+Function<PayrollData, Double> contractor = data -> 
+    data.hoursWorked() * data.hourlyRate(); // No overtime
 
-// Now, switch to a salaried strategy
-processor.setCalculationStrategy(new SalariedRateStrategy(80000));
-processor.processPayroll(employee, 40);
+processor.setCalculator(contractor, "Contractor Rate");
 ```
 
-**Host:** "We can use the same processor object to calculate the pay for different employee types just by swapping the strategy. This makes our `PayrollProcessor` much more flexible and reusable."
+**Host:** "We can even use strategy maps for dynamic selection":
+
+```java
+Map<String, Function<PayrollData, Double>> strategies = Map.of(
+    "HOURLY", PayrollCalculations.HOURLY,
+    "SALARIED", PayrollCalculations.SALARIED
+);
+Function<PayrollData, Double> selected = strategies.get("HOURLY");
+```
+
+**Host:** "And here's where Strategy really shines for business rules—we can use the `customStrategy` factory method for complex scenarios like our contractor with daily rates and weekend bonuses. When business requirements get complicated, you can create custom strategies on the fly without modifying existing code. This is exactly the kind of flexibility businesses need when rules evolve."
 
 ---
 
-## 6. Summary
+## 6. Strategy Pattern: Your Business Rules Solution
 
-**Host:** "So, to recap, the Strategy pattern is a powerful tool for managing different algorithms. It encapsulates each algorithm in its own class and lets you swap them at runtime. This helps you follow the Open/Closed Principle—your context class is closed for modification but open for extension with new strategies."
+**Host:** "The Strategy pattern is your go-to solution when business logic gets complex. It gives you clean separation between your core application logic and the business rules that change frequently."
 
-**Host:** "It leads to cleaner, more maintainable, and highly flexible code. It's a fundamental pattern that every Java developer should know."
+**Host:** "Look for Strategy opportunities whenever you see long if/else chains, multiple calculation methods, or business rules that vary by context. Classic examples include pricing strategies, tax calculations, shipping costs, and discount rules."
+
+**Host:** "The business benefits are huge: quick rule changes without touching core code, easy testing of individual rules, better audit compliance, and the ability to A/B test different rule variants."
+
+**Host:** "Remember - Strategy is a behavioral pattern designed specifically for this kind of complexity. When business rules start getting messy, don't fight it with more if/else statements. Embrace the Strategy pattern and keep your code clean and maintainable."
 
 **Host:** "Thanks for watching, and I'll see you in the next video."

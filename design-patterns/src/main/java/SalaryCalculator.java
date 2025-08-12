@@ -1,259 +1,289 @@
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Map;
+import java.util.function.Function;
 
-// Strategy Pattern - Different salary calculation strategies
-public interface SalaryCalculator {
-    double calculatePay(StrategyEmployee employee, int hoursWorked);
-    String getCalculationType();
+// Modern Strategy Pattern using Function interface.
+// We use lambdas instead of concrete strategy classes
+
+// Data container for payroll information
+record PayrollData(
+        StrategyEmployee employee,
+        Integer hoursWorked,
+        Double salesAmount,
+        Double hourlyRate,
+        Double annualSalary,
+        Double baseSalary,
+        Double commissionRate
+) {
+    
+    // Constructor for hourly workers
+    public PayrollData(StrategyEmployee employee, int hoursWorked, double hourlyRate) {
+        this(employee, hoursWorked, null, hourlyRate,
+                null, null, null);
+    }
+    
+    // Constructor for salaried workers
+    public PayrollData(StrategyEmployee employee, double annualSalary) {
+        this(employee, null, null,
+                null, annualSalary, null, null);
+    }
+    
+    // Constructor for commission workers
+    public PayrollData(StrategyEmployee employee, double salesAmount, double baseSalary, double commissionRate) {
+        this(employee, null, salesAmount, null,
+                null, baseSalary, commissionRate);
+    }
 }
 
-// Concrete strategy for hourly employees
-class HourlyCalculator implements SalaryCalculator {
-    private final double hourlyRate;
-    private final double overtimeRate;
+// Modern Strategy Pattern using static methods and lambdas
+class PayrollCalculations {
     
-    public HourlyCalculator(double hourlyRate) {
-        this(hourlyRate, 1.5);
-    }
-    
-    public HourlyCalculator(double hourlyRate, double overtimeRate) {
-        if (hourlyRate <= 0) {
-            throw new IllegalArgumentException("Hourly rate must be positive");
+    // Standard hourly calculation with overtime
+    public static final Function<PayrollData, Double> HOURLY = data -> {
+        if (data.hoursWorked() == null || data.hourlyRate() == null) {
+            throw new IllegalArgumentException("Hours worked and hourly rate required");
         }
-        if (overtimeRate < 1.0) {
-            throw new IllegalArgumentException("Overtime rate must be at least 1.0");
-        }
-        this.hourlyRate = hourlyRate;
-        this.overtimeRate = overtimeRate;
-    }
-    
-    @Override
-    public double calculatePay(StrategyEmployee employee, int hoursWorked) {
-        if (hoursWorked <= 0) return 0;
         
-        if (hoursWorked <= 40) {
-            return hoursWorked * hourlyRate;
+        int hours = data.hoursWorked();
+        double rate = data.hourlyRate();
+        
+        if (hours <= 0) return 0.0;
+        if (hours <= 40) {
+            return hours * rate;
         } else {
-            double regularPay = 40 * hourlyRate;
-            double overtimePay = (hoursWorked - 40) * hourlyRate * overtimeRate;
-            return regularPay + overtimePay;
+            return (40 * rate) + ((hours - 40) * rate * 1.5); // 1.5x overtime
         }
-    }
+    };
     
-    @Override
-    public String getCalculationType() {
-        return String.format("Hourly (Rate: $%.2f, Overtime: %.1fx)", hourlyRate, overtimeRate);
-    }
+    // Salaried calculation (bi-weekly)
+    public static final Function<PayrollData, Double> SALARIED = data -> {
+        if (data.annualSalary() == null) {
+            throw new IllegalArgumentException("Annual salary required");
+        }
+        return data.annualSalary() / 26; // Bi-weekly
+    };
     
-    public double getHourlyRate() {
-        return hourlyRate;
-    }
+    // Commission-only calculation
+    public static final Function<PayrollData, Double> COMMISSION = data -> {
+        if (data.salesAmount() == null || data.commissionRate() == null) {
+            throw new IllegalArgumentException("Sales amount and commission rate required");
+        }
+        return data.salesAmount() * data.commissionRate();
+    };
     
-    public double getOvertimeRate() {
-        return overtimeRate;
+    // Base salary plus commission (for sales people)
+    public static final Function<PayrollData, Double> BASE_PLUS_COMMISSION = data -> {
+        if (data.baseSalary() == null || data.salesAmount() == null || data.commissionRate() == null) {
+            throw new IllegalArgumentException("Base salary, sales amount, and commission rate required");
+        }
+        return data.baseSalary() + (data.salesAmount() * data.commissionRate());
+    };
+    
+    // Custom strategy factory for complex scenarios
+    public static Function<PayrollData, Double> customStrategy(
+            String description, Function<PayrollData, Double> calculation) {
+        return calculation; // Could add logging, validation, etc.
     }
 }
 
-// Concrete strategy for salaried employees
-class SalariedCalculator implements SalaryCalculator {
-    private final double annualSalary;
-    private final int payPeriodsPerYear;
-    
-    public SalariedCalculator(double annualSalary) {
-        this(annualSalary, 26); // Bi-weekly by default
-    }
-    
-    public SalariedCalculator(double annualSalary, int payPeriodsPerYear) {
-        if (annualSalary <= 0) {
-            throw new IllegalArgumentException("Annual salary must be positive");
-        }
-        if (payPeriodsPerYear <= 0) {
-            throw new IllegalArgumentException("Pay periods per year must be positive");
-        }
-        this.annualSalary = annualSalary;
-        this.payPeriodsPerYear = payPeriodsPerYear;
-    }
-    
-    @Override
-    public double calculatePay(StrategyEmployee employee, int hoursWorked) {
-        // Salaried employees get the same pay regardless of hours worked
-        return annualSalary / payPeriodsPerYear;
-    }
-    
-    @Override
-    public String getCalculationType() {
-        return String.format("Salaried (Annual: $%.2f, Pay Periods: %d)", 
-                           annualSalary, payPeriodsPerYear);
-    }
-    
-    public double getAnnualSalary() {
-        return annualSalary;
-    }
-    
-    public int getPayPeriodsPerYear() {
-        return payPeriodsPerYear;
-    }
-}
-
-// Concrete strategy for commission-based employees
-class CommissionCalculator implements SalaryCalculator {
-    private final double baseSalary;
-    private final double commissionRate;
-    private final double salesTarget;
-    
-    public CommissionCalculator(double baseSalary, double commissionRate) {
-        this(baseSalary, commissionRate, 0);
-    }
-    
-    public CommissionCalculator(double baseSalary, double commissionRate, double salesTarget) {
-        if (baseSalary < 0) {
-            throw new IllegalArgumentException("Base salary cannot be negative");
-        }
-        if (commissionRate < 0 || commissionRate > 1) {
-            throw new IllegalArgumentException("Commission rate must be between 0 and 1");
-        }
-        if (salesTarget < 0) {
-            throw new IllegalArgumentException("Sales target cannot be negative");
-        }
-        this.baseSalary = baseSalary;
-        this.commissionRate = commissionRate;
-        this.salesTarget = salesTarget;
-    }
-    
-    @Override
-    public double calculatePay(StrategyEmployee employee, int hoursWorked) {
-        // For demo purposes, we'll simulate sales based on hours worked
-        // In real implementation, sales would be tracked separately
-        double simulatedSales = hoursWorked * 150; // $150 sales per hour worked
-        double commission = simulatedSales * commissionRate;
-        
-        // Bonus commission if sales exceed target
-        if (salesTarget > 0 && simulatedSales > salesTarget) {
-            double bonusCommission = (simulatedSales - salesTarget) * commissionRate * 0.5;
-            commission += bonusCommission;
-        }
-        
-        return baseSalary + commission;
-    }
-    
-    @Override
-    public String getCalculationType() {
-        return String.format("Commission (Base: $%.2f, Rate: %.1f%%, Target: $%.2f)", 
-                           baseSalary, commissionRate * 100, salesTarget);
-    }
-    
-    public double getBaseSalary() {
-        return baseSalary;
-    }
-    
-    public double getCommissionRate() {
-        return commissionRate;
-    }
-    
-    public double getSalesTarget() {
-        return salesTarget;
-    }
-}
-
-// Context class using the strategy
+// Modern context class using Function-based strategies
 class PayrollProcessor {
-    private SalaryCalculator calculator;
+    private Function<PayrollData, Double> payCalculator;
+    private String calculatorDescription;
     
-    public PayrollProcessor(SalaryCalculator calculator) {
-        this.calculator = calculator;
+    public PayrollProcessor(Function<PayrollData, Double> payCalculator, String description) {
+        this.payCalculator = payCalculator;
+        this.calculatorDescription = description;
     }
     
-    public void setCalculator(SalaryCalculator calculator) {
-        this.calculator = calculator;
+    public void setCalculator(Function<PayrollData, Double> payCalculator, String description) {
+        this.payCalculator = payCalculator;
+        this.calculatorDescription = description;
     }
     
-    public double processPayroll(StrategyEmployee employee, int hoursWorked) {
-        if (employee == null) {
-            throw new IllegalArgumentException("Employee cannot be null");
+    public double processPayroll(PayrollData payrollData) {
+        if (payrollData == null || payrollData.employee() == null) {
+            throw new IllegalArgumentException("Payroll data and employee cannot be null");
         }
-        if (calculator == null) {
-            throw new IllegalStateException("Salary calculator not set");
+        if (payCalculator == null) {
+            throw new IllegalStateException("Pay calculator not set");
         }
         
-        return calculator.calculatePay(employee, hoursWorked);
+        return payCalculator.apply(payrollData);
     }
     
-    public String getPayrollSummary(StrategyEmployee employee, int hoursWorked) {
-        double pay = processPayroll(employee, hoursWorked);
-        return String.format(
-            "Employee: %s%nCalculation Type: %s%nHours Worked: %d%nPay Amount: $%.2f",
-            employee.getName(), calculator.getCalculationType(), hoursWorked, pay
-        );
+    public String getPayrollSummary(PayrollData payrollData) {
+        double pay = processPayroll(payrollData);
+        StringBuilder summary = new StringBuilder();
+        summary.append(String.format("Employee: %s%n", payrollData.employee().name()));
+        summary.append(String.format("Calculation Type: %s%n", calculatorDescription));
+        
+        if (payrollData.hoursWorked() != null) {
+            summary.append(String.format("Hours Worked: %d%n", payrollData.hoursWorked()));
+        }
+        if (payrollData.hourlyRate() != null) {
+            summary.append(String.format("Hourly Rate: $%.2f%n", payrollData.hourlyRate()));
+        }
+        if (payrollData.annualSalary() != null) {
+            summary.append(String.format("Annual Salary: $%.2f%n", payrollData.annualSalary()));
+        }
+        if (payrollData.salesAmount() != null) {
+            summary.append(String.format("Sales Amount: $%.2f%n", payrollData.salesAmount()));
+        }
+        if (payrollData.baseSalary() != null) {
+            summary.append(String.format("Base Salary: $%.2f%n", payrollData.baseSalary()));
+        }
+        if (payrollData.commissionRate() != null) {
+            summary.append(String.format("Commission Rate: %.1f%%%n", payrollData.commissionRate() * 100));
+        }
+        
+        summary.append(String.format("Pay Amount: $%.2f", pay));
+        return summary.toString();
     }
     
-    public SalaryCalculator getCalculator() {
-        return calculator;
+    public Function<PayrollData, Double> getCalculator() {
+        return payCalculator;
+    }
+    
+    public String getCalculatorDescription() {
+        return calculatorDescription;
     }
 }
 
 // Simple Employee class for strategy pattern demo
-class StrategyEmployee {
-    private final String name;
-    private final int id;
-    private final LocalDate hireDate;
-    
-    public StrategyEmployee(String name, int id, LocalDate hireDate) {
-        this.name = name;
-        this.id = id;
-        this.hireDate = hireDate;
-    }
-    
-    public String getName() { return name; }
-    public int getId() { return id; }
-    public LocalDate getHireDate() { return hireDate; }
-    
+record StrategyEmployee(String name, int id, LocalDate hireDate) {
+
     public int getYearsOfService() {
         return Period.between(hireDate, LocalDate.now()).getYears();
     }
 }
 
-// Demo class
+// Demo class showing modern lambda-based Strategy pattern
 class StrategyPatternDemo {
     public static void main(String[] args) {
-        System.out.println("=== Strategy Pattern Demo ===");
+        System.out.println("=== Modern Strategy Pattern Demo (2025) ===");
         
         // Create employees
-        StrategyEmployee hourlyEmployee = new StrategyEmployee("Alice Johnson", 1001, LocalDate.of(2020, 3, 15));
-        StrategyEmployee salariedEmployee = new StrategyEmployee("Bob Smith", 1002, LocalDate.of(2019, 7, 22));
-        StrategyEmployee commissionEmployee = new StrategyEmployee("Carol Davis", 1003, LocalDate.of(2021, 12, 1));
+        var hourlyEmployee = new StrategyEmployee("Alice Johnson", 1001, LocalDate.of(2020, 3, 15));
+        var salariedEmployee = new StrategyEmployee("Bob Smith", 1002, LocalDate.of(2019, 7, 22));
+        var salesPerson = new StrategyEmployee("Carol Sales", 1003, LocalDate.of(2021, 12, 1));
+        var customEmployee = new StrategyEmployee("Dave Custom", 1004, LocalDate.of(2022, 1, 15));
         
-        // Create different salary calculators
-        SalaryCalculator hourlyCalc = new HourlyCalculator(25.0, 1.5);
-        SalaryCalculator salariedCalc = new SalariedCalculator(80000, 26);
-        SalaryCalculator commissionCalc = new CommissionCalculator(30000, 0.05, 10000);
+        // Create payroll processor with lambda strategies
+        System.out.println("\n--- Standard Strategies (Predefined Lambdas) ---");
         
-        // Create payroll processor
-        PayrollProcessor processor = new PayrollProcessor(hourlyCalc);
-        
-        System.out.println("\n--- Hourly Employee ---");
-        System.out.println(processor.getPayrollSummary(hourlyEmployee, 45)); // 5 hours overtime
+        // Hourly worker
+        var processor = new PayrollProcessor(PayrollCalculations.HOURLY, "Hourly with Overtime");
+        var hourlyData = new PayrollData(hourlyEmployee, 45, 25.0); // 45 hours at $25/hour
+        System.out.println(processor.getPayrollSummary(hourlyData));
         
         System.out.println("\n--- Salaried Employee ---");
-        processor.setCalculator(salariedCalc);
-        System.out.println(processor.getPayrollSummary(salariedEmployee, 40));
+        processor.setCalculator(PayrollCalculations.SALARIED, "Salaried (Bi-weekly)");
+        var salariedData = new PayrollData(salariedEmployee, 80000.0); // $80k annual
+        System.out.println(processor.getPayrollSummary(salariedData));
         
-        System.out.println("\n--- Commission Employee ---");
-        processor.setCalculator(commissionCalc);
-        System.out.println(processor.getPayrollSummary(commissionEmployee, 35));
+        System.out.println("\n--- Sales Person (Base + Commission) ---");
+        processor.setCalculator(PayrollCalculations.BASE_PLUS_COMMISSION, "Base Salary + Commission");
+        var salesData = new PayrollData(salesPerson, 15000.0, 40000.0, 0.08); // $15k sales, $40k base, 8%
+        System.out.println(processor.getPayrollSummary(salesData));
         
-        // Demonstrate strategy switching at runtime
-        System.out.println("\n--- Strategy Switching Demo ---");
-        StrategyEmployee flexEmployee = new StrategyEmployee("Dave Wilson", 1004, LocalDate.of(2022, 1, 15));
+        System.out.println("\n--- Custom Strategy (Lambda Expression) ---");
         
-        System.out.println("Same employee with different calculation strategies:");
+        // Custom strategy: Senior sales rep with tiered commission
+        Function<PayrollData, Double> seniorSalesStrategy = data -> {
+            if (data.baseSalary() == null || data.salesAmount() == null) {
+                throw new IllegalArgumentException("Base salary and sales amount required");
+            }
+            
+            double base = data.baseSalary();
+            double sales = data.salesAmount();
+            
+            // Tiered commission: 5% up to $20k, 8% above $20k, 12% above $50k
+            double commission;
+            if (sales <= 20000) {
+                commission = sales * 0.05;
+            } else if (sales <= 50000) {
+                commission = (20000 * 0.05) + ((sales - 20000) * 0.08);
+            } else {
+                commission = (20000 * 0.05) + (30000 * 0.08) + ((sales - 50000) * 0.12);
+            }
+            
+            return base + commission;
+        };
         
-        processor.setCalculator(hourlyCalc);
-        System.out.println("As Hourly: $" + String.format("%.2f", processor.processPayroll(flexEmployee, 40)));
+        processor.setCalculator(seniorSalesStrategy, "Senior Sales Rep (Tiered Commission)");
+        var customData = new PayrollData(customEmployee, null, 65000.0, null, null, 50000.0, null);
+        System.out.println(processor.getPayrollSummary(customData));
         
-        processor.setCalculator(salariedCalc);
-        System.out.println("As Salaried: $" + String.format("%.2f", processor.processPayroll(flexEmployee, 40)));
+        System.out.println("\n--- Strategy Map Example ---");
         
-        processor.setCalculator(commissionCalc);
-        System.out.println("As Commission: $" + String.format("%.2f", processor.processPayroll(flexEmployee, 40)));
+        // Show how you might use a Map for strategy selection
+        Map<String, Function<PayrollData, Double>> strategies = Map.of(
+            "HOURLY", PayrollCalculations.HOURLY,
+            "SALARIED", PayrollCalculations.SALARIED,
+            "COMMISSION", PayrollCalculations.COMMISSION,
+            "BASE_PLUS_COMMISSION", PayrollCalculations.BASE_PLUS_COMMISSION,
+            "SENIOR_SALES", seniorSalesStrategy
+        );
+        
+        System.out.println("Available strategies: " + strategies.keySet());
+        
+        // Dynamic strategy selection
+        String strategyType = "SENIOR_SALES";
+        Function<PayrollData, Double> selectedStrategy = strategies.get(strategyType);
+        processor.setCalculator(selectedStrategy, "Dynamically Selected: " + strategyType);
+        
+        var dynamicData = new PayrollData(customEmployee, null, 45000.0, null, null, 55000.0, null);
+        System.out.println("\nDynamic selection result:");
+        System.out.println(processor.getPayrollSummary(dynamicData));
+        
+        System.out.println("\n--- Method Reference Example ---");
+        
+        // You can also use method references as strategies
+        processor.setCalculator(StrategyPatternDemo::consultantRate, "Consultant (Method Reference)");
+        var consultantData = new PayrollData(customEmployee, 35, null, 150.0, null, null, null);
+        System.out.println(processor.getPayrollSummary(consultantData));
+        
+        System.out.println("\n--- Custom Strategy Factory Example ---");
+        
+        // Use the customStrategy factory method for a contractor with special rules
+        Function<PayrollData, Double> contractorStrategy = PayrollCalculations.customStrategy(
+            "Contractor with daily rate and bonus",
+            data -> {
+                if (data.hoursWorked() == null || data.hourlyRate() == null) {
+                    throw new IllegalArgumentException("Hours and daily rate required for contractor");
+                }
+                
+                // Contractor: Paid by full days (8-hour minimum) + bonus for weekend work
+                int hours = data.hoursWorked();
+                double dailyRate = data.hourlyRate(); // Using hourlyRate field as daily rate
+                
+                // Calculate full days (minimum 8 hours = 1 day)
+                int fullDays = Math.max(1, (hours + 7) / 8); // Round up to nearest day
+                double basePay = fullDays * dailyRate;
+                
+                // Weekend bonus: 20% if working more than 5 days (simulating weekend work)
+                if (fullDays > 5) {
+                    basePay *= 1.20; // 20% weekend bonus
+                }
+                
+                return basePay;
+            }
+        );
+        
+        processor.setCalculator(contractorStrategy, "Contractor (Custom Strategy Factory)");
+        var contractorData = new PayrollData(customEmployee, 42, null, 600.0, null, null, null); // 42 hours, $600/day
+        System.out.println(processor.getPayrollSummary(contractorData));
+    }
+    
+    // Example method that can be used as a strategy via method reference
+    public static double consultantRate(PayrollData data) {
+        if (data.hoursWorked() == null || data.hourlyRate() == null) {
+            throw new IllegalArgumentException("Hours and rate required for consultant");
+        }
+        
+        // Consultants: No overtime, but higher rate
+        return data.hoursWorked() * data.hourlyRate();
     }
 }

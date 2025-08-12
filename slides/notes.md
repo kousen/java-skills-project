@@ -123,7 +123,7 @@
 
 ## 12 Reflection
 
-- Reflection uses the Class class
+- Reflection uses the `Class` class
 - Call getDeclaredMethods() to get all methods in the class
 - Call getDeclaredFields() to get all fields in the class
 

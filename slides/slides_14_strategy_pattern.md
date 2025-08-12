@@ -1,4 +1,3 @@
-
 ---
 layout: cover
 --- 
@@ -7,7 +6,7 @@ layout: cover
 
 <div class="pt-12">
   <span class="px-2 py-1 rounded">
-    Goal 14: Apply the Strategy pattern to encapsulate algorithms and make them interchangeable.
+    Goal 14: Apply the Strategy pattern to handle complex business rules that change frequently.
   </span>
 </div>
 
@@ -30,157 +29,293 @@ Kousen IT, Inc.
   - https://youtube.com/@talesfromthejarside
 
 ---
-layout: section
----
 
-# What is the Strategy Pattern?
+# Strategy: The Business Rules Pattern
 
 <v-clicks>
 
-- A **behavioral** design pattern.
-- It allows you to define a family of **algorithms**, put each of them into a separate class, and make their objects **interchangeable**.
-- It lets the algorithm vary independently from the clients that use it.
-- It is one of the original Gang of Four design patterns and is extremely common.
-
-</v-clicks>
-
-<div class="mt-8">
-<v-click>
-
-**Key Idea:** Instead of implementing a single algorithm directly, code receives runtime instructions as to which in a family of algorithms to use.
-
-</v-click>
-</div>
-
----
-
-# Core Components of the Strategy Pattern
-
-<v-clicks>
-
-1.  **The `Strategy` Interface:** This is the common interface for all the different algorithms. It declares the method that the `Context` will call.
-
-2.  **Concrete `Strategy` Classes:** These are the individual classes that implement the `Strategy` interface, each providing a different algorithm.
-
-3.  **The `Context` Class:** This is the class that needs the algorithm. It holds a reference to a `Strategy` object and delegates the work to it. The `Context` is not aware of the concrete type of the strategy.
+- **Behavioral design pattern** - focuses on how objects interact and distribute responsibilities
+- **Perfect for business rules** - handles logic that changes frequently or varies by context
+- **Encapsulates complex logic** - separates decision-making into interchangeable strategies
+- **Prevents code clutter** - eliminates giant `if/else` chains in main business logic
+- **Key insight** - isolates complexity to make business rules easy to modify, test, and extend
 
 </v-clicks>
 
 ---
 
-# UML Diagram
+# Traditional Strategy Pattern
 
 ```mermaid
 classDiagram
+    direction LR
     class Context {
-        - strategy: Strategy
-        + setStrategy(strategy: Strategy)
         + executeStrategy()
     }
+    
     class Strategy {
         <<interface>>
         + execute()
     }
-    class ConcreteStrategyA {
+    
+    class StrategyA {
         + execute()
     }
-    class ConcreteStrategyB {
+    
+    class StrategyB {
         + execute()
     }
 
-    Context o-- Strategy
-    Strategy <|.. ConcreteStrategyA
-    Strategy <|.. ConcreteStrategyB
+    Context --> Strategy
+    Strategy <|.. StrategyA
+    Strategy <|.. StrategyB
 ```
 
 ---
 
-# Code Demo: `SalaryCalculator.java`
+# Modern Lambda Strategy Pattern
 
-Let's look at a payroll system that calculates salaries differently for hourly, salaried, and commissioned employees.
-
-**(Show `design-patterns/src/main/java/SalaryCalculator.java`)**
-
-**1. The `Strategy` Interface:**
-
-```java
-public interface SalaryCalculationStrategy {
-    double calculatePay(StrategyEmployee employee, int hoursWorked);
-}
-```
-
-**2. The Concrete `Strategy` Classes:**
-
-```java
-// For hourly employees
-public class HourlyRateStrategy implements SalaryCalculationStrategy { ... }
-
-// For salaried employees
-public class SalariedRateStrategy implements SalaryCalculationStrategy { ... }
-
-// For commissioned employees
-public class CommissionRateStrategy implements SalaryCalculationStrategy { ... }
-```
-
----
-
-# Code Demo: The `Context`
-
-**3. The `Context` Class:**
-
-The `PayrollProcessor` is our context. It has a `SalaryCalculationStrategy` and a method to process the payroll.
-
-```java
-// Context class using the strategy
-public class PayrollProcessor {
-    private SalaryCalculationStrategy calculationStrategy;
-
-    // The strategy can be set at runtime
-    public void setCalculationStrategy(SalaryCalculationStrategy strategy) {
-        this.calculationStrategy = strategy;
+```mermaid
+classDiagram
+    class PayrollProcessor {
+        + processPayroll()
+        + setCalculator()
+    }
+    
+    class PayrollData {
+        <<record>>
+        + employee, hours, rate...
+    }
+    
+    class PayrollCalculations {
+        <<lambdas>>
+        + HOURLY
+        + SALARIED
+        + COMMISSION
     }
 
-    public double processPayroll(StrategyEmployee employee, int hoursWorked) {
-        if (calculationStrategy == null) {
-            throw new IllegalStateException("Calculation strategy not set");
-        }
-        // Delegate the calculation to the strategy object
-        return calculationStrategy.calculatePay(employee, hoursWorked);
+    PayrollProcessor --> PayrollData
+    PayrollProcessor --> PayrollCalculations
+```
+
+---
+
+# Try It Out: Shipping Exercise
+
+```mermaid
+classDiagram
+    class ShippingCalculator {
+        + calculateShipping()
+        + setStrategy()
     }
-}
+    
+    class ShippingData {
+        <<record>>
+        + weight, distance...
+    }
+    
+    class ShippingStrategies {
+        <<lambdas>>
+        + STANDARD
+        + EXPRESS
+        + OVERNIGHT
+    }
+
+    ShippingCalculator --> ShippingData
+    ShippingCalculator --> ShippingStrategies
 ```
 
 ---
 
-# Switching Strategies at Runtime
-
-The real power of the Strategy pattern is that you can change the context's behavior by swapping out its strategy object.
-
-```java
-// From StrategyPatternDemo.java
-PayrollProcessor processor = new PayrollProcessor();
-StrategyEmployee employee = new StrategyEmployee(...);
-
-// Use the hourly strategy
-processor.setCalculationStrategy(new HourlyRateStrategy(25.0));
-processor.processPayroll(employee, 40); // Calculates based on hourly rate
-
-// Now, switch to the salaried strategy for the same employee
-processor.setCalculationStrategy(new SalariedRateStrategy(80000));
-processor.processPayroll(employee, 40); // Calculates based on annual salary
-```
-
----
-layout: section
----
-
-# Key Takeaways
+# Why Strategy for Business Rules?
 
 <v-clicks>
 
-- The Strategy pattern is a powerful way to handle variations in algorithms.
-- It encapsulates each algorithm into its own class.
-- It allows you to change the algorithm used by an object at runtime.
-- This leads to more flexible, maintainable, and testable code by following the Open/Closed Principle.
+**Common Scenario - Payroll Complexity**
+
+<v-clicks>
+
+- Hourly workers: overtime calculations, shift differentials
+- Salaried workers: bonuses, deductions, pro-rating
+- Sales staff: base + commission, tiered rates, quota bonuses
+- Contractors: daily rates, weekend premiums, project bonuses
+
+</v-clicks>
+
+**Without Strategy** - Giant `if/else` blocks, hard to maintain
+**With Strategy** - Each rule is isolated, testable, and changeable
+
+</v-clicks>
+
+---
+
+# Modern Strategy Pattern (2025)
+
+<v-clicks>
+
+- **Traditional approach** - Interface + concrete classes
+- **Modern approach** - `Function<T,R>` + lambda expressions  
+- **Why lambdas excel** - Perfect for business rule logic
+- **Business benefit** - Quick rule changes without touching main code
+
+</v-clicks>
+
+---
+
+# Code Demo: Modern Lambda-based Strategy
+
+**(Show `design-patterns/src/main/java/SalaryCalculator.java`)**
+
+**1. Data Container (Record)**
+
+```java
+record PayrollData(StrategyEmployee employee, Integer hoursWorked, 
+                   Double salesAmount, Double hourlyRate, 
+                   Double annualSalary, Double baseSalary, 
+                   Double commissionRate) {
+    // Multiple constructors for different employee types
+}
+```
+
+**2. Lambda-based Strategies**
+
+```java
+class PayrollCalculations {
+    public static final Function<PayrollData, Double> HOURLY = data -> {
+        // Calculation logic here
+    };
+    
+    public static final Function<PayrollData, Double> SALARIED = data -> {
+        return data.annualSalary() / 26; // Bi-weekly
+    };
+}
+```
+
+---
+
+# Modern Context with Function Interface
+
+**3. The Modern `Context` Class**
+
+```java
+class PayrollProcessor {
+    private Function<PayrollData, Double> payCalculator;
+    private String calculatorDescription;
+    
+    public PayrollProcessor(Function<PayrollData, Double> payCalculator, 
+                           String description) {
+        this.payCalculator = payCalculator;
+        this.calculatorDescription = description;
+    }
+    
+    public double processPayroll(PayrollData payrollData) {
+        return payCalculator.apply(payrollData);
+    }
+    
+    public void setCalculator(Function<PayrollData, Double> calculator, 
+                             String description) {
+        this.payCalculator = calculator;
+        this.calculatorDescription = description;
+    }
+}
+```
+
+---
+
+# Lambda Strategy Examples
+
+<v-clicks>
+
+**1. Using Predefined Strategies**
+```java
+var processor = new PayrollProcessor(PayrollCalculations.HOURLY, "Hourly");
+var hourlyData = new PayrollData(employee, 45, 25.0); // 45 hours, $25/hour
+processor.processPayroll(hourlyData);
+```
+
+**2. Custom Lambda Strategy**
+```java
+Function<PayrollData, Double> consultantStrategy = data -> {
+    return data.hoursWorked() * data.hourlyRate(); // No overtime
+};
+processor.setCalculator(consultantStrategy, "Consultant Rate");
+```
+
+**3. Method Reference**
+```java
+processor.setCalculator(StrategyPatternDemo::consultantRate, "Consultant");
+```
+
+</v-clicks>
+
+---
+
+# Advanced Lambda Features
+
+<v-clicks>
+
+**Strategy Maps for Dynamic Selection**
+```java
+Map<String, Function<PayrollData, Double>> strategies = Map.of(
+    "HOURLY", PayrollCalculations.HOURLY,
+    "SALARIED", PayrollCalculations.SALARIED,
+    "COMMISSION", PayrollCalculations.COMMISSION
+);
+
+Function<PayrollData, Double> selected = strategies.get("HOURLY");
+```
+
+**Custom Strategy Factory**
+```java
+Function<PayrollData, Double> contractorStrategy = 
+    PayrollCalculations.customStrategy(
+        "Contractor with daily rate",
+        data -> /* complex contractor logic */
+    );
+```
+
+</v-clicks>
+
+---
+
+# Strategy Pattern for Business Agility
+
+<v-clicks>
+
+- **Quick rule changes** - Modify behavior without touching core logic
+- **Easy testing** - Each business rule can be tested in isolation  
+- **Audit compliance** - Clear separation of calculation logic
+- **A/B testing** - Switch between rule variants at runtime
+
+</v-clicks>
+
+<v-clicks>
+
+- **Clean architecture** - Business rules separate from application logic
+- **Open/Closed Principle** - Add new rules without modifying existing code
+- **Single Responsibility** - Each strategy does one calculation well
+
+</v-clicks>
+
+---
+
+# Recognizing Strategy Pattern Opportunities
+
+<v-clicks>
+
+- **Multiple calculation methods** - Different ways to compute the same result
+- **Conditional complexity** - Long `if/else` chains based on type/status
+- **Frequently changing rules** - Business logic that evolves often
+- **Context-dependent behavior** - Same operation, different rules by situation
+
+</v-clicks>
+
+<v-clicks>
+
+**Classic examples:**
+- Pricing strategies (regular, premium, bulk, seasonal)
+- Tax calculations (by region, customer type, product category)  
+- Shipping costs (standard, express, international, weight-based)
+- Discount rules (loyalty, volume, promotional, seasonal)
 
 </v-clicks>
