@@ -309,3 +309,4 @@ replay_pid*
 # Claude Code settings
 .claude/settings.local.json
 /.serena/project.yml
+/.gemini-clipboard/
