@@ -126,5 +126,13 @@
 - Reflection uses the Class class
 - Call getDeclaredMethods() to get all methods in the class
 - Call getDeclaredFields() to get all fields in the class
-- 
+
+## 13 Singleton
+
+- Singleton restricts the instantiation of a class to one object. (00:22)
+- Add a private static volatile reference to the instance. (01:17)
+- Add a private constructor to prevent instantiation from other classes. (01:25)
+- Add a public static method to get the instance. (01:34)
+- Use double-checked locking to ensure thread safety. (03:44)
+
 

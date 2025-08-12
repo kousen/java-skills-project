@@ -1,24 +1,15 @@
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.AfterEach;
-import static org.assertj.core.api.Assertions.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Test;
+
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Database Connection Singleton Tests")
 class DatabaseConnectionTest {
     
-    @AfterEach
-    void tearDown() {
-        // Clean up after each test
-        if (DatabaseConnection.getInstance().isConnected()) {
-            DatabaseConnection.getInstance().close();
-        }
-    }
     
     @Test
     @DisplayName("Should return same instance for multiple calls")
@@ -38,24 +29,28 @@ class DatabaseConnectionTest {
         int threadCount = 100;
         CountDownLatch latch = new CountDownLatch(threadCount);
         Set<DatabaseConnection> instances = ConcurrentHashMap.newKeySet();
-        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        
-        // Create multiple threads that get the singleton instance
-        for (int i = 0; i < threadCount; i++) {
-            executor.submit(() -> {
-                try {
-                    DatabaseConnection instance = DatabaseConnection.getInstance();
-                    instances.add(instance);
-                } finally {
-                    latch.countDown();
-                }
-            });
+        try (ExecutorService executor = Executors.newFixedThreadPool(threadCount)) {
+
+            // Create multiple threads that get the singleton instance
+            for (int i = 0; i < threadCount; i++) {
+                executor.submit(() -> {
+                    try {
+                        DatabaseConnection instance = DatabaseConnection.getInstance();
+                        instances.add(instance);
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            }
+
+            // Wait for all threads to complete
+            boolean completed = latch.await(5, TimeUnit.SECONDS);
+            executor.shutdown();
+            
+            // Ensure all threads completed within timeout
+            assertThat(completed).isTrue();
         }
-        
-        // Wait for all threads to complete
-        latch.await(5, TimeUnit.SECONDS);
-        executor.shutdown();
-        
+
         // All threads should have gotten the same instance
         assertThat(instances).hasSize(1);
     }
@@ -75,8 +70,8 @@ class DatabaseConnectionTest {
         DatabaseConnection instance = DatabaseConnection.getInstance();
         
         assertThatThrownBy(() -> {
-            // Use reflection to access the protected clone method
-            java.lang.reflect.Method cloneMethod = Object.class.getDeclaredMethod("clone");
+            // Use reflection to access the protected clone method from the actual class
+            java.lang.reflect.Method cloneMethod = DatabaseConnection.class.getDeclaredMethod("clone");
             cloneMethod.setAccessible(true);
             cloneMethod.invoke(instance);
         }).hasCauseInstanceOf(CloneNotSupportedException.class);

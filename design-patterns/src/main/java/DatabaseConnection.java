@@ -2,13 +2,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class DatabaseConnection {
     
     private static volatile DatabaseConnection instance;
-    private static final Lock lock = new ReentrantLock();
     
     private Connection connection;
     private final String url;
@@ -28,18 +25,21 @@ public class DatabaseConnection {
     // Thread-safe singleton implementation (double-checked locking)
     public static DatabaseConnection getInstance() {
         if (instance == null) {
-            lock.lock();
-            try {
+            synchronized (DatabaseConnection.class) {
                 if (instance == null) {
                     instance = new DatabaseConnection();
                 }
-            } finally {
-                lock.unlock();
             }
         }
         return instance;
     }
-    
+
+    // Prevent cloning
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException("Singleton cannot be cloned");
+    }
+
     private void initializeConnection() {
         try {
             this.connection = DriverManager.getConnection(url, properties);
@@ -103,17 +103,12 @@ public class DatabaseConnection {
         if (connection != null) {
             try {
                 connection.close();
+                connection = null; // Set to null after closing
                 System.out.println("Database connection closed");
             } catch (SQLException e) {
                 System.err.println("Error closing database connection: " + e.getMessage());
             }
         }
-    }
-    
-    // Prevent cloning
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException("Singleton cannot be cloned");
     }
     
     // Example usage method

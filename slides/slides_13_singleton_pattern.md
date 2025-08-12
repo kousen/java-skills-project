@@ -155,29 +155,61 @@ Let's examine a complete, thread-safe Singleton implementation.
 
 **(Show `design-patterns/src/main/java/DatabaseConnection.java`)**
 
+Key features of our implementation:
+
+<v-clicks>
+
+- **Thread-safe double-checked locking** with `synchronized`
+- **H2 in-memory database** for realistic resource management  
+- **Automatic table creation** (employees, departments)
+- **Connection lifecycle management** with proper cleanup
+- **Clone prevention** to maintain singleton guarantee
+
+</v-clicks>
+
+---
+
+# Our DatabaseConnection Implementation
+
 ```java
-public class DatabaseConnection implements Cloneable {
-    // 1. private static volatile instance
+public class DatabaseConnection {
     private static volatile DatabaseConnection instance;
     private Connection connection;
-
-    // 2. private constructor
+    
     private DatabaseConnection() {
-        // ... connects to a database ...
+        // H2 in-memory database setup
+        initializeConnection();
+        createTables(); // employees, departments
     }
-
-    // 3. public static getInstance method (with double-checked locking)
+    
     public static DatabaseConnection getInstance() {
-        // ... as seen on previous slide ...
-    }
-
-    // Also: prevent cloning and deserialization from creating new instances
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException("Singleton cannot be cloned");
+        if (instance == null) {
+            synchronized (DatabaseConnection.class) {
+                if (instance == null) {
+                    instance = new DatabaseConnection();
+                }
+            }
+        }
+        return instance;
     }
 }
 ```
+
+---
+
+# Testing the Singleton
+
+Our comprehensive test suite verifies:
+
+<v-clicks>
+
+- **Instance uniqueness**: Multiple calls return same object
+- **Thread safety**: 100 concurrent threads get same instance  
+- **Database connectivity**: Connection established successfully
+- **Clone prevention**: Throws `CloneNotSupportedException`
+- **Connection lifecycle**: Proper close and reconnect behavior
+
+</v-clicks>
 
 ---
 layout: section

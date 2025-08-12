@@ -1,111 +1,65 @@
 [SCENE 1: INTRODUCTION]
 
-Welcome to our lesson on one of Java's most powerful and fascinating features: the Reflection API.
+Hi, and welcome back to our series on Java skills. Today, we're going to discuss one of the most well-known design patterns: the Singleton pattern.
 
-Reflection allows a Java program to examine and modify its own structure and behavior at runtime. Think of it as giving your code a mirror to look at itself. With reflection, you can inspect classes, methods, and fields, create objects, and call methods - all without knowing their names at compile time.
+The Singleton is a creational pattern, which means it deals with object creation mechanisms. Its purpose is simple but important: it ensures that a class has only one instance, and it provides a single, global point of access to that instance. This is incredibly useful for resources that are expensive to create or that need to be shared across your entire application, like a database connection pool, a logging service, or a configuration manager.
 
-This is the foundation that powers many of the frameworks you use every day, like Spring, Hibernate, and JUnit. They use reflection to discover your classes and work with them dynamically. But as we'll see, with great power comes great responsibility.
+The core idea is that the class itself takes responsibility for managing its sole instance.
 
-[SCENE 2: WHAT IS REFLECTION AND WHY USE IT?]
+[SCENE 2: THE CORE COMPONENTS OF A SINGLETON]
 
-So what exactly is reflection? It's an API that lets programs inspect and manipulate themselves at runtime. You can examine classes, interfaces, fields, and methods on the fly.
+To implement the Singleton pattern correctly, you need three key components.
 
-Why would you want to do this? Well, it enables incredible flexibility. You can create objects dynamically, invoke methods by name, and even access private fields. It's essential for frameworks that need to work with code they don't know about at compile time.
+First, you need a `private static` variable inside the class to hold the single instance. Second, you must make the constructor `private`. This is the crucial step that prevents anyone else from creating an instance of the class using the `new` keyword. Finally, you provide a `public static` method, usually called `getInstance`, that returns the single instance. This method is the gatekeeper; it creates the object the first time it's called and then returns that same object on every subsequent call.
 
-But here's an important warning: reflection can be slow, and it can break encapsulation. Use it wisely and only when you truly need that dynamic capability.
+[SCENE 3: EAGER VS. LAZY INITIALIZATION]
 
-[SCENE 3: CORE CLASSES: THE CLASS OBJECT]
+There are two main ways to initialize a Singleton: eager and lazy.
 
-The heart of reflection is the `Class` object. This represents a class or interface and is your entry point for all reflection operations.
+With **eager initialization**, the instance is created the moment the class is loaded by the Java Virtual Machine. This is the simplest approach and it's automatically thread-safe. However, it means you create the object whether you end up using it or not.
 
-There are three main ways to get a `Class` object. You can use the class literal like `String.class`, call `getClass()` on an instance, or use `Class.forName()` with the fully qualified class name.
+With **lazy initialization**, you wait to create the instance until the `getInstance` method is called for the first time. This can save resources, but it introduces a problem in multi-threaded environments. If two threads call `getInstance` at the exact same time when the instance is null, you could accidentally create two instances. Therefore, you have to make your lazy initialization thread-safe.
 
-Now here's something crucial to understand: there's a big difference between using `.class` and `.getClass()`, especially with inheritance.
+[SCENE 4: THREAD-SAFE LAZY INITIALIZATION]
 
-[SCENE 4: .CLASS VS .GETCLASS() - A CRITICAL DIFFERENCE]
+The standard way to make a lazy Singleton thread-safe is with a technique called **double-checked locking**.
 
-Let me show you why this matters. When you use `.class`, you get the compile-time type. But when you use `.getClass()`, you get the actual runtime type.
+(Show the double-checked locking code on screen)
 
-This becomes crucial with polymorphism. If you have an `Animal` reference pointing to a `Dog` object, `Animal.class` gives you the `Animal` class, but `someAnimal.getClass()` gives you the `Dog` class - the actual runtime type.
+It looks a bit complicated, but let's break it down. We first check if the instance is null. If it is, *then* we enter a synchronized block using `synchronized (DatabaseConnection.class)`. Inside the synchronized block, we check *again* if the instance is null. This second check is necessary because another thread might have been waiting to enter the synchronized block and could have created the instance while we were waiting. This pattern ensures that we only lock when we absolutely have to, and that the instance is created only once.
 
-This is why frameworks always use `.getClass()` - they need to discover the real type of objects to find all their methods and annotations.
+Notice the `volatile` keyword on the instance variable. This is critical. It guarantees that any changes to the `instance` variable are immediately visible to all other threads.
 
-[SCENE 5: WORKING WITH FIELDS]
+[SCENE 5: CODE DEMO: DATABASECONNECTION.JAVA]
 
-The `Field` class represents a field in a class. You can use it to get field information, read values, and even modify them.
+Let's look at our `DatabaseConnection` class, which demonstrates a thread-safe Singleton implementation. Now, you might wonder - in production applications, wouldn't you typically use a connection pool rather than a single database connection? Absolutely! But for learning the Singleton pattern, this simplified example lets us focus on the core concepts: ensuring only one instance exists and managing an expensive resource. The same principles apply whether you're managing a single connection or an entire connection pool.
 
-You can get all declared fields with `getDeclaredFields()`, or a specific field with `getDeclaredField()`. Once you have a field, you can read its value with `get()` and modify it with `set()`.
+(Show `design-patterns/src/main/java/DatabaseConnection.java` on screen)
 
-[SCENE 6: WORKING WITH METHODS]
+You can see all the pieces we just discussed. It has a `private static volatile` instance variable. It has a `private` constructor that establishes an H2 in-memory database connection and automatically creates the necessary tables. And it has a `public static getInstance` method that uses our double-checked locking pattern with `synchronized (DatabaseConnection.class)`.
 
-Similarly, the `Method` class represents a method. You can invoke methods dynamically, which is incredibly powerful for framework development.
+This class also goes a step further to make the Singleton truly robust. It overrides the `clone` method to prevent someone from cloning the instance. The constructor does real work - it connects to a database and sets up the schema, making this a practical example of managing expensive resources.
 
-Get methods with `getDeclaredMethods()` or `getMethod()`, then invoke them with the `invoke()` method, passing in the target object and any parameters.
+What makes this implementation particularly solid is our comprehensive test suite. We test that multiple calls return the same instance, that it's thread-safe with 100 concurrent threads, that the database connection works, that cloning is prevented, and that the connection lifecycle is managed properly.
 
-[SCENE 7: WORKING WITH CONSTRUCTORS]
+[SCENE 6: SINGLETON VS. STATIC METHODS - WHY NOT JUST USE STATIC?]
 
-The `Constructor` class lets you create new instances dynamically. This is how frameworks like Spring can instantiate your classes without knowing their names at compile time.
+Before we wrap up, let's address a common question: why use the Singleton pattern at all? Why not just make everything static methods and fields?
 
-Get a constructor with `getConstructor()`, specifying the parameter types, then create instances with `newInstance()`.
+Great question! There are several key differences. First, Singletons can implement interfaces and extend classes - static methods cannot. This makes Singletons much more flexible for dependency injection and testing. You can easily pass a Singleton instance to other objects, or even substitute a mock implementation during testing.
 
-[SCENE 8: ACCESSING PRIVATE MEMBERS - BREAKING ENCAPSULATION]
+Second, Singletons support lazy initialization - the expensive resource is only created when first needed. With static fields, initialization happens at class loading time whether you need it or not.
 
-One of reflection's most powerful and dangerous features is the ability to access private members. You can bypass Java's access control by calling `setAccessible(true)` on fields and methods.
+However, I should mention that Singleton is actually a controversial pattern. Critics argue it introduces global state, makes testing difficult, and can hide dependencies between classes. Some even call it an 'anti-pattern' because it can make code harder to reason about and maintain.
 
-This lets you read and modify private fields, and invoke private methods. It's a security risk, so use it carefully and understand the implications.
+The key is knowing when it's appropriate. Use Singletons for truly singular resources like configuration managers, connection pools, or logging services - but use them sparingly and thoughtfully.
 
-[SCENE 9: CODE DEMO: OUR REFLECTIONEXERCISE]
+[SCENE 7: SUMMARY]
 
-Let's see all this in action with our comprehensive ReflectionExercise. This demonstrates every concept we've discussed.
+To sum up, the Singleton pattern ensures a class has only one instance. It's implemented with a `private` constructor and a `static getInstance` method. Remember to make your lazy-initialized Singletons thread-safe, typically with double-checked locking using `synchronized`.
 
-(Show `foundations/src/main/java/com.oreilly.javaskills.ReflectionExercise.java` on screen)
+Our `DatabaseConnection` example shows how to manage expensive resources like database connections with the Singleton pattern. The comprehensive test suite demonstrates the importance of testing thread safety, instance uniqueness, and proper resource management.
 
-The exercise shows basic class introspection, the difference between `.class` and `.getClass()` with inheritance, field and method access, constructor usage, and even accessing private members.
+While it's a very common pattern, be thoughtful about using it. It can make testing more difficult and can introduce global state into your application. But for managing truly singular resources like database connections, configuration managers, or logging services, it's an essential tool.
 
-[SCENE 10: FRAMEWORK PATTERNS: ANNOTATION PROCESSING]
-
-One of the most important uses of reflection is annotation processing. Frameworks scan for annotations like `@Entity`, `@Service`, or `@Controller` to understand how to handle your classes.
-
-Our exercise demonstrates this with custom annotations. It shows how frameworks discover annotated methods and process them differently based on their metadata.
-
-[SCENE 11: THE INHERITANCE CHALLENGE FOR FRAMEWORKS]
-
-Here's where the `.class` vs `.getClass()` difference becomes critical. When frameworks process polymorphic collections, they need to discover all methods, including those in subclasses.
-
-Using the wrong approach means missing important annotations and methods. This is why frameworks always use `.getClass()` to get the actual runtime type.
-
-[SCENE 12: FRAMEWORK SIMULATION IN ACTION]
-
-Now let's see the most impressive part of our ReflectionExercise - how it simulates real framework behavior with polymorphic objects.
-
-The exercise creates an array with both regular employees and salaried employees, then processes them using reflection. This demonstrates exactly how frameworks like Spring discover and process different object types at runtime.
-
-Notice how it uses `getClass()` instead of the static type - this ensures it finds all methods in subclasses, including their unique annotations. This is the core pattern that powers dependency injection, ORM mapping, and configuration processing in enterprise frameworks.
-
-[SCENE 13: PERFORMANCE AND SECURITY CONSIDERATIONS]
-
-Reflection comes with important considerations. It's significantly slower than direct method calls, so use caching when possible and avoid it in performance-critical paths.
-
-Security-wise, reflection can bypass access control, potentially exposing sensitive data or allowing unauthorized operations. Always validate inputs and consider using security managers in production.
-
-[SCENE 14: WHEN TO USE AND WHEN TO AVOID REFLECTION]
-
-Use reflection for framework development, testing utilities, configuration systems, and dynamic code generation. It's perfect when you need to work with unknown types at compile time.
-
-Avoid it in normal application code, performance-critical paths, and when type safety is crucial. For simple object creation or method calls, prefer direct approaches.
-
-[SCENE 15: BEST PRACTICES]
-
-Here are key best practices: Cache `Class` objects when possible to avoid repeated lookups. Handle exceptions properly since reflection operations can fail. Validate before accessing private members, and always document why reflection is necessary.
-
-[SCENE 16: SUMMARY]
-
-Let's wrap up. The Reflection API is a powerful tool for runtime code inspection and manipulation. It's essential for framework development and enables incredible flexibility.
-
-Remember the key classes: `Class` for entry point, `Method` for dynamic invocation, `Field` for data access, and `Constructor` for object creation.
-
-The critical distinction between `.class` and `.getClass()` matters especially for framework development where you need actual runtime types.
-
-Use reflection wisely - it's powerful but comes with performance and security trade-offs. Prefer direct code when possible, but don't hesitate to use reflection when you need that dynamic capability.
-
-Try out the ReflectionExercise to get hands-on experience with all these concepts. Thanks for watching, and see you next time!
+That's all for the Singleton pattern. Thanks for watching!
