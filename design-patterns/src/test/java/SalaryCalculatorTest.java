@@ -8,14 +8,14 @@ import java.util.function.Function;
 @DisplayName("Modern Lambda-based Strategy Pattern Tests")
 class SalaryCalculatorTest {
     
-    private StrategyEmployee employee;
+    private PayrollEmployee employee;
     private PayrollProcessor processor;
     
     @BeforeEach
     void setUp() {
-        employee = new StrategyEmployee("Alice Johnson", 1001,
+        employee = new PayrollEmployee("Alice Johnson", 1001,
                 LocalDate.of(2020, 3, 15));
-        processor = new PayrollProcessor(PayrollCalculations.HOURLY, "Test Calculator");
+        processor = new PayrollProcessor();
     }
     
     @Test
@@ -103,7 +103,7 @@ class SalaryCalculatorTest {
     @Test
     @DisplayName("Payroll processor should use lambda strategy correctly")
     void payrollProcessorShouldUseLambdaStrategyCorrectly() {
-        processor.setCalculator(PayrollCalculations.HOURLY, "Hourly Strategy");
+        processor.setCalculator(PayrollCalculations.HOURLY);
         var payrollData = new PayrollData(employee, 40, 25.0);
         
         double pay = processor.processPayroll(payrollData);
@@ -114,12 +114,12 @@ class SalaryCalculatorTest {
     @Test
     @DisplayName("Payroll processor should allow strategy switching")
     void payrollProcessorShouldAllowStrategySwitching() {
-        processor.setCalculator(PayrollCalculations.HOURLY, "Hourly Strategy");
+        processor.setCalculator(PayrollCalculations.HOURLY);
         var hourlyData = new PayrollData(employee, 40, 25.0);
         
         double hourlyPay = processor.processPayroll(hourlyData);
         
-        processor.setCalculator(PayrollCalculations.SALARIED, "Salaried Strategy");
+        processor.setCalculator(PayrollCalculations.SALARIED);
         var salariedData = new PayrollData(employee, 78000.0);
         double salariedPay = processor.processPayroll(salariedData);
         
@@ -152,7 +152,7 @@ class SalaryCalculatorTest {
     @Test
     @DisplayName("Should generate payroll summary")
     void shouldGeneratePayrollSummary() {
-        processor.setCalculator(PayrollCalculations.HOURLY, "Hourly with Overtime");
+        processor.setCalculator(PayrollCalculations.HOURLY);
         var payrollData = new PayrollData(employee, 40, 25.0);
         
         String summary = processor.getPayrollSummary(payrollData);
