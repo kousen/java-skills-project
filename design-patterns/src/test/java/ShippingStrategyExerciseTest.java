@@ -13,7 +13,7 @@ class ShippingStrategyExerciseTest {
     @BeforeEach
     void setUp() {
         testPackage = new ShippingData(5.0, 100.0, "Standard");
-        calculator = new ShippingCalculator(ShippingCalculations.STANDARD, "Standard");
+        calculator = new ShippingCalculator(); // Uses default STANDARD strategy
     }
     
     @Test
@@ -71,22 +71,21 @@ class ShippingStrategyExerciseTest {
     @Test
     @DisplayName("Calculator should use strategy correctly")
     void calculatorShouldUseStrategyCorrectly() {
-        calculator.setStrategy(ShippingCalculations.EXPRESS, "Express");
+        calculator.setStrategy(ShippingCalculations.EXPRESS);
         
         double cost = calculator.calculateShipping(testPackage);
         
         assertThat(cost).isEqualTo(30.75); // Express rate
-        assertThat(calculator.getStrategyName()).isEqualTo("Express");
     }
     
     @Test
     @DisplayName("Calculator should allow strategy switching")
     void calculatorShouldAllowStrategySwitching() {
-        // Start with Standard
+        // Start with Standard (default)
         double standardCost = calculator.calculateShipping(testPackage);
         
         // Switch to Overnight
-        calculator.setStrategy(ShippingCalculations.OVERNIGHT, "Overnight");
+        calculator.setStrategy(ShippingCalculations.OVERNIGHT);
         double overnightCost = calculator.calculateShipping(testPackage);
         
         assertThat(standardCost).isEqualTo(17.50);
@@ -95,25 +94,24 @@ class ShippingStrategyExerciseTest {
     }
     
     @Test
-    @DisplayName("Calculator should reject null strategy")
-    void calculatorShouldRejectNullStrategy() {
-        ShippingCalculator nullCalculator = new ShippingCalculator(null, "Null");
-        
-        assertThatThrownBy(() -> nullCalculator.calculateShipping(testPackage))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("Shipping strategy not set");
+    @DisplayName("Calculator should reject null shipping data")
+    void calculatorShouldRejectNullShippingData() {
+        assertThatThrownBy(() -> calculator.calculateShipping(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Shipping data cannot be null");
     }
     
     @Test
-    @DisplayName("Calculator should generate proper quotes")
-    void calculatorShouldGenerateProperQuotes() {
-        String quote = calculator.getQuote(testPackage);
+    @DisplayName("Calculator should generate proper shipping summaries")
+    void calculatorShouldGenerateProperShippingSummaries() {
+        String summary = calculator.getShippingSummary(testPackage);
         
-        assertThat(quote)
-            .contains("Standard Shipping")
+        assertThat(summary)
+            .contains("Package Details")
             .contains("$17.50")
             .contains("5.0 lbs")
-            .contains("100.0 miles");
+            .contains("100.0 miles")
+            .contains("Domestic");
     }
     
     @Test
@@ -144,11 +142,10 @@ class ShippingStrategyExerciseTest {
         // Custom strategy: flat rate of $20.00
         Function<ShippingData, Double> flatRate = data -> 20.0;
         
-        calculator.setStrategy(flatRate, "Flat Rate");
+        calculator.setStrategy(flatRate);
         double cost = calculator.calculateShipping(testPackage);
         
         assertThat(cost).isEqualTo(20.00);
-        assertThat(calculator.getStrategyName()).isEqualTo("Flat Rate");
     }
     
     @Test
