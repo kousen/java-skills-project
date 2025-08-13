@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -61,36 +63,30 @@ class ShippingCalculations {
     };
 }
 
-// Context class that uses shipping strategies
+// Modern context class using Function-based strategies
 class ShippingCalculator {
-    private Function<ShippingData, Double> shippingStrategy;
-    private String strategyName;
+    private Function<ShippingData, Double> shippingStrategy = ShippingCalculations.STANDARD; // Default strategy
     
-    public ShippingCalculator(Function<ShippingData, Double> strategy, String name) {
+    public void setStrategy(Function<ShippingData, Double> strategy) {
         this.shippingStrategy = strategy;
-        this.strategyName = name;
-    }
-    
-    public void setStrategy(Function<ShippingData, Double> strategy, String name) {
-        this.shippingStrategy = strategy;
-        this.strategyName = name;
     }
     
     public double calculateShipping(ShippingData data) {
-        if (shippingStrategy == null) {
-            throw new IllegalStateException("Shipping strategy not set");
+        if (data == null) {
+            throw new IllegalArgumentException("Shipping data cannot be null");
         }
         return shippingStrategy.apply(data);
     }
     
-    public String getQuote(ShippingData data) {
+    public String getShippingSummary(ShippingData data) {
         double cost = calculateShipping(data);
-        return String.format("%s Shipping: $%.2f (%.1f lbs, %.1f miles)", 
-                           strategyName, cost, data.weight(), data.distance());
-    }
-    
-    public String getStrategyName() {
-        return strategyName;
+        var summary = new StringBuilder();
+        summary.append("Package Details:%n".formatted());
+        summary.append("  Weight: %.1f lbs%n".formatted(data.weight()));
+        summary.append("  Distance: %.1f miles%n".formatted(data.distance()));
+        summary.append("  Destination: %s%n".formatted(data.destination()));
+        summary.append("  Shipping Cost: $%.2f".formatted(cost));
+        return summary.toString();
     }
 }
 
@@ -102,42 +98,74 @@ public class ShippingStrategyExercise {
     }
     
     public static void demonstrateShippingStrategies() {
-        System.out.println("=== Shipping Strategy Pattern Demo ===");
+        System.out.println("=== Modern Shipping Strategy Pattern Demo (2025) ===");
         
-        // Create test shipping data: 5 lbs package going 100 miles
-        var packageData = new ShippingData(5.0, 100.0, "Standard");
+        var calculator = new ShippingCalculator(); // Uses default STANDARD strategy
         
-        // Test all shipping strategies
-        var calculator = new ShippingCalculator(ShippingCalculations.STANDARD, "Standard");
-        System.out.println(calculator.getQuote(packageData));
+        // 1. Default strategy
+        System.out.println("\n--- 1. Default Strategy: Standard Shipping ---");
+        var package1 = new ShippingData(5.0, 100.0, "Standard");
+        System.out.println(calculator.getShippingSummary(package1));
         
-        calculator.setStrategy(ShippingCalculations.EXPRESS, "Express");
-        System.out.println(calculator.getQuote(packageData));
+        // 2. Switch strategies
+        System.out.println("\n--- 2. Switch Strategy: Express Shipping ---");
+        calculator.setStrategy(ShippingCalculations.EXPRESS);
+        System.out.println(calculator.getShippingSummary(package1));
         
-        calculator.setStrategy(ShippingCalculations.OVERNIGHT, "Overnight");
-        System.out.println(calculator.getQuote(packageData));
+        System.out.println("\n--- 3. Overnight Shipping ---");
+        calculator.setStrategy(ShippingCalculations.OVERNIGHT);
+        var package2 = new ShippingData(3.0, 50.0, "Overnight");
+        System.out.println(calculator.getShippingSummary(package2));
         
-        // Test international shipping
-        var intlData = new ShippingData("International", 5.0, 2000.0, "International");
-        calculator.setStrategy(ShippingCalculations.INTERNATIONAL, "International");
-        System.out.println(calculator.getQuote(intlData));
-        
-        // Demonstrate custom strategy with lambda
-        System.out.println("\n=== Custom Strategy Demo ===");
+        // 3. Custom lambda strategy
+        System.out.println("\n--- 4. Custom Strategy: Bulk Discount ---");
         Function<ShippingData, Double> bulkDiscount = data -> {
-            double standardCost = ShippingCalculations.STANDARD.apply(data);
+            double standardCost = 5.0 + (data.weight() * 0.50) + (data.distance() * 0.10);
             // 20% discount for packages over 10 lbs
             return data.weight() > 10.0 ? standardCost * 0.8 : standardCost;
         };
         
-        calculator.setStrategy(bulkDiscount, "Bulk Discount");
-        var heavyPackage = new ShippingData(15.0, 100.0, "Bulk");
-        System.out.println(calculator.getQuote(heavyPackage));
+        calculator.setStrategy(bulkDiscount);
+        var heavyPackage = new ShippingData(15.0, 200.0, "Bulk");
+        System.out.println(calculator.getShippingSummary(heavyPackage));
+        
+        // 4. Batch processing with strategy map
+        System.out.println("\n--- 5. Batch Processing: Multiple Packages ---");
+        
+        // Strategy registry for different package types
+        Map<String, Function<ShippingData, Double>> shippingStrategies = Map.of(
+            "Standard Package", ShippingCalculations.STANDARD,
+            "Express Package", ShippingCalculations.EXPRESS,
+            "Overnight Package", ShippingCalculations.OVERNIGHT,
+            "Bulk Package", bulkDiscount
+        );
+        
+        // Create batch of shipping data
+        List<ShippingData> shippingBatch = List.of(
+            new ShippingData(2.0, 50.0, "Standard Package"),
+            new ShippingData(5.0, 150.0, "Express Package"),
+            new ShippingData(1.0, 25.0, "Overnight Package"),
+            new ShippingData(20.0, 300.0, "Bulk Package")
+        );
+        
+        // Process all shipments in parallel
+        List<Double> costs = shippingBatch.parallelStream()
+            .map(data -> shippingStrategies.get(data.serviceType()).apply(data))
+            .toList();
+        
+        // Display batch results
+        System.out.println("Batch shipping costs:");
+        for (int i = 0; i < shippingBatch.size(); i++) {
+            var data = shippingBatch.get(i);
+            var cost = costs.get(i);
+            System.out.printf("  %s (%.1f lbs, %.0f mi): $%.2f%n", 
+                data.serviceType(), data.weight(), data.distance(), cost);
+        }
         
         System.out.println("\n=== Strategy Pattern Benefits ===");
-        System.out.println("✓ Each shipping method is isolated and testable");
-        System.out.println("✓ Easy to add new shipping strategies");
-        System.out.println("✓ Business rules are separate from application logic");
-        System.out.println("✓ Can switch strategies at runtime");
+        System.out.println("✓ Runtime strategy switching for different shipping needs");
+        System.out.println("✓ Easy to add new shipping calculation methods");
+        System.out.println("✓ Batch processing with parallel streams for performance");
+        System.out.println("✓ Clean separation of shipping rules from application logic");
     }
 }
