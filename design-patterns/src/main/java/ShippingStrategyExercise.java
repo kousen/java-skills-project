@@ -65,7 +65,8 @@ class ShippingCalculations {
 
 // Modern context class using Function-based strategies
 class ShippingCalculator {
-    private Function<ShippingData, Double> shippingStrategy = ShippingCalculations.STANDARD; // Default strategy
+    private Function<ShippingData, Double> shippingStrategy =
+            ShippingCalculations.STANDARD; // Default strategy
     
     public void setStrategy(Function<ShippingData, Double> strategy) {
         this.shippingStrategy = strategy;
@@ -80,13 +81,13 @@ class ShippingCalculator {
     
     public String getShippingSummary(ShippingData data) {
         double cost = calculateShipping(data);
-        var summary = new StringBuilder();
-        summary.append("Package Details:%n".formatted());
-        summary.append("  Weight: %.1f lbs%n".formatted(data.weight()));
-        summary.append("  Distance: %.1f miles%n".formatted(data.distance()));
-        summary.append("  Destination: %s%n".formatted(data.destination()));
-        summary.append("  Shipping Cost: $%.2f".formatted(cost));
-        return summary.toString();
+        return """
+               Package Details:
+                 Weight: %.1f lbs
+                 Distance: %.1f miles
+                 Destination: %s
+               Shipping Cost: $%.2f""".formatted(data.weight(), data.distance(),
+                data.destination(), cost);
     }
 }
 
