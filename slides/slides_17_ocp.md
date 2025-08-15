@@ -34,19 +34,38 @@ layout: section
 
 # The Open/Closed Principle
 
+---
+
+# What is OCP?
+
 <v-clicks>
 
-- The **O** in the **SOLID** acronym.
-- First described by Bertrand Meyer.
-- It states that software entities (classes, modules, functions, etc.) should be **open for extension, but closed for modification**.
-- This means you should be able to add new functionality to a class without changing its existing source code.
+- The **O** in the **SOLID** acronym
+- First described by Bertrand Meyer
+- Software entities should be **open for extension, but closed for modification**
 
 </v-clicks>
 
-<div class="mt-8">
+---
+
+# OCP Definition
+
 <v-click>
 
-**Key Idea:** Use abstraction (interfaces and abstract classes) to allow new functionality to be plugged in.
+**Open for Extension:** You can add new functionality
+
+</v-click>
+
+<v-click>
+
+**Closed for Modification:** You don't change existing, tested code
+
+</v-click>
+
+<div class="text-center mt-12">
+<v-click>
+
+## Key Insight: Use abstraction to allow new functionality to be plugged in
 
 </v-click>
 </div>
@@ -59,19 +78,23 @@ When you modify existing, working code, you risk:
 
 <v-clicks>
 
-- **Introducing bugs:** You might break something that was previously working correctly.
-- **Increased testing effort:** The entire class, including all existing functionality, needs to be re-tested.
-- **Cascading changes:** Changes in one class might force changes in other classes that depend on it.
+- **Introducing bugs** - Breaking something that was previously working
+- **Increased testing effort** - The entire class needs to be re-tested
+- **Cascading changes** - Forcing changes in dependent classes
 
 </v-clicks>
 
-By extending a class with new behavior instead of modifying it, you minimize these risks.
+<v-click>
+
+By extending instead of modifying, you minimize these risks.
+
+</v-click>
 
 ---
 
-# Example: A Class That Violates OCP
+# Example: OCP Violation
 
-Imagine a `ShapeAreaCalculator` that calculates the area of different shapes.
+A `ShapeAreaCalculator` with if-else chains:
 
 ```java
 // VIOLATION of OCP
@@ -85,21 +108,37 @@ public class ShapeAreaCalculator {
             Circle c = (Circle) shape;
             area = Math.PI * c.getRadius() * c.getRadius();
         }
-        // What happens when we need to add a Triangle?
+        // What happens when we need Triangle?
         // We have to MODIFY this method!
         return area;
     }
 }
 ```
-This class is **not closed for modification**. Every time you add a new shape, you have to come back and add another `if-else` block.
 
 ---
 
-# Refactoring to Follow OCP
+# The Problem
 
-We can refactor this using an interface. This moves the responsibility for calculating the area to the shapes themselves.
+<v-click>
 
-**1. Create a `Shape` Interface:**
+This class is **not closed for modification**.
+
+</v-click>
+
+<v-clicks>
+
+- Every new shape requires changing this method
+- Risk of breaking existing shape calculations
+- Entire class needs re-testing
+- Violates the Open/Closed Principle
+
+</v-clicks>
+
+---
+
+# Solution: Use Abstraction
+
+Create a `Shape` interface:
 
 ```java
 public interface Shape {
@@ -107,25 +146,31 @@ public interface Shape {
 }
 ```
 
-**2. Implement the Interface in Concrete Classes:**
+<v-click>
+
+Each shape implements the interface:
 
 ```java
 public class Rectangle implements Shape {
-    // ... fields and constructor ...
-    @Override public double getArea() { return width * height; }
+    @Override 
+    public double getArea() { 
+        return width * height; 
+    }
 }
 
 public class Circle implements Shape {
-    // ... fields and constructor ...
-    @Override public double getArea() { return Math.PI * radius * radius; }
+    @Override 
+    public double getArea() { 
+        return Math.PI * radius * radius; 
+    }
 }
 ```
 
+</v-click>
+
 ---
 
-# The OCP-Compliant Calculator
-
-Now the calculator is simple, elegant, and closed for modification.
+# OCP-Compliant Calculator
 
 ```java
 // OCP-Compliant
@@ -136,22 +181,259 @@ public class AreaCalculator {
 }
 ```
 
-To add a new `Triangle` shape, we simply create a `Triangle` class that implements the `Shape` interface. We **do not need to change the `AreaCalculator` at all**. It is **open for extension** (with new shapes) but **closed for modification**.
+<v-clicks>
+
+- Simple and elegant
+- Closed for modification
+- Open for extension with new shapes
+- Adding `Triangle` requires zero changes to this class
+
+</v-clicks>
 
 ---
 
-# Code Demo: `OpenClosedPrinciple.java`
+# Code Demo: Employee Payroll System
 
-Our project demonstrates this with a notification system.
+File: `solid-principles/src/main/java/OpenClosedPrinciple.java`
 
-**(Show `solid-principles/src/main/java/OpenClosedPrinciple.java`)**
+<v-click>
 
-- **The Violation:** The `BadNotificationService` has a method with `if-else` checks for `"email"`, `"sms"`, etc. To add a new notification type like `"push"`, you have to modify this class.
+This demonstrates OCP with an employee management system using the Template Method pattern.
 
-- **The Solution:**
-    - A `NotificationProvider` interface is created with a `send()` method.
-    - `EmailProvider`, `SmsProvider`, and `PushProvider` classes implement this interface.
-    - The new `GoodNotificationService` simply takes a `NotificationProvider` and calls `send()` on it, without knowing the concrete type.
+</v-click>
+
+---
+
+# The OCPEmployee Abstract Class
+
+```java
+abstract class OCPEmployee {
+    protected final int id;
+    protected final String name;
+    protected final double baseSalary;
+    
+    // Template method - uses abstract methods
+    public final double calculatePay() {
+        double pay = getBasePay();
+        pay += calculateBonus();
+        pay += calculateBenefits();
+        return pay;
+    }
+    
+    // Abstract methods - subclasses implement
+    protected abstract double getBasePay();
+    protected abstract double calculateBonus();
+    protected abstract double calculateBenefits();
+}
+```
+
+---
+
+# Concrete Implementation: FullTimeEmployee
+
+```java
+class FullTimeEmployee extends OCPEmployee {
+    private final int yearsOfService;
+    
+    @Override
+    protected double getBasePay() {
+        return baseSalary;
+    }
+    
+    @Override
+    protected double calculateBonus() {
+        return baseSalary * (yearsOfService * 0.01); // 1% per year
+    }
+    
+    @Override
+    protected double calculateBenefits() {
+        return baseSalary * 0.15; // 15% of salary
+    }
+}
+```
+
+---
+
+# Adding New Types: InternEmployee
+
+```java
+// NEW - added without modifying existing code
+class InternEmployee extends OCPEmployee {
+    private final boolean isPaid;
+    
+    @Override
+    protected double getBasePay() {
+        return isPaid ? baseSalary : 0;
+    }
+    
+    @Override
+    protected double calculateBonus() {
+        return isPaid ? baseSalary * 0.1 : 0;
+    }
+    
+    @Override
+    protected double calculateBenefits() {
+        return 1000; // Fixed benefit for experience
+    }
+}
+```
+
+<v-click>
+
+**No existing classes needed modification!**
+
+</v-click>
+
+---
+
+# PayrollCalculator: Closed for Modification
+
+```java
+class PayrollCalculator {
+    public double calculateTotalPayroll(List<OCPEmployee> employees) {
+        return employees.stream()
+                .mapToDouble(OCPEmployee::calculatePay)
+                .sum();
+    }
+    
+    public void generatePayrollReport(List<OCPEmployee> employees) {
+        for (OCPEmployee emp : employees) {
+            System.out.println(emp); // Polymorphism in action
+        }
+    }
+}
+```
+
+<v-click>
+
+**Works with any employee type - past, present, or future!**
+
+</v-click>
+
+---
+
+# Template Method Pattern: OCP in Action
+
+<div class="flex justify-center mt-8" style="transform: scale(1.4); margin-top: 3rem;">
+
+```mermaid
+classDiagram
+    class OCPEmployee {
+        <<abstract>>
+        #int id
+        #String name  
+        #double baseSalary
+        +calculatePay() double
+        +getBasePay()* double
+        +calculateBonus()* double
+        +calculateBenefits()* double
+        +getEmployeeType()* String
+    }
+    
+    class FullTimeEmployee {
+        -int yearsOfService
+        +getBasePay() double
+        +calculateBonus() double
+        +calculateBenefits() double
+        +getEmployeeType() String
+    }
+    
+    class PartTimeEmployee {
+        -int hoursPerWeek
+        +getBasePay() double
+        +calculateBonus() double
+        +calculateBenefits() double
+        +getEmployeeType() String
+    }
+    
+    class InternEmployee {
+        -String university
+        -boolean isPaid
+        +getBasePay() double
+        +calculateBonus() double
+        +calculateBenefits() double
+        +getEmployeeType() String
+    }
+    
+    class PayrollCalculator {
+        +calculateTotalPayroll(employees) double
+        +generatePayrollReport(employees) void
+        +getHighEarners(employees, threshold) List~OCPEmployee~
+    }
+    
+    OCPEmployee <|-- FullTimeEmployee
+    OCPEmployee <|-- PartTimeEmployee  
+    OCPEmployee <|-- InternEmployee
+    PayrollCalculator --> OCPEmployee : uses polymorphism
+    
+    note for OCPEmployee "Template Method:\ncalculatePay() calls\nabstract methods"
+    note for PayrollCalculator "Closed for modification\nOpen for extension"
+    
+    style OCPEmployee fill:#e3f2fd,stroke:#1976d2,color:#000
+    style PayrollCalculator fill:#e8f5e8,stroke:#4caf50,color:#000
+    style FullTimeEmployee fill:#fff3e0,stroke:#f57c00,color:#000
+    style PartTimeEmployee fill:#fff3e0,stroke:#f57c00,color:#000
+    style InternEmployee fill:#fff3e0,stroke:#f57c00,color:#000
+```
+
+</div>
+
+---
+
+# Benefits of OCP
+
+<v-clicks>
+
+- **Reduced risk** when adding new functionality
+- **Existing code remains stable** and doesn't need re-testing
+- **Easier to maintain** - changes are isolated to new classes
+- **More modular design** - clear separation of concerns
+- **Supports polymorphism** - code works with abstractions
+
+</v-clicks>
+
+---
+
+# Common Ways to Implement OCP
+
+<v-clicks>
+
+- **Strategy Pattern** - Interface with multiple implementations (our discount exercise)
+- **Template Method Pattern** - Abstract class with concrete subclasses (our employee demo)
+- **Factory Pattern** - Centralized object creation with extensible types
+- **Observer Pattern** - Event listeners that can be added without modification
+- **Command Pattern** - Encapsulated operations that can be extended
+- **Decorator Pattern** - Wrapping objects to add behavior
+
+</v-clicks>
+
+---
+
+# Modern Java OCP Approaches
+
+<v-clicks>
+
+- **Functional Interfaces** - Using `Function<T,R>`, `Predicate<T>`, etc.
+- **ServiceLoader** - Plugin architecture for runtime discovery
+- **Annotation-Based** - Framework-driven extension points (Spring, etc.)
+
+</v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+```java
+// Functional approach example
+Function<Order, BigDecimal> discount = order -> 
+    order.getTotal().multiply(BigDecimal.valueOf(0.10));
+
+public BigDecimal applyDiscount(Order order, Function<Order, BigDecimal> discountFn) {
+    return discountFn.apply(order); // Open for extension!
+}
+```
+
+</v-click>
+</div>
 
 ---
 layout: section
@@ -159,12 +441,24 @@ layout: section
 
 # Key Takeaways
 
+---
+
+# Remember These Points
+
 <v-clicks>
 
-- The Open/Closed Principle is a crucial guideline for creating robust and maintainable systems.
-- **Open for extension:** You can add new behaviors.
-- **Closed for modification:** You don't change existing, tested code.
-- Achieve this through abstractions like interfaces and abstract classes.
-- This pattern is the heart of creating pluggable, modular software.
+- **OCP is fundamental** for creating robust, maintainable systems
+- **Open for extension, closed for modification**
+- **Use abstraction** - interfaces and abstract classes enable this
+- **Template Method pattern** is a powerful way to implement OCP
+- **Polymorphism** allows existing code to work with new types
 
 </v-clicks>
+
+<div class="text-center mt-12">
+<v-click>
+
+## Questions about the Open/Closed Principle?
+
+</v-click>
+</div>

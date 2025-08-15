@@ -141,7 +141,7 @@ class ContractEmployee extends OCPEmployee {
     protected double calculateBonus() {
         // Contract completion bonus
         if (contractMonths >= 12) {
-            return baseSalary; // One month salary as bonus
+            return baseSalary; // One-month salary as bonus
         }
         return 0;
     }
@@ -238,6 +238,7 @@ class PayrollCalculator {
 }
 
 // Demo class showing Open/Closed Principle
+@SuppressWarnings({"WeakerAccess"})
 public class OpenClosedPrinciple {
     public static void main(String[] args) {
         System.out.println("=== Open/Closed Principle Demo ===");
@@ -251,7 +252,7 @@ public class OpenClosedPrinciple {
         );
         
         // PayrollCalculator works with all employee types without modification
-        PayrollCalculator calculator = new PayrollCalculator();
+        var calculator = new PayrollCalculator();
         calculator.generatePayrollReport(employees);
         
         // Demonstrate that we can add new functionality without modifying existing code
@@ -264,13 +265,14 @@ public class OpenClosedPrinciple {
         
         // This could be a new FreelancerEmployee, RemoteEmployee, etc.
         // The existing PayrollCalculator and other code continues to work
-        System.out.println("New employee types can be added without modifying:");
-        System.out.println("- PayrollCalculator class");
-        System.out.println("- Existing OCPEmployee subclasses");
-        System.out.println("- Client code that uses employees");
-        
-        System.out.println("\nThis demonstrates the Open/Closed Principle:");
-        System.out.println("- Open for extension (new employee types)");
-        System.out.printf("- Closed for modification (existing code unchanged)");
+        System.out.println("""
+                New employee types can be added without modifying:
+                - PayrollCalculator class
+                - Existing OCPEmployee subclasses
+                - Client code that uses employees
+                
+                This demonstrates the Open/Closed Principle:
+                - Open for extension (new employee types)
+                - Closed for modification (existing code unchanged)""");
     }
 }
