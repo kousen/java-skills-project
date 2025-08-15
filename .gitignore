@@ -306,7 +306,16 @@ replay_pid*
 # Project-specific ignore patterns
 # Add any project-specific patterns below this line
 
+# Generated teleprompter scripts
+script.txt
+
+# Planning and notes (uncomment if these are temporary)
+# topics.txt
+# notes.txt
+# planning.md
+
 # Claude Code settings
 .claude/settings.local.json
 /.serena/project.yml
 /.gemini-clipboard/
+/.serena/
