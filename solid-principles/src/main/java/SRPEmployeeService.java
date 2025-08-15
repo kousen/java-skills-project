@@ -2,9 +2,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 // SOLID Principles Demonstration
-// Single Responsibility Principle - Each class has one reason to change
+// Single Responsibility Principle - Each class has one responsibility
 
-// SRPEmployee entity - only responsible for employee data
+// SRPEmployee entity - only cares about employee data
 class SRPEmployee {
     private final int id;
     private String name;
@@ -64,25 +64,26 @@ interface NotificationService {
 }
 
 // SRP: Employee business logic service
+@SuppressWarnings({"WeakerAccess", "ClassEscapesDefinedScope"})
 public class SRPEmployeeService {
     private final EmployeeRepository repository;
     private final SalaryCalculator salaryCalculator;
     private final NotificationService notificationService;
-    
+
     // Dependency Injection Constructor
-    public SRPEmployeeService(EmployeeRepository repository, 
-                          SalaryCalculator salaryCalculator, 
-                          NotificationService notificationService) {
+    public SRPEmployeeService(EmployeeRepository repository,
+                              SalaryCalculator salaryCalculator,
+                              NotificationService notificationService) {
         this.repository = repository;
         this.salaryCalculator = salaryCalculator;
         this.notificationService = notificationService;
     }
-    
+
     public void hireEmployee(SRPEmployee employee) {
         repository.save(employee);
         notificationService.sendWelcomeEmail(employee);
     }
-    
+
     public void updateSalary(int employeeId, double newSalary) {
         SRPEmployee employee = repository.findById(employeeId);
         if (employee != null) {
@@ -92,7 +93,7 @@ public class SRPEmployeeService {
             notificationService.sendSalaryChangeNotification(employee, oldSalary, newSalary);
         }
     }
-    
+
     public void terminateEmployee(int employeeId) {
         SRPEmployee employee = repository.findById(employeeId);
         if (employee != null) {
@@ -100,7 +101,7 @@ public class SRPEmployeeService {
             notificationService.sendTerminationNotification(employee);
         }
     }
-    
+
     public double getEmployeeAnnualCost(int employeeId) {
         SRPEmployee employee = repository.findById(employeeId);
         if (employee != null) {
@@ -108,24 +109,25 @@ public class SRPEmployeeService {
         }
         return 0;
     }
-    
+
     public List<SRPEmployee> getEmployeesByDepartment(String department) {
         return repository.findByDepartment(department);
     }
-    
+
     public static void main(String[] args) {
-        System.out.println("=== Single Responsibility Principle Demo ===");
-        System.out.println("Each class has one reason to change:");
-        System.out.println("- SRPEmployee: Employee data only");
-        System.out.println("- EmployeeRepository: Data persistence only");
-        System.out.println("- SalaryCalculator: Salary calculations only");
-        System.out.println("- NotificationService: Notifications only");
-        System.out.println("- SRPEmployeeService: Business logic coordination only");
-        
-        System.out.println("\nBenefits:");
-        System.out.println("- Easy to test each component in isolation");
-        System.out.println("- Changes to notification logic don't affect salary calculations");
-        System.out.println("- Database changes don't affect business logic");
-        System.out.println("- New features can be added without modifying existing classes");
+        System.out.println("""
+                === Single Responsibility Principle Demo ===
+                Each class has one reason to change:
+                - SRPEmployee: Employee data only
+                - EmployeeRepository: Data persistence only
+                - SalaryCalculator: Salary calculations only
+                - NotificationService: Notifications only
+                - SRPEmployeeService: Business logic coordination only
+                
+                Benefits:
+                - Easy to test each component in isolation
+                - Changes to notification logic don't affect salary calculations
+                - Database changes don't affect business logic
+                - New features can be added without modifying existing classes""");
     }
 }

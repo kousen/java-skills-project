@@ -1,41 +1,45 @@
-Welcome back to our series on Java design patterns. Today, we're looking at the Factory pattern, but I want to show you how it's actually used in modern Java 2025 - not the artificial examples you might have seen before.
+Hello, and welcome to our series on the SOLID principles of object-oriented design. In this video, we're starting with the 'S', which stands for the Single Responsibility Principle, or SRP.
 
-The truth is, you use factory patterns every day in Java without even realizing it. Every time you call Optional.of(), List.of(), or Files.newBufferedReader(), you're using static factory methods. And when you're setting up HTTP clients or configuration parsers in real applications, you're often using factory classes.
+Just to give you context, SOLID is an acronym for five key design principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion. Today we're focusing on that first one - Single Responsibility - which is foundational to all the others.
 
-Let's explore both the theory and the practical, real-world applications you'll encounter in professional Java development.
+The Single Responsibility Principle states that a class should have one clear responsibility. This is one of the most fundamental concepts in writing clean, maintainable code. It doesn't mean your class can only have one method. It means that all the methods and properties in your class should be tightly focused on a single, primary purpose.
 
-In modern Java, we primarily see two types of factory patterns. First, and most common, are static factory methods. These are simple static methods that return instances - like Optional.of() or List.of(). They're everywhere in the JDK.
+The goal is to create classes that do one thing and do it well. Let's explore why this is so important.
 
-Second, we have factory classes for more complex scenarios. These are typically used when you need to configure objects with multiple dependencies, like HTTP clients, database connections, or configuration parsers.
+What happens when a class does too much? Imagine an Employee class that not only holds employee data, but also saves itself to a database, calculates payroll, and generates HR reports.
 
-The traditional Gang of Four factory method pattern with abstract creators and concrete creators? That's largely been replaced by builders for complex object creation. But the core idea - hiding object creation complexity - is still everywhere.
+(Show the SRP violation slide)
 
-Let's start with static factory methods, since these are what you'll use most often. Here are some you already know from the JDK.
+This class has at least four different responsibilities. A change to the database schema, a change in the tax calculation logic, or a change in the report format would all require modifying this single class. This makes the class bloated, hard to understand, and very fragile. A change in one area could easily break something completely unrelated.
 
-Notice the naming conventions: of, ofNullable, now. These are much clearer than constructor names, and they can return cached instances or even different subclasses.
+We call these 'god objects', and they are a nightmare to maintain and test.
 
-And here's one you probably use every day without thinking about it - SLF4J's LoggerFactory:
+The solution is to break this god object apart. We can refactor the code so that each responsibility is handled by its own, separate class. Here's a key insight: you often simplify difficult problems by adding classes. More classes with focused purposes are actually easier to understand than fewer classes doing too much.
 
-This is a perfect factory pattern - it hides which logging implementation you're using and returns the appropriate logger. We'll dive deep into this in Section 19 on logging.
+(Show the refactored slide)
 
-(Show design-patterns/src/main/java/ModernFactoryPatterns.java on screen)
+We would have an Employee class that only holds data. Then, an EmployeeRepository class would be responsible only for database operations. A PayrollService would handle all the salary calculations. And a ReportGenerator would be in charge of creating the reports.
 
-Now let's look at a real-world factory class. In modern applications, you often need different HTTP client configurations - basic clients, resilient clients with retries, authenticated clients. Here's how you'd use a factory for that.
+Now, each class is small, focused, and has only one clear responsibility. If the database logic needs to be updated, you only have to touch the EmployeeRepository. The other classes are completely unaffected. This is the power of SRP.
 
-Here's how you'd use these factories in real code. The client code is clean and expressive.
+Let's look at the solid-principles module in our project, which is designed to follow this principle.
 
-The beautiful part is that all these return the same HttpClient interface, so your code can work with any of them polymorphically. You can switch from a basic client to a resilient client just by changing one line.
+(Show solid-principles/src/main/java/SRPEmployeeService.java)
 
-Here's another real-world example - configuration parsers. You often need to parse JSON, YAML, or Properties files. Instead of hardcoding the parser type, you use a factory based on the file extension or content type.
+Here, we see the separation in action. We have an SRPEmployee class, which is just a simple data carrier. Its only job is to represent an employee. We have separate interfaces for different responsibilities: EmployeeRepository for persistence, SalaryCalculator for salary computations, and NotificationService for sending emails.
 
-Let's wrap up with the key takeaways for factory patterns in modern Java 2025.
+Then we have the SRPEmployeeService class. It acts as a coordinator that uses dependency injection to collaborate with these specialized services. It doesn't contain the low-level logic for database operations, salary calculations, or sending emails. Instead, it orchestrates these separate concerns. This is a great example of how to structure your code to follow SRP with modern dependency injection patterns.
 
-First, static factory methods are everywhere and should be your go-to approach. They're clearer than constructors, can return cached instances, and follow established naming conventions like of, from, valueOf, and getInstance.
+Now it's your turn to practice applying the Single Responsibility Principle. In the same solid-principles module, you'll find the SRPOrderProcessorExercise file. This gives you hands-on experience with a realistic scenario: refactoring an e-commerce order processing system.
 
-Second, factory classes are still valuable for some scenarios, though builders have largely taken over complex object creation. You'll see factories mainly in framework integration - like Spring's BeanFactory or SLF4J's LoggerFactory, which we'll cover in our logging section.
+The exercise starts with a monolithic order processor that handles everything - validation, payment processing, inventory management, notifications, and shipping calculations all in one place. Sound familiar? Your job is to break it apart using SRP, just like we did with the employee example.
 
-Third, the traditional Gang of Four factory method pattern with abstract creators? That's mostly been replaced by builders. But the core principle - hiding creation complexity from client code - is more relevant than ever.
+What makes this exercise valuable is that it uses a realistic business scenario you might encounter in the real world. You'll create separate classes for OrderValidator, PaymentProcessor, InventoryService, OrderNotificationService, and ShippingCalculator. Each class gets one clear responsibility, and you'll see how much simpler the code becomes.
 
-You're already using factory patterns every day in Java. Now you know the theory behind them and can apply the pattern intentionally in your own code.
+The exercise includes TODO comments that guide you through implementing each service, so you can focus on applying SRP principles rather than figuring out business logic. Give it a try - it really reinforces how adding focused classes actually simplifies complex problems.
 
-That's the modern Factory pattern in Java 2025. Thanks for watching!
+To wrap up, the Single Responsibility Principle is your first line of defense against complex, messy code. By ensuring every class has one clear responsibility, you create a system that is more modular, less coupled, and far easier to understand, test, and maintain.
+
+It's a simple idea, but applying it consistently will have a massive positive impact on the quality of your software.
+
+That's it for SRP. Join us next time as we tackle the 'O' in SOLID: the Open/Closed Principle.
