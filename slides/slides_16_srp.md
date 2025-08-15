@@ -99,6 +99,7 @@ When a class has multiple responsibilities:
 
 <v-clicks>
 
+- **Low Cohesion:** Methods and properties serve unrelated purposes instead of working together
 - **Multiple Dependencies:** The class depends on many unrelated systems (database, email, calculations)
 - **Difficult to Understand:** The class becomes a "god object" that's hard to read and maintain
 - **Fragile:** A change in one responsibility can break another, unrelated responsibility
@@ -443,6 +444,7 @@ Just **coordination** of specialized services.
 
 <v-clicks>
 
+- **High Cohesion:** Each class has methods that work together toward one clear purpose
 - **Easy to test** each component in isolation
 - **Changes to notification logic** don't affect salary calculations
 - **Database changes** don't affect business logic
@@ -465,8 +467,8 @@ layout: section
 
 - **SRP is fundamental** for writing clean, maintainable code
 - **A class should have one clear responsibility**
-- **Following SRP leads to** smaller, focused, testable classes
-- **It reduces coupling** and makes your system more resilient to change
+- **Following SRP achieves high cohesion** within your classes
+- **It leads to** smaller, focused, testable classes that are easier to maintain
 
 </v-clicks>
 

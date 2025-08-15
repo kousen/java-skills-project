@@ -19,7 +19,7 @@
 
 **(Show the SRP violation slide)**
 
-**Host:** "This class has at least four different responsibilities. A change to the database schema, a change in the tax calculation logic, or a change in the report format would all require modifying this single class. This makes the class bloated, hard to understand, and very fragile. A change in one area could easily break something completely unrelated."
+**Host:** "This class has at least four different responsibilities. This creates what we call low cohesion - the methods and properties serve unrelated purposes instead of working together toward a single goal. A change to the database schema, a change in the tax calculation logic, or a change in the report format would all require modifying this single class. This makes the class bloated, hard to understand, and very fragile. A change in one area could easily break something completely unrelated."
 
 **Host:** "We call these 'god objects', and they are a nightmare to maintain and test."
 
@@ -33,7 +33,7 @@
 
 **Host:** "We would have an `Employee` class that only holds data. Then, an `EmployeeRepository` class would be responsible only for database operations. A `PayrollService` would handle all the salary calculations. And a `ReportGenerator` would be in charge of creating the reports."
 
-**Host:** "Now, each class is small, focused, and has only one clear responsibility. If the database logic needs to be updated, you only have to touch the `EmployeeRepository`. The other classes are completely unaffected. This is the power of SRP."
+**Host:** "Now, each class is small, focused, and has only one clear responsibility. This achieves what we call high cohesion - all the methods and properties in each class work together toward the same purpose. If the database logic needs to be updated, you only have to touch the `EmployeeRepository`. The other classes are completely unaffected. This is the power of SRP."
 
 ---
 
@@ -63,7 +63,7 @@
 
 ## 6. Summary
 
-**Host:** "To wrap up, the Single Responsibility Principle is your first line of defense against complex, messy code. By ensuring every class has one clear responsibility, you create a system that is more modular, less coupled, and far easier to understand, test, and maintain."
+**Host:** "To wrap up, the Single Responsibility Principle is your first line of defense against complex, messy code. By ensuring every class has one clear responsibility, you achieve high cohesion within your classes and create a system that is more modular, easier to understand, test, and maintain."
 
 **Host:** "It's a simple idea, but applying it consistently will have a massive positive impact on the quality of your software."
 
