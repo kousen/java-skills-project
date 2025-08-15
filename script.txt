@@ -1,59 +1,41 @@
-[SCENE 1: INTRODUCTION]
+Welcome back to our series on Java design patterns. Today, we're looking at the Factory pattern, but I want to show you how it's actually used in modern Java 2025 - not the artificial examples you might have seen before.
 
-Hello, and welcome to our lesson on the Strategy design pattern—the perfect solution for complex business rules.
+The truth is, you use factory patterns every day in Java without even realizing it. Every time you call Optional.of(), List.of(), or Files.newBufferedReader(), you're using static factory methods. And when you're setting up HTTP clients or configuration parsers in real applications, you're often using factory classes.
 
-Strategy is a behavioral pattern, which means it focuses on how objects interact and distribute responsibilities. What makes it special is that it's designed specifically for handling complex business logic that changes frequently.
+Let's explore both the theory and the practical, real-world applications you'll encounter in professional Java development.
 
-Think about it—in real applications, business rules are constantly evolving. Tax calculations change, pricing strategies shift; payroll rules get updated. Without the Strategy pattern, you end up with giant if/else blocks that are nightmares to maintain. Strategy pattern isolates these complex rules, making them easy to modify, test, and extend.
+In modern Java, we primarily see two types of factory patterns. First, and most common, are static factory methods. These are simple static methods that return instances - like Optional.of() or List.of(). They're everywhere in the JDK.
 
-Today, we'll see how modern lambda expressions make implementing Strategy even more powerful for handling business complexity.
+Second, we have factory classes for more complex scenarios. These are typically used when you need to configure objects with multiple dependencies, like HTTP clients, database connections, or configuration parsers.
 
-[SCENE 2: THE COMPONENTS OF THE STRATEGY PATTERN]
+The traditional Gang of Four factory method pattern with abstract creators and concrete creators? That's largely been replaced by builders for complex object creation. But the core idea - hiding object creation complexity - is still everywhere.
 
-Before we look at implementation, let's understand why Strategy is perfect for business rules.
+Let's start with static factory methods, since these are what you'll use most often. Here are some you already know from the JDK.
 
-Imagine a payroll system. You have hourly workers with overtime calculations, salaried employees with bonuses and deductions, sales staff with commission tiers, and contractors with daily rates and weekend premiums. Without Strategy, you'd have a massive method full of if/else statements—and every time business rules change, you'd be modifying that same method.
+Notice the naming conventions: of, ofNullable, now. These are much clearer than constructor names, and they can return cached instances or even different subclasses.
 
-Strategy pattern lets you isolate each type of calculation. Each business rule becomes its own strategy. When rules change - and they will—you modify or replace just that one strategy without touching anything else.
+And here's one you probably use every day without thinking about it - SLF4J's LoggerFactory:
 
-The modern approach uses lambda expressions instead of traditional interfaces. We use Function<PayrollData, Double> - it takes all the payroll information and returns the calculated amount. This makes creating and modifying business rules incredibly simple.
+This is a perfect factory pattern - it hides which logging implementation you're using and returns the appropriate logger. We'll dive deep into this in Section 19 on logging.
 
-(Show the Mermaid diagrams comparing traditional vs modern approaches)
+(Show design-patterns/src/main/java/ModernFactoryPatterns.java on screen)
 
-Look at these diagrams. The traditional approach needs multiple concrete classes implementing an interface. The modern approach uses static lambda expressions in one class. Same flexibility, much less code. The lambda expressions literally replace all those concrete strategy classes.
+Now let's look at a real-world factory class. In modern applications, you often need different HTTP client configurations - basic clients, resilient clients with retries, authenticated clients. Here's how you'd use a factory for that.
 
-[SCENE 3: CODE DEMO - MODERN LAMBDA-BASED PAYROLL SYSTEM]
+Here's how you'd use these factories in real code. The client code is clean and expressive.
 
-Let's see this in action with a real payroll system that has to handle complex, changing business rules.
+The beautiful part is that all these return the same HttpClient interface, so your code can work with any of them polymorphically. You can switch from a basic client to a resilient client just by changing one line.
 
-(Show design-patterns/src/main/java/SalaryCalculator.java on screen)
+Here's another real-world example - configuration parsers. You often need to parse JSON, YAML, or Properties files. Instead of hardcoding the parser type, you use a factory based on the file extension or content type.
 
-First, we create a data container using a record. This holds all the information any strategy might need.
+Let's wrap up with the key takeaways for factory patterns in modern Java 2025.
 
-Next, instead of creating separate classes, we define our strategies as lambda expressions. Look how clean this is:
+First, static factory methods are everywhere and should be your go-to approach. They're clearer than constructors, can return cached instances, and follow established naming conventions like of, from, valueOf, and getInstance.
 
-[SCENE 4: THE MODERN CONTEXT CLASS]
+Second, factory classes are still valuable for some scenarios, though builders have largely taken over complex object creation. You'll see factories mainly in framework integration - like Spring's BeanFactory or SLF4J's LoggerFactory, which we'll cover in our logging section.
 
-Our modern Context class is much simpler. Instead of a custom interface, we use the standard Function interface.
+Third, the traditional Gang of Four factory method pattern with abstract creators? That's mostly been replaced by builders. But the core principle - hiding creation complexity from client code - is more relevant than ever.
 
-The PayrollProcessor still doesn't know the calculation details - it just applies whatever function it's been given. But now we can use any lambda expression or method reference as a strategy.
+You're already using factory patterns every day in Java. Now you know the theory behind them and can apply the pattern intentionally in your own code.
 
-[SCENE 5: LAMBDA STRATEGY EXAMPLES IN ACTION]
-
-Now here's where the lambda approach really shines. We can use predefined strategies, create custom lambdas inline, or even use method references.
-
-We can even use strategy maps for dynamic selection:
-
-And here's where Strategy really shines for business rules—we can use the customStrategy factory method for complex scenarios like our contractor with daily rates and weekend bonuses. When business requirements get complicated, you can create custom strategies on the fly without modifying existing code. This is exactly the kind of flexibility businesses need when rules evolve.
-
-[SCENE 6: STRATEGY PATTERN - YOUR BUSINESS RULES SOLUTION]
-
-The Strategy pattern is your go-to solution when business logic gets complex. It gives you clean separation between your core application logic and the business rules that change frequently.
-
-Look for Strategy opportunities whenever you see long if/else chains, multiple calculation methods, or business rules that vary by context. Classic examples include pricing strategies, tax calculations, shipping costs, and discount rules.
-
-The business benefits are huge: quick rule changes without touching core code, easy testing of individual rules, better audit compliance, and the ability to A/B test different rule variants.
-
-Remember - Strategy is a behavioral pattern designed specifically for this kind of complexity. When business rules start getting messy, don't fight it with more if/else statements. Embrace the Strategy pattern and keep your code clean and maintainable.
-
-Thanks for watching, and I'll see you in the next video.
+That's the modern Factory pattern in Java 2025. Thanks for watching!

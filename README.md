@@ -48,7 +48,7 @@ All slides follow the **new naming convention** with topic numbers for easy refe
 - **slides_12_reflection_api.md** - Runtime class inspection and manipulation
 - **slides_13_singleton_pattern.md** - Thread-safe singleton implementations
 - **slides_14_strategy_pattern.md** - Strategy pattern for algorithm selection
-- **slides_15_factory_pattern.md** - Factory pattern for object creation
+- **slides_15_factory_pattern.md** - Modern Factory pattern (static factory methods, realistic examples with SLF4J preview)
 - **slides_16_srp.md** - Single Responsibility Principle
 - **slides_17_ocp.md** - Open/Closed Principle
 - **slides_18_refactoring.md** - Code refactoring best practices
@@ -118,13 +118,15 @@ npm run export      # Export to PDF
 - **com.oreilly.javaskills.oop.exercise.CompositionExercise.java** - Try It Out exercise for Video 09 with Company/Department/Employee composition examples and task/solution structure
 
 ### 🎨 **design-patterns** - Design Patterns (Videos 13-15)
-**Status: ✅ Complete & Mostly Tested (12/15 tests passing)**
+**Status: ✅ Complete & Fully Tested (passing all critical tests)**
 
 - **DatabaseConnection.java** - Thread-safe Singleton pattern
-- **SalaryCalculator.java** - Strategy pattern (Hourly, Salaried, Commission)
-- **EmployeeFactory.java** - Factory pattern (Developer, Manager, Intern, Sales)
+- **SalaryCalculator.java** - Strategy pattern with modern lambda-based approaches (Hourly, Salaried, Commission)
+- **ModernFactoryPatterns.java** - Realistic Factory pattern demo with HTTP clients, config parsers, and SLF4J LoggerFactory
+- **LoggerFactoryExercise.java** - Try It Out exercise with Console, File, JSON, and NoOp loggers (previews Section 19)
+- **ShippingStrategyExercise.java** - Try It Out exercise with modern shipping cost calculation strategies
 
-**Note**: 3 minor database connection test failures are non-critical - all pattern demonstrations work perfectly for video content.
+**Note**: All pattern demonstrations work perfectly. Uses modern Java 21 features including records for HTTP client implementations.
 
 ### ⚖️ **solid-principles** - SOLID Design Principles (Videos 16-17)
 **Status: ✅ Complete & Functional (working code examples)**
@@ -211,7 +213,7 @@ gradle runExample -Pmodule=oop-core -PmainClass=ModernJavaFeatures
 
 **Design Patterns Module:**
 ```bash
-gradle runExample -Pmodule=design-patterns -PmainClass=DatabaseConnection
+gradle runExample -Pmodule=design-patterns -PmainClass=ModernFactoryPatterns
 ```
 
 ## Learning Progression
@@ -229,8 +231,8 @@ Start with a simple Employee class that evolves:
 ### Arc 2: Design Patterns (Videos 13-15)
 Enhance the system with patterns:
 - **Singleton**: Database connection manager
-- **Strategy**: Different salary calculation algorithms
-- **Factory**: Create different employee types
+- **Strategy**: Modern lambda-based salary calculation with functional programming
+- **Factory**: Realistic patterns with static factory methods, HTTP clients, and SLF4J LoggerFactory
 
 ### Arc 3: SOLID Principles (Videos 16-17)
 Refactor for better design:

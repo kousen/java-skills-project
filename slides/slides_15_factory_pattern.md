@@ -2,11 +2,11 @@
 layout: cover
 --- 
 
-# The Factory Pattern
+# The Factory Pattern in Modern Java
 
 <div class="pt-12">
   <span class="px-2 py-1 rounded">
-    Goal 15: Use the Factory pattern to create objects without specifying their concrete classes.
+    Goal 15: Master factory patterns as they're actually used in Java 2025 - from Optional.of() to HTTP client factories.
   </span>
 </div>
 
@@ -32,157 +32,203 @@ Kousen IT, Inc.
 layout: section
 ---
 
-# What is the Factory Pattern?
+# Factory Patterns in Modern Java 2025
 
 <v-clicks>
 
-- A **creational** design pattern.
-- It provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created.
-- It decouples the client code (which needs an object) from the code that actually creates the object.
-- There are two main variations: **Factory Method** and **Abstract Factory**.
+- **Static Factory Methods**: The most common approach (Optional.of(), List.of(), Files.newBufferedReader())
+- **Factory Classes**: For complex scenarios (HTTP clients, database connections, configuration parsers)
+- **Registry-based Factories**: For plugin architectures and runtime strategy selection
 
 </v-clicks>
 
 <div class="mt-8">
 <v-click>
 
-**Key Idea:** Defer instantiation to subclasses.
+**Key Insight:** You already use factory patterns every day in Java!
 
 </v-click>
 </div>
 
 ---
 
-# The Factory Method Pattern
+# Static Factory Methods (Most Common)
 
-This is the most common form of the pattern.
+Static methods that return instances of a class.
 
 <v-clicks>
 
-1.  **The `Product` Interface:** Defines the interface for the objects the factory method creates.
+1.  **JDK Examples:** `Optional.of()`, `List.of()`, `LocalDateTime.now()`
 
-2.  **Concrete `Product` Classes:** Implement the `Product` interface.
+2.  **Clear Naming:** Better than constructors - `valueOf()`, `of()`, `from()`, `getInstance()`
 
-3.  **The `Creator` (Factory) Class:** Declares the `factoryMethod()` that returns a `Product` object. It can also have a default implementation.
+3.  **Flexibility:** Can return cached instances, subclasses, or null
 
-4.  **Concrete `Creator` Classes:** Override the `factoryMethod()` to return an instance of a specific `ConcreteProduct`.
+4.  **Modern Preference:** Preferred over traditional factory method pattern
 
 </v-clicks>
 
 ---
 
-# UML Diagram (Factory Method)
+# JDK Static Factory Methods
 
-```mermaid
-classDiagram
-    class Creator {
-        <<abstract>>
-        + factoryMethod(): Product
-        + someOperation()
-    }
-    class ConcreteCreator {
-        + factoryMethod(): Product
-    }
-    class Product {
-        <<interface>>
-    }
-    class ConcreteProduct {
-        
-    }
+Examples you use every day:
 
-    Creator <|-- ConcreteCreator
-    Creator ..> Product : creates
-    ConcreteCreator ..> ConcreteProduct : creates
-    Product <|.. ConcreteProduct
+```java
+// Optional factories
+var present = Optional.of("Hello");
+var empty = Optional.ofNullable(null);
+
+// Collection factories  
+var list = List.of("Java", "Python", "JavaScript");
+var set = Set.of("Spring", "React", "Docker");
+var map = Map.of("language", "Java", "version", "21");
+
+// Logger factory - you use this every day!
+Logger logger = LoggerFactory.getLogger(MyClass.class);
+Logger namedLogger = LoggerFactory.getLogger("com.example.service");
+
+// Date/Time factories
+var now = LocalDateTime.now();
+var date = LocalDateTime.of(2025, 1, 1, 12, 0);
+```
+
+<v-click>
+
+**LoggerFactory.getLogger()** is a perfect Factory pattern - previews Section 19!
+
+</v-click>
+
+---
+
+# Real-World Example: HTTP Client Factory
+
+Actual factory pattern used in modern applications.
+
+**(Show `design-patterns/src/main/java/ModernFactoryPatterns.java`)**
+
+**Scenario:** Different HTTP client configurations for different needs.
+
+```java
+class HttpClientFactory {
+    
+    // Static factory methods for different client types
+    public static HttpClient createBasicClient(Duration timeout, String userAgent) {
+        var config = new HttpClientConfig(timeout, userAgent);
+        return new BasicHttpClient(config);  // Record implementation
+    }
+    
+    public static HttpClient createResilientClient(Duration timeout, String userAgent) {
+        var config = new HttpClientConfig(timeout, connectionTimeout, true, 
+                       userAgent, headers, true, true);  // retry + circuit breaker
+        return new ResilientHttpClient(config);
+    }
+    
+    // Notice: Uses records for the HTTP client implementations!
+}
 ```
 
 ---
 
-# Code Demo: `EmployeeFactory.java`
+# Configuration Parser Factory
 
-Let's look at a system for creating different types of `Employee` objects.
-
-**(Show `design-patterns/src/main/java/EmployeeFactory.java`)**
-
-**1. The `Product` (and Concrete Products):**
-`Employee` is the base class, with subclasses like `Developer`, `Manager`, etc.
-
-**2. The `Creator` (Factory):**
-`EmployeeFactory` is an abstract class with a `factoryMethod` called `createEmployee`.
+Another real-world example: parsing different config formats.
 
 ```java
-// The abstract Creator
-public abstract class EmployeeFactory {
-    // The factory method
-    public abstract Employee createEmployee(String name, int id, double salary);
-
-    // A static factory to get the right factory
-    public static EmployeeFactory getFactory(EmployeeType type) {
-        // ... returns a DeveloperFactory, ManagerFactory, etc.
+public class ConfigParserFactory {
+    
+    // Static factory based on file extension
+    public static ConfigParser forFile(String filename) {
+        if (filename.endsWith(".json")) {
+            return new JsonConfigParser();
+        } else if (filename.endsWith(".yml")) {
+            return new YamlConfigParser();
+        } else if (filename.endsWith(".properties")) {
+            return new PropertiesConfigParser();
+        }
+        throw new IllegalArgumentException("Unsupported format: " + filename);
+    }
+    
+    // Static factory based on content type
+    public static ConfigParser forContentType(String contentType) {
+        return switch (contentType.toLowerCase()) {
+            case "application/json" -> new JsonConfigParser();
+            case "text/yaml" -> new YamlConfigParser();
+            case "text/plain" -> new PropertiesConfigParser();
+            default -> throw new IllegalArgumentException("Unsupported: " + contentType);
+        };
     }
 }
 ```
 
 ---
 
-# Code Demo: Concrete Creators
+# Using Modern Factories
 
-**3. The Concrete `Creator` Classes:**
-
-Each subclass of `EmployeeFactory` overrides `createEmployee` to return a specific type of employee.
+Clean, expressive client code:
 
 ```java
-// A Concrete Creator
-class DeveloperFactory extends EmployeeFactory {
-    @Override
-    public Employee createEmployee(String name, int id, double salary) {
-        return new Developer(name, id, salary);
-    }
-}
+// HTTP Client factories in action
+var basicClient = HttpClientFactory.createBasicClient(
+    Duration.ofSeconds(30), "MyApp/1.0"
+);
 
-// Another Concrete Creator
-class ManagerFactory extends EmployeeFactory {
-    @Override
-    public Employee createEmployee(String name, int id, double salary) {
-        return new Manager(name, id, salary);
-    }
-}
+var resilientClient = HttpClientFactory.createResilientClient(
+    Duration.ofSeconds(60), "MyApp/1.0 (Resilient)"
+);
+
+var authClient = HttpClientFactory.createAuthenticatedClient(
+    Duration.ofSeconds(45), "MyApp/1.0", "bearer-token"
+);
+
+// All return HttpClient interface - polymorphic usage
+HttpClient client = getClientForEnvironment(); // Could be any type
+client.get("https://api.example.com/users");
 ```
 
----
-
-# Using the Factory
-
-The client code asks for a specific factory, then uses it to create employees without knowing the concrete employee class.
+<v-click>
 
 ```java
-// From FactoryPatternDemo.java
-
-// 1. Get the appropriate factory
-EmployeeFactory developerFactory = EmployeeFactory.getFactory(EmployeeType.DEVELOPER);
-EmployeeFactory managerFactory = EmployeeFactory.getFactory(EmployeeType.MANAGER);
-
-// 2. Use the factory to create an object
-Employee developer = developerFactory.createEmployee("Ada Lovelace", 1, 120000);
-Employee manager = managerFactory.createEmployee("Grace Hopper", 2, 150000);
-
-// The client code doesn't know it got a `Developer` or `Manager` object.
-// It only knows it got an `Employee`.
-System.out.println(developer.getDetails()); // Works polymorphically
-System.out.println(manager.getDetails());
+// Config parser factories
+var jsonParser = ConfigParserFactory.forFile("application.json");
+var yamlParser = ConfigParserFactory.forFile("config.yml");
+var propsParser = ConfigParserFactory.forContentType("text/plain");
 ```
+
+</v-click>
 
 ---
 layout: section
 ---
 
-# Key Takeaways
+# Modern Factory Pattern Guidelines
 
 <v-clicks>
 
-- The Factory Method pattern separates object creation from object use.
-- It allows you to introduce new types of products without changing the client code, adhering to the Open/Closed Principle.
-- The client code works with the `Product` interface and the `Creator` class, not the concrete implementations.
-- This leads to a more flexible and less coupled system.
+- **Prefer static factory methods** over traditional factory classes for most scenarios
+- **Use factory classes** mainly for framework integration (builders handle complex creation)
+- **Traditional factory method pattern** has largely been replaced by builders
+- **Registry-based factories** work well for plugin architectures
 
 </v-clicks>
+
+---
+
+# Factory Pattern Benefits (2025)
+
+<v-clicks>
+
+- **Static Factory Methods**: Clear naming, caching, return subclasses
+- **Factory Classes**: Framework integration (Spring BeanFactory, SLF4J LoggerFactory)
+- **Framework Integration**: Spring BeanFactory, Jackson ObjectMapper creation
+- **Runtime Selection**: Content-type based parsers, environment-specific clients
+
+</v-clicks>
+
+<div class="mt-8">
+<v-click>
+
+**Bottom Line:** Factory patterns are everywhere in modern Java - now you can use them intentionally!
+
+</v-click>
+</div>

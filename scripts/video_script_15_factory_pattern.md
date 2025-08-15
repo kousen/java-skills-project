@@ -1,80 +1,122 @@
 
-# Video Script: The Factory Design Pattern
+# Video Script: The Factory Design Pattern in Modern Java
 
 ## 1. Introduction
 
-**Host:** "Welcome back to our series on Java design patterns. Today, we're looking at another creational pattern, and it's one of the most widely used: the Factory pattern."
+**Host:** "Welcome back to our series on Java design patterns. Today, we're looking at the Factory pattern, but I want to show you how it's actually used in modern Java 2025 - not the artificial examples you might have seen before."
 
-**Host:** "The main idea behind the Factory pattern is to provide a way to create objects without specifying the exact class of the object that will be created. It lets a superclass provide an interface for creating objects, but allows subclasses to decide which actual class to instantiate. This decouples your client code from the concrete classes it needs to create, which is a huge win for flexibility and maintenance."
+**Host:** "The truth is, you use factory patterns every day in Java without even realizing it. Every time you call `Optional.of()`, `List.of()`, or `Files.newBufferedReader()`, you're using static factory methods. And when you're setting up HTTP clients or configuration parsers in real applications, you're often using factory classes."
 
-**Host:** "We're going to focus on the most common variant, the Factory Method pattern."
-
----
-
-## 2. The Components of the Factory Method Pattern
-
-**Host:** "The Factory Method pattern has a few key players."
-
-**Host:** "First, you have the **Product**. This is an interface or abstract class that defines the object the factory will create. Then you have **Concrete Products**, which are the actual classes that implement the Product interface."
-
-**Host:** "Next, you have the **Creator**. This is an abstract class that declares the 'factory method'. This method is what returns an object of the Product type. The Creator class can have a default implementation of the factory method."
-
-**Host:** "Finally, you have the **Concrete Creators**. These classes subclass the Creator and override the factory method to return a specific Concrete Product. This is where the decision of which class to instantiate is made."
+**Host:** "Let's explore both the theory and the practical, real-world applications you'll encounter in professional Java development."
 
 ---
 
-## 3. Code Demo: `EmployeeFactory.java`
+## 2. Factory Patterns in Modern Java
 
-**Host:** "Let's see how this works with our `EmployeeFactory` example. We want to create different types of employees—Developers, Managers, Interns, and so on—without our client code needing to know the details of each class."
+**Host:** "In modern Java, we primarily see two types of factory patterns. First, and most common, are **static factory methods**. These are simple static methods that return instances - like `Optional.of()` or `List.of()`. They're everywhere in the JDK."
 
-**(Show `design-patterns/src/main/java/EmployeeFactory.java` on screen)**
+**Host:** "Second, we have **factory classes** for more complex scenarios. These are typically used when you need to configure objects with multiple dependencies, like HTTP clients, database connections, or configuration parsers."
 
-**Host:** "Our `Employee` class is the base for our products. Then we have our abstract `EmployeeFactory` class, which is the Creator. It declares an abstract `createEmployee` method—this is our factory method."
+**Host:** "The traditional Gang of Four factory method pattern with abstract creators and concrete creators? That's largely been replaced by builders for complex object creation. But the core idea - hiding object creation complexity - is still everywhere."
+
+---
+
+## 3. Code Demo: Static Factory Methods
+
+**Host:** "Let's start with static factory methods, since these are what you'll use most often. Here are some you already know from the JDK."
 
 ```java
-// The abstract Creator
-public abstract class EmployeeFactory {
-    // The factory method
-    public abstract Employee createEmployee(String name, int id, double salary);
+// JDK Static Factory Methods - you use these every day!
+var presentValue = Optional.of("Hello World");
+var emptyValue = Optional.ofNullable(null);
+
+var list = List.of("Java", "Python", "JavaScript");
+var set = Set.of("Spring", "React", "Docker");
+var map = Map.of("language", "Java", "version", "21");
+
+var now = LocalDateTime.now();
+var specificDate = LocalDateTime.of(2025, 1, 1, 12, 0);
+```
+
+**Host:** "Notice the naming conventions: `of`, `ofNullable`, `now`. These are much clearer than constructor names, and they can return cached instances or even different subclasses."
+
+**Host:** "And here's one you probably use every day without thinking about it - SLF4J's LoggerFactory:"
+
+```java
+Logger logger = LoggerFactory.getLogger(MyClass.class);
+Logger namedLogger = LoggerFactory.getLogger("com.example.service");
+```
+
+**Host:** "This is a perfect factory pattern - it hides which logging implementation you're using and returns the appropriate logger. We'll dive deep into this in Section 19 on logging."
+
+## 4. Code Demo: HTTP Client Factory
+
+**(Show `design-patterns/src/main/java/ModernFactoryPatterns.java` on screen)**
+
+**Host:** "Now let's look at a real-world factory class. In modern applications, you often need different HTTP client configurations - basic clients, resilient clients with retries, authenticated clients. Here's how you'd use a factory for that."
+
+```java
+// Static factory methods for different client types - notice the SLF4J LoggerFactory calls!
+public static HttpClient createBasicClient(Duration timeout, String userAgent) {
+    var config = new HttpClientConfig(timeout, userAgent);
+    return new BasicHttpClient(config);  // Record with config
+}
+
+public static HttpClient createResilientClient(Duration timeout, String userAgent) {
+    var config = new HttpClientConfig(timeout, connectionTimeout, true, userAgent, 
+                    headers, true, true);  // retry + circuit breaker enabled
+    return new ResilientHttpClient(config);
 }
 ```
 
-**Host:** "Then we have our Concrete Creators, like `DeveloperFactory` and `ManagerFactory`. Each one extends `EmployeeFactory` and provides its own implementation of the `createEmployee` method, returning a `Developer` or a `Manager` object."
+---
+
+## 5. Using the Factories
+
+**Host:** "Here's how you'd use these factories in real code. The client code is clean and expressive."
 
 ```java
-// A Concrete Creator
-class DeveloperFactory extends EmployeeFactory {
-    @Override
-    public Employee createEmployee(String name, int id, double salary) {
-        return new Developer(name, id, salary);
-    }
-}
+// Create different HTTP clients based on needs
+var basicClient = HttpClientFactory.createBasicClient(
+    Duration.ofSeconds(30), "MyApp/1.0"
+);
+
+var resilientClient = HttpClientFactory.createResilientClient(
+    Duration.ofSeconds(60), "MyApp/1.0 (Resilient)"
+);
+
+var authClient = HttpClientFactory.createAuthenticatedClient(
+    Duration.ofSeconds(45), "MyApp/1.0", "bearer-token-here"
+);
+```
+
+**Host:** "The beautiful part is that all these return the same `HttpClient` interface, so your code can work with any of them polymorphically. You can switch from a basic client to a resilient client just by changing one line."
+
+## 6. Configuration Parser Factory
+
+**Host:** "Here's another real-world example - configuration parsers. You often need to parse JSON, YAML, or Properties files. Instead of hardcoding the parser type, you use a factory based on the file extension or content type."
+
+```java
+// Factory methods based on filename
+var jsonParser = ConfigParserFactory.forFile("application.json");
+var yamlParser = ConfigParserFactory.forFile("config.yml");
+
+// Or based on content type
+var parser = ConfigParserFactory.forContentType("application/json");
 ```
 
 ---
 
-## 4. Using the Factory
+## 7. Summary
 
-**Host:** "So how does the client code use this? It's very clean. The client doesn't instantiate the concrete classes directly. Instead, it gets a factory and asks *it* to create the object."
+**Host:** "Let's wrap up with the key takeaways for factory patterns in modern Java 2025."
 
-**Host:** "In our example, we even have a static helper method on the `EmployeeFactory` to give us the right factory based on an `EmployeeType` enum."
+**Host:** "First, **static factory methods** are everywhere and should be your go-to approach. They're clearer than constructors, can return cached instances, and follow established naming conventions like `of`, `from`, `valueOf`, and `getInstance`."
 
-```java
-// 1. Get the factory you want
-EmployeeFactory developerFactory = EmployeeFactory.getFactory(EmployeeType.DEVELOPER);
+**Host:** "Second, **factory classes** are still valuable for some scenarios, though builders have largely taken over complex object creation. You'll see factories mainly in framework integration - like Spring's BeanFactory or SLF4J's LoggerFactory, which we'll cover in our logging section."
 
-// 2. Use the factory to create the employee
-Employee developer = developerFactory.createEmployee("Ada Lovelace", 1, 120000);
-```
+**Host:** "Third, the traditional Gang of Four factory method pattern with abstract creators? That's mostly been replaced by builders. But the core principle - hiding creation complexity from client code - is more relevant than ever."
 
-**Host:** "The beautiful part is that the `developer` variable is of type `Employee`. The client code doesn't know or care that it got back a `Developer` object specifically. It just knows it has an `Employee` and it can call methods on it polymorphically. This means we can add new employee types, like `DataScientist`, by just adding a new `DataScientist` class and a `DataScientistFactory`, without ever touching the client code."
+**Host:** "You're already using factory patterns every day in Java. Now you know the theory behind them and can apply the pattern intentionally in your own code."
 
----
-
-## 5. Summary
-
-**Host:** "To wrap up, the Factory Method pattern is a cornerstone of good object-oriented design. It decouples your client code from the concrete implementation of the objects it needs to create. This makes your system more flexible, more maintainable, and it adheres to the Open/Closed Principle: you can extend the system with new types without modifying existing code."
-
-**Host:** "It's a powerful pattern for managing object creation in complex systems."
-
-**Host:** "That's all for the Factory pattern. Thanks for watching!"
+**Host:** "That's the modern Factory pattern in Java 2025. Thanks for watching!"
