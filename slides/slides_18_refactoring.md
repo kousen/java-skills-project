@@ -32,21 +32,74 @@ Kousen IT, Inc.
 layout: section
 ---
 
+# Refactoring Legacy Code
+
+---
+
 # What is Refactoring?
+
+<v-click>
+
+A disciplined technique for restructuring existing computer code without changing its external behavior.
+
+</v-click>
 
 <v-clicks>
 
-- A disciplined technique for restructuring existing computer code—changing the factoring—without changing its external behavior.
-- The goal is to improve non-functional attributes of the software.
-- **Improves:** Readability, maintainability, extensibility, performance.
-- **Reduces:** Complexity, duplication, technical debt.
+- **Improves:** Readability, maintainability, extensibility, performance
+- **Reduces:** Complexity, duplication, technical debt
 
 </v-clicks>
 
-<div class="mt-8">
+---
+
+# What is Technical Debt?
+
+<div class="text-center mt-16">
 <v-click>
 
-**Key Idea:** Make a series of small, behavior-preserving changes. Each change should make the code "a little bit better".
+## The accumulation of problems that make code harder to work with over time
+
+</v-click>
+</div>
+
+<v-clicks>
+
+- Like financial debt - **if ignored, it compounds**
+- Makes every change more difficult and risky
+- **Refactoring is how we pay down technical debt**
+
+</v-clicks>
+
+---
+
+# The Golden Rule of Refactoring
+
+<div class="text-center mt-16">
+<v-click>
+
+## **Never refactor without a good test suite in place**
+
+</v-click>
+</div>
+
+---
+
+# Why Tests Are Critical
+
+<v-clicks>
+
+- **Tests give you confidence** that refactoring preserves behavior
+- **Tests enable fearless refactoring** - make changes without breaking functionality  
+- **Tests act as a safety net** - catch regressions immediately
+- **Without tests, refactoring is just changing code** - potentially dangerous
+
+</v-clicks>
+
+<div class="text-center mt-8">
+<v-click>
+
+### Tests give you the **freedom** to refactor safely
 
 </v-click>
 </div>
@@ -57,96 +110,376 @@ layout: section
 
 <v-clicks>
 
-- **The Rule of Three:** The first time you do something, you just do it. The second time, you cringe but do the same thing. The third time you do something similar, you refactor.
-- **Before adding a new feature:** Clean up the existing code to make it easier to add the new functionality.
-- **During a code review:** Identify "code smells"—symptoms of deeper problems in the code.
-- **When fixing a bug:** The bug may be a symptom of a design flaw that refactoring can address.
+- **The Rule of Three** - First time you do it, second time you cringe, third time you refactor
+- **Before adding a new feature** - Clean up existing code first
+- **During a code review** - Identify "code smells"
+- **When fixing a bug** - Bug may be symptom of design flaw
 
 </v-clicks>
 
 ---
 
-# Code Smells: Signs You Need to Refactor
+# Code Smells: Warning Signs
 
-- **God Class:** A class that does too much (violates SRP).
-- **Duplicated Code:** The same code block appears in multiple places (violates DRY - Don't Repeat Yourself).
-- **Long Method:** A method that is too long and tries to do too many things.
-- **Complex Conditional Logic:** Deeply nested `if-else` statements.
-- **Tight Coupling:** Changes in one class force changes in many other classes.
-- **Primitive Obsession:** Using primitive data types to represent complex concepts (e.g., using a `String` for a phone number).
+<v-clicks>
+
+- **God Class** - A class that does too much (violates SRP)
+- **Duplicated Code** - Same code block appears in multiple places (violates DRY)
+- **Long Method** - Method that tries to do too many things
+- **Complex Conditional Logic** - Deeply nested if-else statements
+
+</v-clicks>
 
 ---
 
-# Code Demo: `LegacyOrderProcessor` (The "Before")
+# More Code Smells
 
-Let's look at a legacy class with several code smells.
+<v-clicks>
 
-**(Show `refactoring/src/main/java/LegacyCode.java` - the `LegacyOrderProcessor` class)**
+- **Tight Coupling** - Changes in one class force changes in many others
+- **Primitive Obsession** - Using primitive types for complex concepts
+- **Large Class** - Class with too many fields and methods
+- **Feature Envy** - Method uses another class more than its own
+
+</v-clicks>
+
+---
+
+# Code Demo: Test-Driven Refactoring
+
+Files: `solid-principles/src/main/java/LegacyCodeExample.java`  
+Tests: `solid-principles/src/test/java/LegacyCodeExampleTest.java`
+
+<v-click>
+
+Our demo **practices what we preach** - comprehensive tests enable safe refactoring.
+
+</v-click>
+
+---
+
+# Legacy Code: The God Class
 
 ```java
 class LegacyOrderProcessor {
-    // ...
     public void processOrders() {
-        // Three separate loops to process orders!
+        // First loop: Process orders
         for (Order order : orders) { /* ... */ }
+        
+        // Second loop: Send notifications  
         for (Order order : orders) { /* ... */ }
+        
+        // Third loop: Update inventory
         for (Order order : orders) { /* ... */ }
-    }
-
-    public void cancelOrder(int id) {
-        // Duplicated logic to find an order
-        Order orderToCancel = null;
-        for (Order order : orders) { /* ... */ }
-        // ...
     }
 }
 ```
 
-**Problems:**
-1.  **Violates SRP:** It processes, notifies, and manages inventory.
-2.  **Inefficient:** `processOrders` loops through the entire list three times.
-3.  **Duplicated Logic:** The code to find an order by its ID is written twice.
+<v-clicks>
+
+- **Violates SRP** - Processing, notifications, AND inventory
+- **Inefficient** - Three separate loops over same data
+- **Hard to test** - Everything coupled together
+
+</v-clicks>
+
+---
+
+# Legacy Code: Duplicated Logic
+
+```java
+public Order findOrder(int orderId) {
+    Order foundOrder = null;
+    for (Order order : orders) {
+        if (order.id() == orderId) {
+            foundOrder = order;
+            break;
+        }
+    }
+    return foundOrder;
+}
+
+public void cancelOrder(int orderId) {
+    Order orderToCancel = null;
+    for (Order order : orders) {  // DUPLICATION!
+        if (order.id() == orderId) {
+            orderToCancel = order;
+            break;
+        }
+    }
+    // ...
+}
+```
+
+---
+
+# Problems with Legacy Code
+
+<v-clicks>
+
+- **Multiple responsibilities** in one class
+- **Inefficient algorithms** - unnecessary loops
+- **Duplicated logic** - order finding repeated
+- **Hard to extend** - tightly coupled components
+- **Difficult to test** - can't mock dependencies
+
+</v-clicks>
 
 ---
 
 # Refactoring Strategy
 
-1.  **Identify Responsibilities:** The clear responsibilities are Order Persistence, Notifications, and Inventory Management.
-2.  **Extract Classes:** Create a new class for each responsibility (`OrderRepository`, `NotificationService`, `InventoryService`).
-3.  **Simplify the Data Class:** Turn the `Order` class into a simple data carrier, a `record` is perfect for this.
-4.  **Create a Coordinator:** Create a new `RefactoredOrderProcessor` class that acts as a facade, delegating work to the specialized service classes.
-5.  **Improve Efficiency:** Process each order completely in a single pass instead of using multiple loops.
+<v-clicks>
+
+- **Identify responsibilities** - Order persistence, notifications, inventory
+- **Extract classes** - Create focused service classes
+- **Simplify data** - Use records for simple data carriers
+- **Create coordinator** - Facade that delegates to services
+- **Improve efficiency** - Single pass processing
+
+</v-clicks>
 
 ---
 
-# Code Demo: The "After" State
-
-The refactored code is much cleaner and more modular.
-
-**(Show `refactoring/src/main/java/LegacyCode.java` - the refactored classes)**
+# After: Order Repository
 
 ```java
-// Each class has one job
-class OrderRepository { ... }
-class NotificationService { ... }
-class InventoryService { ... }
-
-// The coordinator class is clean and readable
-class RefactoredOrderProcessor {
-    private final OrderRepository repository;
-    // ...
-
-    public void processOrder(Order order) {
-        if (order.status().equals("NEW")) {
-            // One logical flow per order
-            Order processedOrder = new Order(order.id(), ..., "PROCESSED");
-            repository.save(processedOrder);
-            notificationService.sendConfirmation(processedOrder);
-            inventoryService.updateInventory(processedOrder);
-        }
+class RefactorOrderRepository {
+    private List<RefactorOrder> orders = new ArrayList<>();
+    
+    public void save(RefactorOrder order) {
+        orders.removeIf(existing -> existing.id() == order.id());
+        orders.add(order);
+    }
+    
+    public RefactorOrder findById(int orderId) {
+        return orders.stream()
+                .filter(order -> order.id() == orderId)
+                .findFirst()
+                .orElse(null);
+    }
+    
+    public List<RefactorOrder> findByStatus(String status) {
+        return orders.stream()
+                .filter(order -> status.equals(order.status()))
+                .toList();
     }
 }
 ```
+
+---
+
+# After: Notification Service
+
+```java
+class RefactorNotificationService {
+    
+    public void sendOrderConfirmation(RefactorOrder order) {
+        System.out.printf("""
+                📧 Sending confirmation email:
+                   Customer: %s
+                   Order: %d
+                   Amount: $%.2f
+                   Status: %s%n""", 
+                order.customerId(), order.id(), 
+                order.amount(), order.status());
+    }
+    
+    public void sendCancellationNotice(RefactorOrder order) {
+        // Send cancellation email...
+    }
+}
+```
+
+---
+
+# After: Inventory Service
+
+```java
+class RefactorInventoryService {
+    
+    public void updateInventory(RefactorOrder order) {
+        System.out.printf("""
+                📦 Updating inventory:
+                   Order: %d
+                   Amount: $%.2f
+                   Inventory adjusted%n""",
+                order.id(), order.amount());
+    }
+    
+    public void restoreInventory(RefactorOrder order) {
+        // Restore items to stock...
+    }
+}
+```
+
+---
+
+# After: Clean Coordinator
+
+```java
+public class LegacyCodeExample {
+    private final RefactorOrderRepository repository;
+    private final RefactorNotificationService notificationService;
+    private final RefactorInventoryService inventoryService;
+    
+    // Dependency injection constructor
+    public LegacyCodeExample(RefactorOrderRepository repository,
+                           RefactorNotificationService notificationService,
+                           RefactorInventoryService inventoryService) {
+        this.repository = repository;
+        this.notificationService = notificationService;
+        this.inventoryService = inventoryService;
+    }
+}
+```
+
+---
+
+# After: Efficient Processing
+
+```java
+public void processOrder(RefactorOrder order) {
+    if (!"NEW".equals(order.status())) {
+        return;
+    }
+    
+    var processedOrder = new RefactorOrder(
+        order.id(), order.customerId(), order.amount(), 
+        "PROCESSED", order.orderDate()
+    );
+    
+    // Single logical flow - all operations for this order
+    repository.save(processedOrder);
+    notificationService.sendOrderConfirmation(processedOrder);
+    inventoryService.updateInventory(processedOrder);
+}
+```
+
+<v-click>
+
+**One pass instead of three loops!**
+
+</v-click>
+
+---
+
+# Benefits of Refactored Code
+
+<v-clicks>
+
+- **Single Responsibility** - Each class has one job
+- **DRY Principle** - No duplicated order-finding logic  
+- **Performance** - Single pass vs three loops
+- **Testability** - Dependencies can be mocked
+- **Maintainability** - Easy to understand and modify
+- **Extensibility** - Easy to add new services
+
+</v-clicks>
+
+<div class="text-center mt-8">
+<v-click>
+
+### **All verified by our comprehensive test suite!**
+
+</v-click>
+</div>
+
+---
+
+# Try It Out Exercise: Test-Driven Refactoring
+
+File: `solid-principles/src/main/java/RefactoringExercise.java`  
+Tests: `solid-principles/src/test/java/RefactoringExerciseTest.java`
+
+<v-click>
+
+Practice **safe refactoring** with a comprehensive test suite as your safety net.
+
+</v-click>
+
+---
+
+# Exercise: Library Management System
+
+<v-clicks>
+
+- **Legacy class** - `RefactoringExercise` with multiple code smells
+- **God class** handling books, members, checkouts, and fines
+- **Comprehensive tests** that verify behavior (not implementation)
+- **Your mission** - Refactor while keeping all tests green
+
+</v-clicks>
+
+---
+
+# The Safety Net: Behavior-Based Tests
+
+<v-clicks>
+
+- **98 test cases** covering all functionality
+- **Tests verify BEHAVIOR**, not implementation details
+- **Should stay GREEN** throughout refactoring
+- **If tests fail** - you've changed behavior (bad!)
+- **Use tests to refactor fearlessly**
+
+</v-clicks>
+
+<div class="text-center mt-8">
+<v-click>
+
+### Demonstrates the **golden rule** in action
+
+</v-click>
+</div>
+
+---
+
+# Refactoring Steps (Guided TODOs)
+
+<v-clicks>
+
+- **Step 1:** Extract `BookRepository` class
+- **Step 2:** Extract `MemberRepository` class  
+- **Step 3:** Extract `CheckoutService` class
+- **Step 4:** Extract `FineCalculator` class
+- **Step 5:** Create `LibrarySystem` coordinator
+- **Step 6:** Run tests after each step!
+
+</v-clicks>
+
+---
+
+# A Word of Wisdom: Best Practices Expire
+
+<v-clicks>
+
+- **Today's best practice** can become **tomorrow's maintenance problem**
+- **Technology evolves** - what was optimal 5 years ago may not be today
+- **Context matters** - best practices depend on team size, project scope
+- **Question established patterns** - especially when they feel complex
+
+</v-clicks>
+
+---
+
+# Examples of Evolving Practices
+
+<v-clicks>
+
+- **XML configuration** → **Annotations** → **Code-based config**
+- **Heavyweight frameworks** → **Lightweight alternatives** → **Microframeworks**
+- **Monolithic architectures** → **Microservices** → **Serverless functions**
+
+</v-clicks>
+
+<div class="text-center mt-12">
+<v-click>
+
+## Be ready to refactor your "best practices" when they stop serving you
+
+</v-click>
+</div>
 
 ---
 layout: section
@@ -154,11 +487,24 @@ layout: section
 
 # Key Takeaways
 
+---
+
+# Remember These Points
+
 <v-clicks>
 
-- Refactoring is the process of improving your code's internal structure without changing its external behavior.
-- Look for "code smells" like duplicated code and classes with too many responsibilities.
-- Apply principles like SRP and DRY (Don't Repeat Yourself) to guide your refactoring.
-- The goal is to make the code easier to understand, maintain, and extend in the future.
+- **Never refactor without tests** - they give you confidence and freedom
+- **Refactoring reduces technical debt** - accumulation of code problems
+- **Look for code smells** - God classes, duplication, complex conditionals  
+- **Apply SOLID principles** - SRP, DRY guide effective refactoring
+- **Best practices expire** - be ready to refactor them when they stop serving you
 
 </v-clicks>
+
+<div class="text-center mt-12">
+<v-click>
+
+## Questions about refactoring legacy code?
+
+</v-click>
+</div>
