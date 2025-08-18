@@ -10,10 +10,10 @@ import static org.assertj.core.api.Assertions.*;
 
 /**
  * Test Suite for LegacyCodeExample Refactoring Demo
- * 
+ * <p>
  * These tests demonstrate how a comprehensive test suite enables safe refactoring.
  * They verify the BEHAVIOR of the order processing system, not implementation details.
- * 
+ * <p>
  * Notice how these tests will work with BOTH the legacy LegacyOrderProcessor 
  * AND the refactored LegacyCodeExample coordinator - that's the power of 
  * behavior-based testing!
@@ -74,7 +74,7 @@ class LegacyCodeExampleTest {
             
             processor.processOrder(cancelledOrder);
             
-            // Should not save anything since order is cancelled
+            // Should not save anything since order is canceled
             var orders = repository.findAll();
             assertThat(orders).isEmpty();
         }
@@ -82,7 +82,7 @@ class LegacyCodeExampleTest {
         @Test
         @DisplayName("Should process multiple new orders")
         void shouldProcessMultipleNewOrders() {
-            // Setup multiple new orders
+            // Set up multiple new orders
             var orders = List.of(
                 new RefactorOrder(1001, "CUST-001", 299.99, "NEW", LocalDateTime.now()),
                 new RefactorOrder(1002, "CUST-002", 149.50, "NEW", LocalDateTime.now()),

@@ -1,55 +1,77 @@
-Welcome back to our deep dive into the SOLID principles. In this video, we're tackling the 'O': The Open/Closed Principle.
+Welcome back to our Java skills series. In this video, we're going to tackle a crucial skill for any professional developer: refactoring. Specifically, we'll look at how to refactor legacy code to improve its design and reduce technical debt.
 
-The Open/Closed Principle, or OCP, states that software entities—like classes or modules—should be open for extension, but closed for modification. This sounds a bit like a contradiction, but it's a powerful idea. It means you should be able to add new functionality to your system without changing existing, working code.
+Refactoring is the process of restructuring existing code without changing its external behavior. It's like cleaning and organizing your workshop. You're not making new things, but you're making it much easier and safer to work in the future. The goal is to improve things like readability, maintainability, and performance, and to make the code easier to extend.
 
-And just to be clear, when we say OCP, we're talking about the Open/Closed Principle, not Omni Consumer Products from RoboCop - though ironically, that corporation was a perfect example of violating this principle by trying to control everything from one monolithic entity!
+Technical debt is a term we use to describe the accumulation of problems that make code harder to work with over time. Just like financial debt, if you ignore it, it compounds and eventually becomes overwhelming. Refactoring is how we pay down that debt.
 
-The key to achieving this is through abstraction. By programming to interfaces rather than concrete implementations, you can create systems that are flexible and resilient to change.
+Before we dive into how to refactor, let me share the most important rule: Never refactor without a good test suite in place. This is absolutely critical.
 
-Let's consider a classic example: a class that calculates the area of different shapes. A naive implementation might have a single method with a long if-else-if chain, checking the type of the shape and then calculating its area.
+Tests give you the confidence that your refactoring preserves the existing behavior. They act as a safety net, catching any regressions immediately. Without tests, refactoring becomes dangerous - you're just changing code and hoping nothing breaks. But with a solid test suite, you have the freedom to refactor fearlessly.
 
-(Show the OCP violation slide)
+Think of tests as your insurance policy. They enable you to make bold improvements to your code structure, knowing that if you accidentally break something, the tests will tell you immediately.
 
-This code works, but it has a major flaw. What happens when your boss asks you to add a Triangle? You have to go back into this calculateArea method and add another else if block. You are modifying existing code. This is a violation of the Open/Closed Principle. Every time a new shape is added, this class has to change. This is risky, because you might accidentally break the logic for rectangles or circles, and it means the class needs to be fully re-tested every time.
+So, how do you know when your code needs refactoring? You look for what we call 'code smells.' These are not bugs, but they are symptoms of deeper design problems.
 
-So how do we fix this? We use abstraction. We can create a Shape interface that declares a getArea method. Then, each of our shape classes—Rectangle, Circle, and our new Triangle—will implement this interface and provide its own specific logic for calculating its area.
+A common smell is a 'God Class,' a class that does way too much and violates the Single Responsibility Principle. Another is duplicated code, which violates the 'Don't Repeat Yourself' or DRY principle. Long, complicated methods, or deeply nested if-else statements are also big red flags. These smells tell you that your code is becoming hard to maintain and it's time to clean it up.
 
-Now, our AreaCalculator class becomes incredibly simple. Its calculateArea method just takes any object that implements the Shape interface and calls its getArea method.
+Let's look at a piece of legacy code, but notice something important - our demo practices what we preach. We have comprehensive test cases for this legacy system.
 
-This is beautiful. If we need to add a Pentagon shape tomorrow, we just create a new Pentagon class that implements Shape. The AreaCalculator doesn't need to be touched. It's closed for modification, but it's open to be extended with new shapes. That's the principle in action.
+(Show the LegacyOrderProcessor class from solid-principles/src/main/java/LegacyCodeExample.java and tests from LegacyCodeExampleTest.java on screen)
 
-Our project demonstrates this beautifully with an employee payroll system.
+The legacy class has several problems: it's a God Class handling order processing, notifications, and inventory updates. Its processOrders method is inefficient with three separate loops. And the logic for finding orders is duplicated throughout. But here's the key - we have comprehensive tests that verify the system's behavior, not its implementation details.
 
-(Show solid-principles/src/main/java/OpenClosedPrinciple.java on screen)
+These tests were our safety net during refactoring. Every step of our transformation was validated by keeping these tests green. This demonstrates the golden rule in action - we never refactored without our test suite protecting us.
 
-We have an abstract OCPEmployee class that defines the contract for all employees. It uses the template method pattern with a calculatePay method that calls abstract methods like getBasePay, calculateBonus, and calculateBenefits. Each subclass provides its own implementation.
+So, how do we approach this? Our strategy is to first identify the core responsibilities. We can see three: persistence (saving and finding orders), notifications, and inventory. So, we'll extract each of these into its own dedicated class: an OrderRepository, a NotificationService, and an InventoryService.
 
-We have different employee types: FullTimeEmployee, PartTimeEmployee, ContractEmployee, and InternEmployee. Each extends the base class and implements the abstract methods according to their specific business rules. Full-time employees get benefits based on salary, part-time employees get prorated benefits, contractors get completion bonuses, and interns get learning value.
+Next, we'll simplify our Order class into a simple, immutable data carrier using a Java record. Finally, we'll create a new RefactoredOrderProcessor class. This class will act as a coordinator, or a facade. It won't have any low-level logic itself; instead, it will delegate the work to our new, specialized service classes.
 
-The beauty is in the PayrollCalculator class. It works with any employee type through polymorphism. When we added the InternEmployee class, we didn't touch the PayrollCalculator at all. It automatically works with the new type. The calculator is closed for modification but open for extension with new employee types.
+Let's look at the result of our work. And most importantly - all our tests still pass!
 
-Now it's your turn to practice implementing the Open/Closed Principle. In the same solid-principles module, you'll find the OCPDiscountCalculatorExercise file. This gives you hands-on experience with a realistic e-commerce scenario: refactoring a discount calculation system.
+(Show the refactored classes from solid-principles/src/main/java/LegacyCodeExample.java on screen)
 
-The exercise starts with a BadDiscountCalculator that violates OCP. It has a long if-else chain checking for different discount types like 'STUDENT', 'SENIOR', 'EMPLOYEE', 'BULK', and 'LOYALTY'. Every time you want to add a new discount type like 'HOLIDAY' or 'CLEARANCE', you have to modify this class. Sound familiar?
+This is so much better. We have small, focused service classes, each with a single responsibility. Our coordinator class is now clean and easy to read. Its processOrder method handles one order at a time in a single, logical flow. There's no more duplication, responsibilities are clearly separated, and the code is much easier to understand.
 
-Your job is to refactor this using the Strategy pattern combined with abstract classes. You'll create a DiscountStrategy abstract class and implement concrete strategies like StudentDiscountStrategy, SeniorDiscountStrategy, and BulkOrderDiscountStrategy. Each strategy handles one specific type of discount calculation.
+But here's the key point - throughout this entire refactoring process, our comprehensive test suite stayed green. We never broke the external behavior. The tests gave us the confidence to make bold structural changes while preserving what the system actually does for its users. This is the power of test-driven refactoring.
 
-What makes this exercise valuable is that it uses a realistic business scenario with different customer types, order thresholds, and complex discount rules. You'll see how much cleaner the code becomes when each discount type is its own focused class.
+Now it's your turn to practice safe refactoring. In the solid-principles module, you'll find the RefactoringExercise file along with comprehensive test cases. This exercise demonstrates the golden rule in action - never refactor without tests.
 
-The exercise includes TODO comments guiding you through implementing each strategy, so you can focus on applying OCP principles rather than figuring out business logic. The best part? Once you're done, try adding your own creative discount strategy - maybe a HolidayDiscountStrategy or FirstTimeBuyerDiscount. You'll see how easy it is to extend the system without touching any existing code.
+You'll work with a library management system that's grown into a God class. The RefactoringExercise class handles books, members, checkouts, and fine calculations all in one place. It has multiple code smells: duplicated logic, long methods, and mixed responsibilities.
 
-Before we wrap up, it's worth noting that Template Method and Strategy patterns aren't the only ways to implement OCP. There are several other common approaches you'll encounter in real-world Java development.
+Here's what makes this exercise special: it comes with 98 comprehensive test cases that verify the system's behavior, not its implementation details. These tests are your safety net. They should stay green throughout your entire refactoring process.
 
-The Strategy pattern, which we used in our discount exercise, is probably the most common. You create an interface and multiple implementations. The Factory pattern helps with object creation while staying extensible. Observer pattern lets you add event listeners without modifying the publisher.
+The exercise provides guided TODO steps: extract a BookRepository, then a MemberRepository, then a CheckoutService, and finally a FineCalculator. Each step asks you to run the tests to ensure you haven't broken anything. This is test-driven refactoring in practice.
 
-Modern Java also gives us functional approaches. You can use Function interfaces and lambdas to create extensible systems. For example, instead of creating separate discount classes, you could pass discount functions directly to your calculator.
+If the tests start failing during your refactoring, it means you've accidentally changed the behavior - which violates the fundamental principle of refactoring. The tests give you the confidence to make bold structural improvements while preserving the system's external behavior.
 
-Framework-based development often uses annotation-driven extension points. Think Spring components - you can add new service implementations just by annotating them, and the framework discovers them automatically.
+Before we talk about best practices expiring, let me show you a perfect example of that principle in action. Sometimes refactoring isn't just about structure - it's about adopting newer language features that make your code more expressive and maintainable.
 
-The key insight is that OCP isn't about one specific pattern. It's a principle that can be achieved through many different techniques, depending on your specific needs and context.
+Look at this ProcessWords class in our solid-principles module. It processes a sentence to find words with even lengths, converts them to uppercase, and sorts them by length. The method works perfectly, but it's written in the old Java 7 style.
 
-To sum up, the Open/Closed Principle is a vital concept for building flexible and maintainable software. By relying on abstractions, you can create components that are open to being extended with new functionality, without having to modify their existing, stable source code.
+(Show solid-principles/src/main/java/ProcessWords.java on screen)
 
-This leads to systems that are easier to change, less risky to update, and more modular in their design.
+This is classic imperative programming - we tell the computer exactly HOW to do everything. We manually loop through words, manually filter them, manually collect them into a list, and manually sort them with an anonymous inner class. It works, but it's verbose and procedural.
 
-That's it for OCP. Next time, we'll explore the 'L' in SOLID, the Liskov Substitution Principle.
+Now, here's the same logic refactored to use modern Java 8+ streams:
+
+(Show the refactored version using streams)
+
+This is the same behavior, but expressed much more clearly. We have a declarative pipeline that describes WHAT we want: filter words by even length, map them to uppercase, sort by length, and collect the results. It reads like the problem description itself.
+
+The beautiful thing is that this refactoring can often be done with IDE assistance. IntelliJ and Eclipse can suggest stream conversions automatically. Your IDE becomes your partner in modernizing your codebase, helping you adopt newer language features as they become available.
+
+This demonstrates that refactoring isn't just about fixing problems - it's also about evolving with the language. The Java 7 approach wasn't wrong when it was written, but Java 8 gave us better tools for expressing the same ideas.
+
+Before we wrap up, I want to share an important insight about software development: All best practices should come with an expiration date. Today's best practice can easily become tomorrow's maintenance problem.
+
+Technology evolves constantly. What was considered optimal five years ago might not be the best approach today. Think about how we've moved from XML configuration files to annotations to code-based configuration. Or how heavyweight frameworks gave way to lightweight alternatives, which then gave way to microframeworks.
+
+The key is to question established patterns, especially when they start feeling unnecessarily complex. Context matters - what works for a small team might not work for a large organization, and vice versa. Be ready to refactor your 'best practices' when they stop serving you.
+
+To sum up, refactoring is a vital practice for maintaining the long-term health of a codebase. Remember the golden rule: never refactor without tests - they give you the freedom to improve code safely. Look for code smells and apply principles like SRP and DRY to guide your refactoring.
+
+Refactoring helps you pay down technical debt - the accumulation of problems that make code harder to work with over time. And remember, even your best practices should be open to refactoring when they no longer serve you.
+
+Don't be afraid to refactor. Make small, safe changes, and you'll gradually improve your code, making it better for yourself and for everyone else on your team.
+
+Thanks for watching, and happy refactoring!

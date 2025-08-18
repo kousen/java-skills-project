@@ -4,20 +4,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
 /**
  * Comprehensive test suite for RefactoringExercise
- * 
+ * <p>
  * IMPORTANT: These tests are written to verify BEHAVIOR, not implementation details.
  * They should remain GREEN throughout your refactoring process.
- * 
- * If tests start failing during refactoring, it means you've accidentally 
- * changed the behavior (not just the structure) - which violates the 
+ * <p>
+ * If tests start failing during refactoring, it means you've accidentally
+ * changed the behavior (not just the structure) - which violates the
  * refactoring principle of preserving external behavior.
- * 
+ * <p>
  * Use these tests as your safety net to refactor with confidence!
  */
 class RefactoringExerciseTest {
@@ -199,6 +198,7 @@ class RefactoringExerciseTest {
             // Add test members
             library.addMember(new Member("M001", "Active Member", "active@example.com", LocalDate.now(), true));
             library.addMember(new Member("M002", "Inactive Member", "inactive@example.com", LocalDate.now(), false));
+            library.addMember(new Member("M003", "Another Active Member", "active2@example.com", LocalDate.now(), true));
         }
         
         @Test
@@ -249,9 +249,9 @@ class RefactoringExerciseTest {
         @Test
         @DisplayName("Should reject checkout for unavailable book")
         void shouldRejectCheckoutForUnavailableBook() {
-            library.checkoutBook("978-1", "M001"); // First checkout
+            library.checkoutBook("978-1", "M001"); // First checkout by M001
             
-            assertThatThrownBy(() -> library.checkoutBook("978-1", "M001"))
+            assertThatThrownBy(() -> library.checkoutBook("978-1", "M003")) // Different active member tries same book
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("Book is not available");
         }

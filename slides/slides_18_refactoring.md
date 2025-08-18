@@ -450,6 +450,117 @@ Practice **safe refactoring** with a comprehensive test suite as your safety net
 
 ---
 
+# Modern Refactoring: Embracing Language Evolution
+
+File: `solid-principles/src/main/java/ProcessWords.java`  
+Test: `solid-principles/src/test/java/ProcessWordsTest.java`
+
+<v-click>
+
+Sometimes refactoring means **adopting newer language features** for better expressiveness.
+
+</v-click>
+
+---
+
+# From Imperative to Functional: Java 7 Style
+
+```java
+public List<String> getSortedEvenLengthUpperCaseWords(String sentence) {
+    String[] words = sentence.split("\\s+");
+
+    List<String> evenLengthWords = new ArrayList<>();
+    for (String word : words) {
+        if (word.length() % 2 == 0) {
+            evenLengthWords.add(word.toUpperCase());
+        }
+    }
+    evenLengthWords.sort(new Comparator<>() {
+        @Override
+        public int compare(String word1, String word2) {
+            return word1.length() - word2.length();
+        }
+    });
+    return evenLengthWords;
+}
+```
+
+<v-clicks>
+
+- **Imperative style** - tells the computer HOW to do it
+- **Verbose boilerplate** - anonymous inner class for sorting
+- **Multiple steps** - filter, transform, sort separately
+
+</v-clicks>
+
+---
+
+# Modern Java 8+ Style (Refactored)
+
+```java
+public List<String> getSortedEvenLengthUpperCaseWords(String sentence) {
+    return Arrays.stream(sentence.split("\\s+"))
+        .filter(word -> word.length() % 2 == 0)
+        .map(String::toUpperCase)  
+        .sorted(Comparator.comparing(String::length))
+        .collect(Collectors.toList());
+}
+```
+
+<v-clicks>
+
+- **Declarative style** - describes WHAT we want
+- **Functional pipeline** - clear data transformation flow
+- **Modern idioms** - method references, lambda expressions
+- **Single expression** - all operations chained together
+
+</v-clicks>
+
+---
+
+# Benefits of Stream Refactoring
+
+<v-clicks>
+
+- **More readable** - pipeline shows intent clearly
+- **Less error-prone** - no manual loop management
+- **Better performance** - potential for parallel processing
+- **Maintainable** - easier to modify individual steps
+- **Modern** - uses current Java idioms
+
+</v-clicks>
+
+<div class="text-center mt-8">
+<v-click>
+
+### **Same behavior, better expression**
+
+</v-click>
+</div>
+
+---
+
+# IDE-Assisted Modernization
+
+<v-clicks>
+
+- **IntelliJ/Eclipse** can suggest stream conversions automatically
+- **"Replace with forEach"** inspections
+- **"Convert to method reference"** suggestions
+- **Tool-assisted evolution** of your codebase
+
+</v-clicks>
+
+<div class="text-center mt-8">
+<v-click>
+
+## Let your IDE help modernize your code!
+
+</v-click>
+</div>
+
+---
+
 # A Word of Wisdom: Best Practices Expire
 
 <v-clicks>
@@ -497,6 +608,7 @@ layout: section
 - **Refactoring reduces technical debt** - accumulation of code problems
 - **Look for code smells** - God classes, duplication, complex conditionals  
 - **Apply SOLID principles** - SRP, DRY guide effective refactoring
+- **Embrace language evolution** - refactor to use modern features (streams, lambdas)
 - **Best practices expire** - be ready to refactor them when they stop serving you
 
 </v-clicks>

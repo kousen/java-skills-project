@@ -75,7 +75,29 @@
 
 ---
 
-## 8. A Word of Wisdom: Best Practices Expire
+## 8. Modern Refactoring: Embracing Language Evolution
+
+**Host:** "Before we talk about best practices expiring, let me show you a perfect example of that principle in action. Sometimes refactoring isn't just about structure - it's about adopting newer language features that make your code more expressive and maintainable."
+
+**Host:** "Look at this ProcessWords class in our solid-principles module. It processes a sentence to find words with even lengths, converts them to uppercase, and sorts them by length. The method works perfectly, but it's written in the old Java 7 style."
+
+**(Show `solid-principles/src/main/java/ProcessWords.java` on screen)**
+
+**Host:** "This is classic imperative programming - we tell the computer exactly HOW to do everything. We manually loop through words, manually filter them, manually collect them into a list, and manually sort them with an anonymous inner class. It works, but it's verbose and procedural."
+
+**Host:** "Now, here's the same logic refactored to use modern Java 8+ streams:"
+
+**(Show the refactored version using streams)**
+
+**Host:** "This is the same behavior, but expressed much more clearly. We have a declarative pipeline that describes WHAT we want: filter words by even length, map them to uppercase, sort by length, and collect the results. It reads like the problem description itself."
+
+**Host:** "The beautiful thing is that this refactoring can often be done with IDE assistance. IntelliJ and Eclipse can suggest stream conversions automatically. Your IDE becomes your partner in modernizing your codebase, helping you adopt newer language features as they become available."
+
+**Host:** "This demonstrates that refactoring isn't just about fixing problems - it's also about evolving with the language. The Java 7 approach wasn't wrong when it was written, but Java 8 gave us better tools for expressing the same ideas."
+
+---
+
+## 9. A Word of Wisdom: Best Practices Expire
 
 **Host:** "Before we wrap up, I want to share an important insight about software development: All best practices should come with an expiration date. Today's best practice can easily become tomorrow's maintenance problem."
 
@@ -85,7 +107,7 @@
 
 ---
 
-## 9. Summary
+## 10. Summary
 
 **Host:** "To sum up, refactoring is a vital practice for maintaining the long-term health of a codebase. Remember the golden rule: never refactor without tests - they give you the freedom to improve code safely. Look for code smells and apply principles like SRP and DRY to guide your refactoring."
 

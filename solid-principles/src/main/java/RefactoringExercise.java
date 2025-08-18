@@ -33,20 +33,20 @@ record CheckoutRecord(String isbn, String memberId, LocalDate checkoutDate, Loca
     
     public int getDaysOverdue() {
         if (!isOverdue()) return 0;
-        return (int) dueDate.until(LocalDate.now()).getDays();
+        return dueDate.until(LocalDate.now()).getDays();
     }
 }
 
 /**
  * LEGACY CODE - This class has multiple code smells that need refactoring!
- * 
+ * <p>
  * Code Smells Present:
  * 1. God Class - handles books, members, checkouts, and fines
  * 2. Long methods - some methods do too much
  * 3. Duplicated logic - member validation repeated
  * 4. Mixed responsibilities - business logic mixed with data management
  * 5. Hard to test - everything is tightly coupled
- * 
+ * <p>
  * IMPORTANT: This class has comprehensive tests! Use them as your safety net
  * while refactoring. The tests verify behavior, not implementation details.
  */
@@ -182,15 +182,15 @@ public class RefactoringExercise {
             throw new IllegalArgumentException("Book not found: " + isbn);
         }
         
-        if (!book.isAvailable()) {
-            throw new IllegalArgumentException("Book is not available: " + isbn);
-        }
-        
-        // Check if member already has this book checked out
+        // Check if member already has this book checked out (before checking availability)
         for (CheckoutRecord record : checkouts) {
             if (record.isbn().equals(isbn) && record.memberId().equals(memberId) && !record.isReturned()) {
                 throw new IllegalArgumentException("Member already has this book checked out");
             }
+        }
+        
+        if (!book.isAvailable()) {
+            throw new IllegalArgumentException("Book is not available: " + isbn);
         }
         
         // Create checkout record
@@ -256,7 +256,7 @@ public class RefactoringExercise {
         return overdue;
     }
     
-    // ========== FINE CALCULATION ==========
+    // ========== CALCULATION OF FINES ==========
     
     public double calculateFine(String memberId) {
         double totalFine = 0.0;
@@ -308,44 +308,44 @@ public class RefactoringExercise {
     }
 }
 
-/**
+/*
  * TODO: Refactor the RefactoringExercise class following these steps:
- * 
+ * <p>
  * STEP 1: Extract BookRepository class
  * - Move all book-related methods (addBook, findBookByIsbn, findBooksByAuthor, getAllAvailableBooks)
  * - Create a focused class responsible only for book data management
  * - Replace direct access to books list with repository method calls
- * 
+ * <p>
  * STEP 2: Extract MemberRepository class  
  * - Move all member-related methods (addMember, findMemberById, getAllActiveMembers)
  * - Eliminate duplicated member validation logic
  * - Create consistent interface for member operations
- * 
+ * <p>
  * STEP 3: Extract CheckoutService class
  * - Move checkout/return logic (checkoutBook, returnBook, getActiveCheckouts, getOverdueCheckouts)
  * - Break down the long checkoutBook method into smaller, focused methods
  * - Use the repository classes instead of direct data access
- * 
+ * <p>
  * STEP 4: Extract FineCalculator class
  * - Move fine calculation logic (calculateFine, getMembersWithFines)
  * - Make fine rates configurable (currently hardcoded)
  * - Separate fine calculation from fine reporting
- * 
+ * <p>
  * STEP 5: Create LibrarySystem coordinator class
  * - Use dependency injection to compose the services
  * - Keep only high-level orchestration methods
  * - Delegate all specific operations to appropriate services
- * 
+ * <p>
  * STEP 6: Run the tests after each step!
  * - The tests should remain green throughout the refactoring process
  * - If tests fail, you've changed behavior (not just structure)
  * - Use the tests as your safety net to refactor confidently
- * 
+ * <p>
  * BONUS CHALLENGES:
  * - Add validation service to eliminate duplicated validation logic
  * - Make loan period configurable instead of hardcoded 2 weeks
  * - Add book reservation system
  * - Implement member borrowing limits
- * 
+ * <p>
  * Remember: The goal is to improve the structure while keeping the same behavior!
  */
