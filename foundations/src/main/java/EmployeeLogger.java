@@ -7,6 +7,7 @@ import org.slf4j.MDC;
  * This class shows proper logging levels, parameterized messages,
  * and Mapped Diagnostic Context (MDC) usage.
  */
+@SuppressWarnings("SameParameterValue")
 public class EmployeeLogger {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeLogger.class);
     
@@ -141,14 +142,8 @@ public class EmployeeLogger {
      */
     private String buildExpensiveDebugString(String name, int id, double salary) {
         // Simulate expensive operation (string building, JSON serialization, etc.)
-        StringBuilder sb = new StringBuilder();
-        sb.append("Employee Details: {");
-        sb.append("name='").append(name).append("', ");
-        sb.append("id=").append(id).append(", ");
-        sb.append("salary=").append(salary).append(", ");
-        sb.append("timestamp=").append(System.currentTimeMillis());
-        sb.append("}");
-        return sb.toString();
+        return "Employee Details: {name='%s', id=%d, salary=%s, timestamp=%d}"
+                .formatted(name, id, salary, System.currentTimeMillis());
     }
     
     /**

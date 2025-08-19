@@ -1,77 +1,139 @@
-Welcome back to our Java skills series. In this video, we're going to tackle a crucial skill for any professional developer: refactoring. Specifically, we'll look at how to refactor legacy code to improve its design and reduce technical debt.
+[SCENE 1: INTRODUCTION - 30 SECONDS]
 
-Refactoring is the process of restructuring existing code without changing its external behavior. It's like cleaning and organizing your workshop. You're not making new things, but you're making it much easier and safer to work in the future. The goal is to improve things like readability, maintainability, and performance, and to make the code easier to extend.
+(Show Slide 1: Java Logging Frameworks)
 
-Technical debt is a term we use to describe the accumulation of problems that make code harder to work with over time. Just like financial debt, if you ignore it, it compounds and eventually becomes overwhelming. Refactoring is how we pay down that debt.
+Welcome back to our Java Skills series. Today, we're moving beyond System.out.println and into professional logging frameworks. If you've ever struggled to debug a production issue or wondered where all those println statements went, this video is for you.
 
-Before we dive into how to refactor, let me share the most important rule: Never refactor without a good test suite in place. This is absolutely critical.
+[SCENE 2: WHY LOGGING MATTERS - 45 SECONDS]
 
-Tests give you the confidence that your refactoring preserves the existing behavior. They act as a safety net, catching any regressions immediately. Without tests, refactoring becomes dangerous - you're just changing code and hoping nothing breaks. But with a solid test suite, you have the freedom to refactor fearlessly.
+(Show Slide 3: Why Logging Matters)
 
-Think of tests as your insurance policy. They enable you to make bold improvements to your code structure, knowing that if you accidentally break something, the tests will tell you immediately.
+Let me ask you something - have you ever deployed code only to realize you can't see what's happening when something goes wrong? That's where logging comes in. Proper logging gives us application diagnostics - we can debug issues in production, track application behavior, and monitor performance.
 
-So, how do you know when your code needs refactoring? You look for what we call 'code smells.' These are not bugs, but they are symptoms of deeper design problems.
+(Show Slide 4: Better Than System.out.println)
 
-A common smell is a 'God Class,' a class that does way too much and violates the Single Responsibility Principle. Another is duplicated code, which violates the 'Don't Repeat Yourself' or DRY principle. Long, complicated methods, or deeply nested if-else statements are also big red flags. These smells tell you that your code is becoming hard to maintain and it's time to clean it up.
+Unlike System.out.println, proper logging lets you control output levels, write to multiple destinations, and format messages consistently. You can turn on debug messages in development and turn them off in production - all without changing your code.
 
-Let's look at a piece of legacy code, but notice something important - our demo practices what we preach. We have comprehensive test cases for this legacy system.
+[SCENE 3: JAVA LOGGING OPTIONS - 45 SECONDS]
 
-(Show the LegacyOrderProcessor class from solid-principles/src/main/java/LegacyCodeExample.java and tests from LegacyCodeExampleTest.java on screen)
+(Show Slide 5: Java Logging Options)
 
-The legacy class has several problems: it's a God Class handling order processing, notifications, and inventory updates. Its processOrders method is inefficient with three separate loops. And the logic for finding orders is duplicated throughout. But here's the key - we have comprehensive tests that verify the system's behavior, not its implementation details.
+Java gives us several logging options. There's java.util.logging built right into the JDK, but it's simple and has limited features. The popular frameworks include SLF4J - the Simple Logging Facade - paired with implementations like Logback or Log4j2.
 
-These tests were our safety net during refactoring. Every step of our transformation was validated by keeping these tests green. This demonstrates the golden rule in action - we never refactored without our test suite protecting us.
+(Show Slide 6: SLF4J + Logback Setup)
 
-So, how do we approach this? Our strategy is to first identify the core responsibilities. We can see three: persistence (saving and finding orders), notifications, and inventory. So, we'll extract each of these into its own dedicated class: an OrderRepository, a NotificationService, and an InventoryService.
+Think of SLF4J as an interface and Logback as the implementation. This separation means you can switch logging frameworks without changing your code. And notice - these dependencies are already in our project! We're using SLF4J 2.0.17 and Logback 1.5.18.
 
-Next, we'll simplify our Order class into a simple, immutable data carrier using a Java record. Finally, we'll create a new RefactoredOrderProcessor class. This class will act as a coordinator, or a facade. It won't have any low-level logic itself; instead, it will delegate the work to our new, specialized service classes.
+[SCENE 4: CREATING YOUR FIRST LOGGER - 45 SECONDS]
 
-Let's look at the result of our work. And most importantly - all our tests still pass!
+(Show Slide 7: Creating a Logger)
 
-(Show the refactored classes from solid-principles/src/main/java/LegacyCodeExample.java on screen)
+Let's create our first logger. Notice the pattern here - we create a static logger using LoggerFactory.getLogger and pass in our class. This becomes our gateway to the logging system.
 
-This is so much better. We have small, focused service classes, each with a single responsibility. Our coordinator class is now clean and easy to read. Its processOrder method handles one order at a time in a single, logical flow. There's no more duplication, responsibilities are clearly separated, and the code is much easier to understand.
+(Transition to IDE showing EmployeeLogger.java)
 
-But here's the key point - throughout this entire refactoring process, our comprehensive test suite stayed green. We never broke the external behavior. The tests gave us the confidence to make bold structural changes while preserving what the system actually does for its users. This is the power of test-driven refactoring.
+When we call logger.info, we're using parameterized messages. See those curly braces? They're placeholders that get replaced with actual values - but only if that log level is enabled. This is way more efficient than string concatenation.
 
-Now it's your turn to practice safe refactoring. In the solid-principles module, you'll find the RefactoringExercise file along with comprehensive test cases. This exercise demonstrates the golden rule in action - never refactor without tests.
+[SCENE 5: UNDERSTANDING LOG LEVELS - 45 SECONDS]
 
-You'll work with a library management system that's grown into a God class. The RefactoringExercise class handles books, members, checkouts, and fine calculations all in one place. It has multiple code smells: duplicated logic, long methods, and mixed responsibilities.
+(Show Slide 8: Logging Levels)
 
-Here's what makes this exercise special: it comes with 98 comprehensive test cases that verify the system's behavior, not its implementation details. These tests are your safety net. They should stay green throughout your entire refactoring process.
+Logging frameworks use levels to categorize messages. From least to most severe, we have TRACE for detailed diagnostic information, DEBUG for debugging, and INFO for general information.
 
-The exercise provides guided TODO steps: extract a BookRepository, then a MemberRepository, then a CheckoutService, and finally a FineCalculator. Each step asks you to run the tests to ensure you haven't broken anything. This is test-driven refactoring in practice.
+(Show Slide 9: Logging Levels (continued))
 
-If the tests start failing during your refactoring, it means you've accidentally changed the behavior - which violates the fundamental principle of refactoring. The tests give you the confidence to make bold structural improvements while preserving the system's external behavior.
+Then we have the error levels: WARN for warning messages, ERROR for error conditions, and OFF to turn off logging completely.
 
-Before we talk about best practices expiring, let me show you a perfect example of that principle in action. Sometimes refactoring isn't just about structure - it's about adopting newer language features that make your code more expressive and maintainable.
+(Show Slide 10: Using Different Log Levels)
 
-Look at this ProcessWords class in our solid-principles module. It processes a sentence to find words with even lengths, converts them to uppercase, and sorts them by length. The method works perfectly, but it's written in the old Java 7 style.
+Look at this validation example in our EmployeeLogger. We use TRACE for the most detailed info, ERROR when something's definitely wrong, WARN for suspicious but not fatal issues, and DEBUG to track our progress. The beauty is that you can set your production systems to only show WARN and ERROR, while keeping all levels active during development.
 
-(Show solid-principles/src/main/java/ProcessWords.java on screen)
+[SCENE 6: EFFICIENT LOGGING TECHNIQUES - 45 SECONDS]
 
-This is classic imperative programming - we tell the computer exactly HOW to do everything. We manually loop through words, manually filter them, manually collect them into a list, and manually sort them with an anonymous inner class. It works, but it's verbose and procedural.
+(Show Slide 11: Parameterized Messages)
 
-Now, here's the same logic refactored to use modern Java 8+ streams:
+Here's a crucial performance tip. Instead of string concatenation, use parameterized messages. The bad way concatenates strings whether logging is enabled or not. The good way only concatenates if that log level is enabled. This can save significant performance in production.
 
-(Show the refactored version using streams)
+(Show Slide 12: Exception Logging)
 
-This is the same behavior, but expressed much more clearly. We have a declarative pipeline that describes WHAT we want: filter words by even length, map them to uppercase, sort by length, and collect the results. It reads like the problem description itself.
+When logging exceptions, pass the exception as the last parameter to get the full stack trace. This gives you all the diagnostic information you need to track down problems.
 
-The beautiful thing is that this refactoring can often be done with IDE assistance. IntelliJ and Eclipse can suggest stream conversions automatically. Your IDE becomes your partner in modernizing your codebase, helping you adopt newer language features as they become available.
+[SCENE 7: CONFIGURATION AND ADVANCED FEATURES - 105 SECONDS]
 
-This demonstrates that refactoring isn't just about fixing problems - it's also about evolving with the language. The Java 7 approach wasn't wrong when it was written, but Java 8 gave us better tools for expressing the same ideas.
+(Show Slide 13: Logback Configuration)
 
-Before we wrap up, I want to share an important insight about software development: All best practices should come with an expiration date. Today's best practice can easily become tomorrow's maintenance problem.
+Logback uses an XML configuration file, and it's simpler than it looks. This basic configuration creates a console appender with a specific pattern.
 
-Technology evolves constantly. What was considered optimal five years ago might not be the best approach today. Think about how we've moved from XML configuration files to annotations to code-based configuration. Or how heavyweight frameworks gave way to lightweight alternatives, which then gave way to microframeworks.
+(Show Slide 14: Log Pattern Elements)
 
-The key is to question established patterns, especially when they start feeling unnecessarily complex. Context matters - what works for a small team might not work for a large organization, and vice versa. Be ready to refactor your 'best practices' when they stop serving you.
+The pattern controls how each log line looks. You have date and time, thread name, log level padded to 5 characters...
 
-To sum up, refactoring is a vital practice for maintaining the long-term health of a codebase. Remember the golden rule: never refactor without tests - they give you the freedom to improve code safely. Look for code smells and apply principles like SRP and DRY to guide your refactoring.
+(Show Slide 15: Log Pattern Elements (continued))
 
-Refactoring helps you pay down technical debt - the accumulation of problems that make code harder to work with over time. And remember, even your best practices should be open to refactoring when they no longer serve you.
+...logger name truncated to 36 characters, the actual message, and a line separator.
 
-Don't be afraid to refactor. Make small, safe changes, and you'll gradually improve your code, making it better for yourself and for everyone else on your team.
+(Show Slide 16: File Appender)
 
-Thanks for watching, and happy refactoring!
+You can write to files by adding a file appender. This logs to both console and file simultaneously.
+
+(Show Slide 17: Rolling File Appender)
+
+For production, use a rolling file appender that automatically creates new log files each day and deletes old ones to save disk space.
+
+(Show Slide 18: Logger Hierarchy)
+
+Configure different log levels for different packages. Root logger at INFO, your application package at DEBUG, and third-party libraries at WARN to reduce noise.
+
+[SCENE 8: PERFORMANCE AND CONTEXT - 90 SECONDS]
+
+(Show Slide 19: Conditional Logging)
+
+For expensive operations, check if the log level is enabled first. This avoids creating expensive debug strings when they won't be logged anyway.
+
+(Show Slide 20: MDC (Mapped Diagnostic Context))
+
+Here's a pro tip - use MDC, the Mapped Diagnostic Context, to add context to all your logs. By putting user ID and request ID into MDC, every log message in that thread automatically includes this context.
+
+(Show Slide 21: MDC in Log Pattern)
+
+Configure your pattern to include MDC values, and you get rich contextual information in every log message. This is invaluable when tracking issues across multiple components.
+
+(Show Slide 22: Async Logging)
+
+For high-volume applications, use async appenders to improve performance by writing logs on a separate thread.
+
+[SCENE 9: BEST PRACTICES AND MIGRATION - 60 SECONDS]
+
+(Show Slide 23: Best Practices)
+
+Follow these logging guidelines: use appropriate log levels, include context in messages, and avoid logging sensitive data like passwords.
+
+(Show Slide 24: Best Practices (continued))
+
+For performance, use parameterized messages, guard expensive operations, and configure async appenders for high volume applications.
+
+(Show Slide 25: Common Mistakes)
+
+Avoid these common mistakes: logging at the wrong level, including passwords or personal information, and excessive DEBUG logging in production.
+
+(Show Slide 26: Migration from println)
+
+Here's how to migrate from System.out.println. Replace print statements with appropriate logger calls, and pass exceptions as parameters for stack traces.
+
+[SCENE 10: SUMMARY AND NEXT STEPS - 30 SECONDS]
+
+(Show Slide 27: Summary)
+
+Proper logging is the difference between guessing what went wrong and knowing exactly what happened. Logging provides better diagnostics than println, SLF4J plus Logback is a popular choice, configure levels and appenders appropriately, use MDC for request context, and follow best practices for performance.
+
+[SCENE 11: TRY IT OUT EXERCISE - 30 SECONDS]
+
+Now it's time for you to practice! In the foundations module, you'll find LoggingExercise.java - a hands-on exercise with TODO sections covering all the concepts we've discussed.
+
+Complete the TODOs to practice creating loggers, using parameterized messages, implementing conditional logging, working with MDC context, and handling exceptions. Each section builds on the previous one, so you'll get comprehensive logging experience.
+
+You can also examine EmployeeLogger.java for a complete working example that demonstrates all these concepts in action.
+
+(Show Slide 28: Next: Consuming REST APIs)
+
+Next time, we'll use Java's HTTP client to consume REST APIs. Until then, happy coding, and may your logs always be informative!
