@@ -47,6 +47,33 @@ Kousen IT, Inc.
 transition: slide-left
 ---
 
+# Demo API: JsonPlaceholder
+
+## Free Fake REST API for Learning
+
+<v-clicks>
+
+- **URL:** https://jsonplaceholder.typicode.com/
+- **No authentication required**
+- **Perfect for learning and testing**
+
+</v-clicks>
+
+## Available Resources
+
+<v-clicks>
+
+- `/posts` - 100 blog posts
+- `/users` - 10 users
+- `/comments` - 500 comments
+- **Supports all HTTP methods (GET, POST, PUT, DELETE)**
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
 # What is a REST API?
 
 ## RESTful Web Services
@@ -120,7 +147,7 @@ transition: slide-left
 
 # Making a GET Request
 
-## Retrieving Employee Data
+## Retrieving Post Data from JsonPlaceholder
 
 ```java
 import java.net.URI;
@@ -128,8 +155,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 HttpRequest request = HttpRequest.newBuilder()
-    .uri(URI.create("https://api.example.com/employees/123"))
+    .uri(URI.create("https://jsonplaceholder.typicode.com/posts/1"))
     .header("Accept", "application/json")
+    .timeout(Duration.ofSeconds(30))
     .GET()
     .build();
 
@@ -148,7 +176,10 @@ transition: slide-left
 ```java
 if (response.statusCode() == 200) {
     String json = response.body();
-    System.out.println("Employee data: " + json);
+    System.out.println("Post data: " + json);
+    // Output: {"userId": 1, "id": 1, 
+    //          "title": "sunt aut facere...", 
+    //          "body": "quia et suscipit..."}
 } else {
     System.err.println("Error: " + response.statusCode());
 }
@@ -160,21 +191,22 @@ transition: slide-left
 
 # POST Request
 
-## Creating a New Employee
+## Creating a New Post
 
 ```java
-String employeeJson = """
+String postJson = """
     {
-        "name": "John Doe",
-        "department": "Engineering",
-        "salary": 75000
+        "userId": 1,
+        "title": "Learning HTTP Client",
+        "body": "This post demonstrates POST requests with JsonPlaceholder"
     }
     """;
 
 HttpRequest postRequest = HttpRequest.newBuilder()
-    .uri(URI.create("https://api.example.com/employees"))
+    .uri(URI.create("https://jsonplaceholder.typicode.com/posts"))
     .header("Content-Type", "application/json")
-    .POST(HttpRequest.BodyPublishers.ofString(employeeJson))
+    .header("Accept", "application/json")
+    .POST(HttpRequest.BodyPublishers.ofString(postJson))
     .build();
 ```
 
@@ -258,15 +290,16 @@ transition: slide-left
 
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 
-ObjectMapper mapper = new ObjectMapper();
+ObjectMapper mapper = new ObjectMapper()
+    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-// Deserialize JSON to Employee
-Employee employee = mapper.readValue(
-    response.body(), Employee.class);
+// Deserialize JSON to Post
+Post post = mapper.readValue(response.body(), Post.class);
 
-// Serialize Employee to JSON
-String json = mapper.writeValueAsString(employee);
+// Serialize Post to JSON
+String json = mapper.writeValueAsString(post);
 ```
 
 ---
@@ -275,17 +308,18 @@ transition: slide-left
 
 # Complete Example
 
-## Employee API Client
+## JsonPlaceholder API Client
 
 ```java
-public class EmployeeApiClient {
+public class JsonPlaceholderClient {
     private final HttpClient client;
     private final ObjectMapper mapper;
-    private final String baseUrl;
+    private static final String BASE_URL = 
+        "https://jsonplaceholder.typicode.com";
     
-    public EmployeeApiClient(String baseUrl) {
-        this.baseUrl = baseUrl;
+    public JsonPlaceholderClient() {
         this.client = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_2)
             .connectTimeout(Duration.ofSeconds(10))
             .build();
         this.mapper = new ObjectMapper();
@@ -299,14 +333,15 @@ transition: slide-left
 
 # GET Method Implementation
 
-## Fetching Single Employee
+## Fetching Single Post
 
 ```java
-public Optional<Employee> getEmployee(Long id) 
+public Optional<Post> getPost(int id) 
         throws IOException, InterruptedException {
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/employees/" + id))
+        .uri(URI.create(BASE_URL + "/posts/" + id))
         .header("Accept", "application/json")
+        .timeout(Duration.ofSeconds(30))
         .GET()
         .build();
     
@@ -314,9 +349,8 @@ public Optional<Employee> getEmployee(Long id)
         HttpResponse.BodyHandlers.ofString());
     
     if (response.statusCode() == 200) {
-        Employee emp = mapper.readValue(response.body(), 
-            Employee.class);
-        return Optional.of(emp);
+        Post post = mapper.readValue(response.body(), Post.class);
+        return Optional.of(post);
     }
     return Optional.empty();
 }
@@ -326,15 +360,16 @@ public Optional<Employee> getEmployee(Long id)
 transition: slide-left
 ---
 
-# GET All Employees
+# GET All Posts
 
 ## Fetching Collections
 
 ```java
-public List<Employee> getAllEmployees() 
+public List<Post> getAllPosts() 
         throws IOException, InterruptedException {
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create(baseUrl + "/employees"))
+        .uri(URI.create(BASE_URL + "/posts"))
+        .header("Accept", "application/json")
         .GET()
         .build();
     
@@ -344,9 +379,9 @@ public List<Employee> getAllEmployees()
     if (response.statusCode() == 200) {
         return mapper.readValue(response.body(),
             mapper.getTypeFactory().constructCollectionType(
-                List.class, Employee.class));
+                List.class, Post.class));
     }
-    return Collections.emptyList();
+    throw new ApiException("Failed to fetch posts", response.statusCode());
 }
 ```
 
@@ -593,6 +628,36 @@ void testGetEmployee() throws Exception {
     assertEquals(50000, result.getSalary());
 }
 ```
+
+---
+transition: slide-left
+---
+
+# Try It Out Exercise
+
+## Hands-on HTTP Client Practice
+
+File: `web-services/src/main/java/com/oreilly/webservices/HttpClientExercise.java`
+
+<v-clicks>
+
+- **Complete the TODO sections** to implement HTTP client methods
+- **Practice with JsonPlaceholder's /todos endpoint** - different from our demo!
+- **Learn by doing:** GET, POST, async requests, error handling
+
+</v-clicks>
+
+## What You'll Implement
+
+<v-clicks>
+
+- HTTP client configuration with timeout and HTTP/2
+- GET requests for single items and collections
+- POST requests with JSON payloads
+- Asynchronous requests with CompletableFuture
+- Proper error handling for different status codes
+
+</v-clicks>
 
 ---
 transition: slide-left

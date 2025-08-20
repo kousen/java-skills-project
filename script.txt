@@ -1,139 +1,117 @@
 [SCENE 1: INTRODUCTION - 30 SECONDS]
 
-(Show Slide 1: Java Logging Frameworks)
+(Show Slide 1: Title Slide - "Consuming REST APIs with Java")
 
-Welcome back to our Java Skills series. Today, we're moving beyond System.out.println and into professional logging frameworks. If you've ever struggled to debug a production issue or wondered where all those println statements went, this video is for you.
+Hi everyone, and welcome to this series on essential Java skills. Today, we're consuming REST APIs using Java's modern HTTP client, and we'll be working with real, live data!
 
-[SCENE 2: WHY LOGGING MATTERS - 45 SECONDS]
+(Show Slide 3: Demo API: JsonPlaceholder)
 
-(Show Slide 3: Why Logging Matters)
+We'll use JsonPlaceholder, a free fake REST API that's perfect for learning. It provides real endpoints with posts, users, and comments - and no authentication required!
 
-Let me ask you something - have you ever deployed code only to realize you can't see what's happening when something goes wrong? That's where logging comes in. Proper logging gives us application diagnostics - we can debug issues in production, track application behavior, and monitor performance.
+[SCENE 2: UNDERSTANDING REST APIS - 30 SECONDS]
 
-(Show Slide 4: Better Than System.out.println)
+(Show Slide 4: What is a REST API?)
 
-Unlike System.out.println, proper logging lets you control output levels, write to multiple destinations, and format messages consistently. You can turn on debug messages in development and turn them off in production - all without changing your code.
+REST stands for Representational State Transfer. Don't let the fancy name scare you - it's just a way for applications to talk to each other over HTTP.
 
-[SCENE 3: JAVA LOGGING OPTIONS - 45 SECONDS]
+(Show Slide 5: Common Operations)
 
-(Show Slide 5: Java Logging Options)
+Think of it like ordering from a restaurant menu. You make a request - 'I'd like post number 1, please' - and the server brings you back exactly what you ordered, usually in JSON format. The main operations are GET to retrieve, POST to create, PUT to update, and DELETE to remove.
 
-Java gives us several logging options. There's java.util.logging built right into the JDK, but it's simple and has limited features. The popular frameworks include SLF4J - the Simple Logging Facade - paired with implementations like Logback or Log4j2.
+[SCENE 3: JAVA'S MODERN HTTP CLIENT - 30 SECONDS]
 
-(Show Slide 6: SLF4J + Logback Setup)
+(Show Slide 6: Java HTTP Client)
 
-Think of SLF4J as an interface and Logback as the implementation. This separation means you can switch logging frameworks without changing your code. And notice - these dependencies are already in our project! We're using SLF4J 2.0.17 and Logback 1.5.18.
+Before Java 11, making HTTP requests was painful. You had to use HttpURLConnection, which felt like programming in the stone age. But Java 11 introduced a modern HTTP client that's a joy to use.
 
-[SCENE 4: CREATING YOUR FIRST LOGGER - 45 SECONDS]
+(Transition to IDE showing JsonPlaceholderClient.java)
 
-(Show Slide 7: Creating a Logger)
+Look how clean this is! We create a client using the builder pattern, set HTTP/2, add a timeout, and we're ready to go. This client can be reused for multiple requests, which is much more efficient than creating a new one each time.
 
-Let's create our first logger. Notice the pattern here - we create a static logger using LoggerFactory.getLogger and pass in our class. This becomes our gateway to the logging system.
+[SCENE 4: MAKING GET REQUESTS - 45 SECONDS]
 
-(Transition to IDE showing EmployeeLogger.java)
+(Show Slide 8: Making a GET Request)
 
-When we call logger.info, we're using parameterized messages. See those curly braces? They're placeholders that get replaced with actual values - but only if that log level is enabled. This is way more efficient than string concatenation.
+Let's fetch a real post from JsonPlaceholder. This is a live API call - no simulation!
 
-[SCENE 5: UNDERSTANDING LOG LEVELS - 45 SECONDS]
+(Highlight the GET request method in the code)
 
-(Show Slide 8: Logging Levels)
+We build the request with a URI pointing to JsonPlaceholder, add headers like 'Accept' to tell the server we want JSON, set a timeout, and specify it's a GET request. Then we send it and get back a response.
 
-Logging frameworks use levels to categorize messages. From least to most severe, we have TRACE for detailed diagnostic information, DEBUG for debugging, and INFO for general information.
+The response contains everything - the status code, headers, and most importantly, the body with our data. If the status is 200, we know it worked and we can process the real JSON from JsonPlaceholder.
 
-(Show Slide 9: Logging Levels (continued))
+[SCENE 5: POST REQUESTS AND JSON HANDLING - 45 SECONDS]
 
-Then we have the error levels: WARN for warning messages, ERROR for error conditions, and OFF to turn off logging completely.
+(Show Slide 11: POST Request)
 
-(Show Slide 10: Using Different Log Levels)
+Creating a new post is just as straightforward, and JsonPlaceholder will actually process our request!
 
-Look at this validation example in our EmployeeLogger. We use TRACE for the most detailed info, ERROR when something's definitely wrong, WARN for suspicious but not fatal issues, and DEBUG to track our progress. The beauty is that you can set your production systems to only show WARN and ERROR, while keeping all levels active during development.
+(Highlight the POST request method)
 
-[SCENE 6: EFFICIENT LOGGING TECHNIQUES - 45 SECONDS]
+We use a text block to create our JSON - one of my favorite Java features. Then we build a POST request, set the Content-Type header so the server knows we're sending JSON, and attach our data as the body.
 
-(Show Slide 11: Parameterized Messages)
+Notice how we're using the fluent builder pattern throughout? Each method returns the builder, so we can chain calls together. It reads almost like English.
 
-Here's a crucial performance tip. Instead of string concatenation, use parameterized messages. The bad way concatenates strings whether logging is enabled or not. The good way only concatenates if that log level is enabled. This can save significant performance in production.
+[SCENE 6: ERROR HANDLING AND BEST PRACTICES - 45 SECONDS]
 
-(Show Slide 12: Exception Logging)
+(Show Slide 10: Error Handling)
 
-When logging exceptions, pass the exception as the last parameter to get the full stack trace. This gives you all the diagnostic information you need to track down problems.
+In the real world, things go wrong. Networks fail, servers go down, APIs change.
 
-[SCENE 7: CONFIGURATION AND ADVANCED FEATURES - 105 SECONDS]
+(Highlight the error handling code)
 
-(Show Slide 13: Logback Configuration)
+We need to handle different status codes appropriately. 200 means success, 404 means not found, 401 means we're not authorized. And we wrap everything in a try-catch to handle network errors.
 
-Logback uses an XML configuration file, and it's simpler than it looks. This basic configuration creates a console appender with a specific pattern.
+(Show Slide 11: Robust API Communication)
 
-(Show Slide 14: Log Pattern Elements)
+Pro tip: Always log errors with enough context to debug later. Your future self will thank you.
 
-The pattern controls how each log line looks. You have date and time, thread name, log level padded to 5 characters...
+[SCENE 7: ASYNCHRONOUS REQUESTS - 30 SECONDS]
 
-(Show Slide 15: Log Pattern Elements (continued))
+(Show Slide 12: Asynchronous Requests)
 
-...logger name truncated to 36 characters, the actual message, and a line separator.
+Sometimes you don't want to wait for a response. Maybe you're making multiple API calls and want them to run in parallel.
 
-(Show Slide 16: File Appender)
+(Highlight the async method)
 
-You can write to files by adding a file appender. This logs to both console and file simultaneously.
+The `sendAsync` method returns a CompletableFuture. We can process the response when it arrives using `thenAccept`, and handle errors with `exceptionally`. This keeps your application responsive while waiting for slow APIs.
 
-(Show Slide 17: Rolling File Appender)
+[SCENE 8: COMPLETE IMPLEMENTATION - 30 SECONDS]
 
-For production, use a rolling file appender that automatically creates new log files each day and deletes old ones to save disk space.
+(Show Slide 21: Complete Example)
 
-(Show Slide 18: Logger Hierarchy)
+Let's look at our complete `JsonPlaceholderClient` class.
 
-Configure different log levels for different packages. Root logger at INFO, your application package at DEBUG, and third-party libraries at WARN to reduce noise.
+(Show the full class structure)
 
-[SCENE 8: PERFORMANCE AND CONTEXT - 90 SECONDS]
+This client encapsulates all our HTTP logic. It has methods for each operation - get, create, update, delete. Each method handles the HTTP details and returns proper Java objects. Your application code stays clean and focused on business logic, not HTTP plumbing.
 
-(Show Slide 19: Conditional Logging)
+[SCENE 9: BEST PRACTICES - 30 SECONDS]
 
-For expensive operations, check if the log level is enabled first. This avoids creating expensive debug strings when they won't be logged anyway.
+(Show Slide 21: Best Practices)
 
-(Show Slide 20: MDC (Mapped Diagnostic Context))
+Let me share some best practices for API client design.
 
-Here's a pro tip - use MDC, the Mapped Diagnostic Context, to add context to all your logs. By putting user ID and request ID into MDC, every log message in that thread automatically includes this context.
+(Show Slide 22: Performance & Reliability)
 
-(Show Slide 21: MDC in Log Pattern)
+Reuse your HttpClient instance - it's thread-safe and manages connections efficiently. Always set timeouts to avoid hanging forever. Consider retry logic for transient failures, and log requests and responses for debugging, but be careful with sensitive data.
 
-Configure your pattern to include MDC values, and you get rich contextual information in every log message. This is invaluable when tracking issues across multiple components.
+[SCENE 10: TRY IT OUT EXERCISE - 30 SECONDS]
 
-(Show Slide 22: Async Logging)
+(Show Slide: Try It Out Exercise)
 
-For high-volume applications, use async appenders to improve performance by writing logs on a separate thread.
+Now it's your turn to practice! In the web-services module, you'll find HttpClientExercise.java - a hands-on exercise with TODO sections.
 
-[SCENE 9: BEST PRACTICES AND MIGRATION - 60 SECONDS]
+Complete the TODOs to implement your own HTTP client methods using JsonPlaceholder's /todos endpoint. You'll practice GET requests, POST requests, async calls, and error handling - all with real HTTP requests to a different endpoint than our demo!
 
-(Show Slide 23: Best Practices)
+The exercise comes with tests to verify your implementation, and you can run the main method to see everything in action.
 
-Follow these logging guidelines: use appropriate log levels, include context in messages, and avoid logging sensitive data like passwords.
+[SCENE 11: CONCLUSION - 15 SECONDS]
 
-(Show Slide 24: Best Practices (continued))
+(Show Slide: Summary)
 
-For performance, use parameterized messages, guard expensive operations, and configure async appenders for high volume applications.
+You now know how to consume any REST API using Java's built-in HTTP client. No external libraries needed for basic operations! Start simple with GET requests, then add POST, error handling, and async as needed.
 
-(Show Slide 25: Common Mistakes)
+(Show Slide: Next Steps)
 
-Avoid these common mistakes: logging at the wrong level, including passwords or personal information, and excessive DEBUG logging in production.
-
-(Show Slide 26: Migration from println)
-
-Here's how to migrate from System.out.println. Replace print statements with appropriate logger calls, and pass exceptions as parameters for stack traces.
-
-[SCENE 10: SUMMARY AND NEXT STEPS - 30 SECONDS]
-
-(Show Slide 27: Summary)
-
-Proper logging is the difference between guessing what went wrong and knowing exactly what happened. Logging provides better diagnostics than println, SLF4J plus Logback is a popular choice, configure levels and appenders appropriately, use MDC for request context, and follow best practices for performance.
-
-[SCENE 11: TRY IT OUT EXERCISE - 30 SECONDS]
-
-Now it's time for you to practice! In the foundations module, you'll find LoggingExercise.java - a hands-on exercise with TODO sections covering all the concepts we've discussed.
-
-Complete the TODOs to practice creating loggers, using parameterized messages, implementing conditional logging, working with MDC context, and handling exceptions. Each section builds on the previous one, so you'll get comprehensive logging experience.
-
-You can also examine EmployeeLogger.java for a complete working example that demonstrates all these concepts in action.
-
-(Show Slide 28: Next: Consuming REST APIs)
-
-Next time, we'll use Java's HTTP client to consume REST APIs. Until then, happy coding, and may your logs always be informative!
+Next time, we'll flip the script and create our own REST APIs using Spring Boot. Thanks for watching!
