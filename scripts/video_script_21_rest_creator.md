@@ -1,7 +1,7 @@
 # Video Script: Creating REST Services with Spring Boot
 
-**Goal:** 21. Build RESTful web services using Spring Boot for modern API development.
-**Target Duration:** 4-5 minutes
+**Goal:** 21. Build RESTful web services using Spring Boot with proper layered architecture.
+**Target Duration:** 5-6 minutes
 
 ---
 
@@ -10,123 +10,149 @@
 **(Show Slide 1: Title Slide - "Creating REST Services with Spring Boot")**
 
 **Host:**
-"Welcome back! Last time, we learned how to consume REST APIs. Now let's flip the script and create our own REST services. We'll use Spring Boot, the most popular Java framework that makes building REST APIs almost embarrassingly easy."
+"Welcome back! Last time, we learned how to consume REST APIs. Now let's flip the script and create our own REST services. We'll build a comprehensive, production-ready API with proper layered architecture using Spring Boot."
 
 ---
 
 ### SCENE 2: Why Spring Boot? (0:30 - 1:00)
 
-**(Show Slide 2: Why Spring Boot?)**
+**(Show Slide 2: Why Spring Boot? - The Industry Standard)**
 
 **Host:**
-"If you've ever tried building a web service from scratch, you know it's painful. You need a server, routing, JSON conversion, error handling - the list goes on. Spring Boot handles all of this with minimal configuration."
+"Spring Boot is the industry standard for a reason. It follows convention over configuration, includes production-ready features built-in, and provides an exceptional developer experience."
 
 **(Show Slide 3: Developer Experience)**
 
 **Host:**
-"It's like the difference between building a car from parts versus buying one ready to drive. Spring Boot gives you a production-ready REST API framework right out of the box."
+"Minimal boilerplate code, embedded server included, auto-configuration magic. It's like having a senior architect design your application structure for you."
 
 ---
 
-### SCENE 3: Getting Started (1:00 - 1:30)
+### SCENE 3: Project Structure (1:00 - 1:30)
 
-**(Show Slide 4: Spring Boot Setup)**
+**(Show Slide 4: Spring Boot Setup - Dependencies We Need)**
 
 **Host:**
-"First, we need the Spring Boot Web starter dependency. If you're using our project, it's already configured in the web-services module."
+"We're working with a multi-module Gradle project. Our web-services module focuses on REST APIs, with Spring Boot Web starter and validation dependencies already configured."
 
 **(Show Slide 5: Main Application Class)**
 
 **Host:**
-"This is your entire application! The @SpringBootApplication annotation sets up component scanning, auto-configuration, and embedded Tomcat server. One annotation, and you're ready to build APIs."
+"Here's our WebServicesApplication. One @SpringBootApplication annotation gives us component scanning, auto-configuration, and an embedded Tomcat server. That's it - we're ready to build APIs."
 
 ---
 
-### SCENE 4: Your First REST Controller (1:30 - 2:00)
+### SCENE 4: Layered Architecture (1:30 - 2:15)
 
-**(Show Slide 6: Your First REST Controller)**
-
-**Host:**
-"Let's create an Employee REST controller."
-
-**(Transition to IDE showing EmployeeController.java)**
+**(Show Slide 6: Layered Architecture - Three-Tier Design)**
 
 **Host:**
-"Look at these annotations. @RestController tells Spring this class handles REST requests. @RequestMapping sets the base path. @GetMapping handles GET requests."
+"Instead of building a simple controller, we'll create proper layered architecture. Controller layer handles REST endpoints, Service layer contains business logic and validation, Repository layer manages data access."
+
+**(Show Slide 7: Repository Layer)**
 
 **Host:**
-"Run this, and you've got a working REST endpoint at localhost:8080/api/employees/hello. That's it!"
-
-## CRUD Operations (1:45-2:30)
-
-Now let's implement the full CRUD - Create, Read, Update, Delete.
-
-**(Show GET endpoint in code)**
-
-The @PathVariable annotation extracts the ID from the URL. Spring automatically converts our Employee object to JSON. No manual JSON handling needed!
-
-**(Show POST endpoint in code)**
-
-@RequestBody does the opposite - it takes incoming JSON and converts it to an Employee object. @ResponseStatus sets the HTTP status to 201 Created.
-
-## Service Layer Pattern (2:30-3:15)
-
-In real applications, controllers shouldn't contain business logic. That belongs in a service layer.
-
-**(Show service class in IDE)**
-
-The @Service annotation marks this as a Spring component. We're using a ConcurrentHashMap as a simple in-memory database. In production, you'd use a real database.
-
-**(Show controller with service injection)**
-
-Notice the constructor injection? Spring automatically wires the EmployeeService into our controller. This is dependency injection at work - one of Spring's core features.
-
-## Exception Handling (3:15-3:45)
-
-What happens when an employee isn't found? We need proper error handling.
-
-[Show custom exception and handler]
-
-By throwing EmployeeNotFoundException, Spring automatically returns a 404 status. The @RestControllerAdvice creates a global exception handler that catches these exceptions and returns a proper error response.
+"Our EmployeeRepository uses @Repository annotation and handles data persistence. Notice we're using a modern Java record for Employee, with immutable data and helper methods like withId()."
 
 ---
 
-### SCENE 8: Input Validation (4:00 - 4:30)
+### SCENE 5: Service Layer with Business Logic (2:15 - 2:45)
 
-**(Show Slide 12: Input Validation)**
-
-**Host:**
-"Never trust user input! Spring integrates with Bean Validation to make this easy."
-
-**(Show validated Employee class in code)**
+**(Show Slide 8: Service Layer - Business Logic & Validation)**
 
 **Host:**
-"Add validation annotations to your model. Then use @Valid in your controller method. If validation fails, Spring automatically returns a 400 Bad Request with details about what's wrong. This prevents bad data from ever reaching your business logic."
+"The Service layer is where the magic happens. Our EmployeeService contains business constants, validation logic, and operations like processNewHire() and giveRaise(). Notice how it validates salary ranges and handles business rules."
+
+**(Show Slide 9: Transaction Management - Professional Service Layer Patterns)**
+
+**Host:**
+"We've also added professional transaction boundaries with @Transactional annotations. The service class uses @Transactional for write operations and @Transactional(readOnly = true) for queries. This demonstrates proper enterprise patterns even with in-memory storage."
+
+**(Show Slide 10: Transaction Configuration - Enabling Transaction Management)**
+
+**Host:**
+"Our main application class uses @EnableTransactionManagement to activate Spring's transaction infrastructure. This shows how to structure applications for easy database migration later - just change the storage backend and your transaction boundaries are already defined."
+
+**(Show Slide 11: Controller Layer - REST Endpoints)**
+
+**Host:**
+"The Controller layer stays focused on HTTP concerns. Look at the constructor injection - Spring automatically wires the EmployeeService. The controller methods handle ResponseEntity for proper HTTP status codes and headers."
 
 ---
 
-### SCENE 9: Testing Your API (4:30 - 5:00)
+### SCENE 6: Modern Java Features (2:45 - 3:15)
 
-**(Show Slide 13: Testing Support)**
-
-**Host:**
-"Spring Boot includes excellent testing support."
-
-**(Show test example in code)**
+**(Show Slide 12: Employee Record - Modern Immutable Data)**
 
 **Host:**
-"MockMvc lets you test your REST endpoints without starting a real server. You can verify status codes, response bodies, headers - everything. This makes test-driven development a breeze."
+"We're using Java records for immutable data. No getters, setters, or equals/hashCode boilerplate. The withId() and withSalary() helper methods create new instances for updates - that's immutable design done right."
+
+**(Show Slide 13: Request Validation - Business Logic Validation)**
+
+**Host:**
+"Instead of bean validation annotations, we implement business logic validation in the service layer. This gives us complete control over validation rules and custom error messages."
 
 ---
 
-### SCENE 10: Conclusion (5:00 - 5:15)
+### SCENE 7: Exception Handling (3:15 - 3:45)
 
-**(Show Slide 14: Key Takeaways)**
-
-**Host:**
-"You've just built a complete REST API with Spring Boot! We covered controllers, services, exception handling, and validation - the core of any REST service."
-
-**(Show Slide 15: Next Steps)**
+**(Show Slide 14: Global Exception Handler - Modern Error Handling with ProblemDetail)**
 
 **Host:**
-"Next time, we'll secure these endpoints by preventing SQL injection and XSS attacks. Because with great API power comes great security responsibility!"
+"Modern exception handling uses ProblemDetail from RFC 7807. Our GlobalExceptionHandler catches EmployeeNotFoundException and returns structured error responses with proper HTTP status codes."
+
+---
+
+### SCENE 8: Business Logic Endpoints (3:45 - 4:15)
+
+**(Show Slide 15: Business Logic Endpoints - Beyond Simple CRUD)**
+
+**Host:**
+"This is where our architecture shines. We're not just doing basic CRUD - we have business operations like giveRaise(), giveStandardRaise(), and getHighPerformers(). Each endpoint encapsulates real business logic."
+
+---
+
+### SCENE 9: Testing Strategy (4:15 - 4:45)
+
+**(Show Slide 16: Testing REST APIs - Three-Layer Testing Strategy)**
+
+**Host:**
+"Our layered architecture enables comprehensive testing. Repository tests are pure unit tests with no Spring context. Service tests use Spring Boot integration with @MockitoBean. Controller tests use @WebMvcTest for the web layer."
+
+**(Show Slide 17: Controller Layer Testing - MockMvc Web Layer Tests)**
+
+**Host:**
+"MockMvc simulates HTTP requests without starting a server. We mock the service layer and test HTTP status codes, JSON responses, and request mapping. This gives us fast, focused web layer testing."
+
+---
+
+### SCENE 10: Running and Summary (4:45 - 5:15)
+
+**(Show Slide 18: Running the Application - In Our Project Structure)**
+
+**Host:**
+"Our multi-module project separates concerns beautifully. Run gradle :web-services:bootRun and you'll have a full REST API at localhost:8080. Try the /api/employees/hello endpoint to see it in action."
+
+**(Show Slide 19: Summary)**
+
+**Host:**
+"We've built a production-ready REST API with proper layered architecture. Modern Java records, comprehensive business logic, and testing at all three layers. This is how you build maintainable, scalable APIs."
+
+**Host:**
+"Spring Boot makes the plumbing invisible so you can focus on business value. Clean separation of concerns means each layer has a single responsibility, making the code easier to test, maintain, and extend."
+
+---
+
+### SCENE 11: Conclusion (5:15 - 5:30)
+
+**(Show Slide 20: Next: Input Validation)**
+
+**Host:**
+"Next time, we'll dive deeper into input validation and preventing security vulnerabilities like SQL injection and XSS attacks. Because building great APIs is just the first step - securing them is equally important!"
+
+**Host:**
+"Thanks for watching, and I'll see you in the next video where we'll make our APIs bulletproof!"
+
+---
+
+**🎬 End of Video Script**

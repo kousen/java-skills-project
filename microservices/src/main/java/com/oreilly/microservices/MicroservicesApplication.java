@@ -1,4 +1,4 @@
-package com.oreilly.webservices;
+package com.oreilly.microservices;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-public class MicroservicesDemo {
+public class MicroservicesApplication {
     
     public static void main(String[] args) {
         // This would normally start a Spring Boot application
@@ -75,7 +75,7 @@ public class MicroservicesDemo {
 class EmployeeController {
     
     @Autowired
-    private EmployeeService employeeService;
+    private MicroserviceEmployeeService employeeService;
     
     @Autowired
     private DepartmentServiceClient departmentClient;
@@ -178,11 +178,11 @@ class PayrollServiceDemo {
 /**
  * Service layer with circuit breaker and retry patterns
  */
-class EmployeeService {
+class MicroserviceEmployeeService {
     
     private Map<Long, MicroserviceEmployee> employees = new HashMap<>();
     
-    public EmployeeService() {
+    public MicroserviceEmployeeService() {
         // Initialize with sample data
         employees.put(1L, new MicroserviceEmployee(1L, "Alice Johnson", "alice@company.com", 1L, 85000.0));
         employees.put(2L, new MicroserviceEmployee(2L, "Bob Smith", "bob@company.com", 2L, 75000.0));

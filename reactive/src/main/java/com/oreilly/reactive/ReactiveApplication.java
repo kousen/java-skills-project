@@ -1,4 +1,7 @@
-package com.oreilly.webservices;
+package com.oreilly.reactive;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,36 +20,54 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
- * Reactive Programming with Project Reactor Demonstration
- * Shows reactive patterns using Mono and Flux with practical examples
- * for the Employee Management System.
+ * Reactive Programming with Project Reactor - Topic 26
+ * 
+ * This Spring Boot application demonstrates:
+ * - Reactive programming patterns with Project Reactor
+ * - WebFlux reactive web framework  
+ * - Mono and Flux operations with practical examples
+ * - Employee Management System using reactive streams
+ * - Testing reactive streams with StepVerifier
  */
-public class ReactiveDemo {
+@SpringBootApplication
+public class ReactiveApplication {
     
     public static void main(String[] args) {
+        SpringApplication.run(ReactiveApplication.class, args);
+        
+        // Also run the demonstration
+        ReactiveDemo demo = new ReactiveDemo();
+        demo.runDemo();
+    }
+}
+
+/**
+ * Demonstration class for reactive programming concepts
+ */
+class ReactiveDemo {
+    
+    public void runDemo() {
         System.out.println("=== Reactive Programming with Project Reactor ===");
         
-        ReactiveDemo demo = new ReactiveDemo();
-        
         // Basic Mono and Flux operations
-        demo.demonstrateMonoBasics();
-        demo.demonstrateFluxBasics();
+        this.demonstrateMonoBasics();
+        this.demonstrateFluxBasics();
         
         // Transformations and combinations
-        demo.demonstrateTransformations();
-        demo.demonstrateCombiningStreams();
+        this.demonstrateTransformations();
+        this.demonstrateCombiningStreams();
         
         // Error handling
-        demo.demonstrateErrorHandling();
+        this.demonstrateErrorHandling();
         
         // Backpressure and flow control
-        demo.demonstrateBackpressure();
+        this.demonstrateBackpressure();
         
         // Testing reactive streams
-        demo.demonstrateTesting();
+        this.demonstrateTesting();
         
         // WebFlux examples
-        demo.demonstrateWebFlux();
+        this.demonstrateWebFlux();
         
         System.out.println("\n=== Reactive programming demonstration complete ===");
     }

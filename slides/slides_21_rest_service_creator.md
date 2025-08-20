@@ -101,11 +101,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EmployeeServiceApplication {
+public class WebServicesApplication {
     
     public static void main(String[] args) {
-        SpringApplication.run(
-            EmployeeServiceApplication.class, args);
+        SpringApplication.run(WebServicesApplication.class, args);
     }
 }
 ```
@@ -298,21 +297,39 @@ public void deleteEmployee(@PathVariable Long id) {
 transition: slide-left
 ---
 
-# Service Layer
+# Layered Architecture
 
-## Business Logic Separation
+## Three-Tier Design
+
+<v-clicks>
+
+- **Controller Layer** - REST endpoints, request/response handling
+- **Service Layer** - Business logic, validation, orchestration
+- **Repository Layer** - Data access, persistence operations
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# Repository Layer
+
+## Data Access
 
 ```java
-@Service
-public class EmployeeService {
+@Repository
+public class EmployeeRepository {
     private final Map<Long, Employee> employees = 
         new ConcurrentHashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
     
     public Employee save(Employee employee) {
-        if (employee.getId() == null) {
-            employee.setId(generateId());
+        if (employee.id() == null) {
+            Long id = idGenerator.getAndIncrement();
+            employee = employee.withId(id);
         }
-        employees.put(employee.getId(), employee);
+        employees.put(employee.id(), employee);
         return employee;
     }
     
@@ -326,25 +343,121 @@ public class EmployeeService {
 transition: slide-left
 ---
 
-# Controller with Service
+# Service Layer
 
-## Dependency Injection
+## Business Logic & Validation
+
+```java
+@Service
+public class EmployeeService {
+    private static final double MIN_SALARY = 30000.0;
+    private static final double MAX_SALARY = 500000.0;
+    private final EmployeeRepository employeeRepository;
+    
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+    
+    public Employee processNewHire(Employee employee) {
+        validateEmployee(employee);
+        return employeeRepository.save(employee);
+    }
+    
+    public Employee giveRaise(Long id, Double amount) {
+        Employee employee = findById(id)
+            .orElseThrow(() -> new EmployeeNotFoundException(id));
+        return employeeRepository.save(
+            employee.withSalary(employee.salary() + amount));
+    }
+}
+```
+
+---
+transition: slide-left
+---
+
+# Transaction Management
+
+## Professional Service Layer Patterns
+
+```java
+@Service
+@Transactional  // Default for all methods
+public class EmployeeService {
+    
+    @Transactional(readOnly = true)
+    public Optional<Employee> findById(Long id) {
+        return employeeRepository.findById(id);
+    }
+    
+    @Transactional(readOnly = true) 
+    public List<Employee> findHighPerformers() {
+        return employeeRepository.findBySalaryGreaterThanEqual(80000.0);
+    }
+    
+    // Write operations use default @Transactional
+    public Employee giveRaise(Long id, double amount) {
+        // Business logic with transaction boundaries
+    }
+}
+```
+
+---
+transition: slide-left
+---
+
+# Transaction Configuration
+
+## Enabling Transaction Management
+
+```java
+@SpringBootApplication
+@EnableTransactionManagement
+public class WebServicesApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(WebServicesApplication.class, args);
+    }
+}
+```
+
+<v-clicks>
+
+- **@EnableTransactionManagement** - Enables Spring's transaction infrastructure
+- **Read-only optimization** - `@Transactional(readOnly = true)` for queries
+- **Business boundaries** - Transactions at service layer, not repository
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# Controller Layer
+
+## REST Endpoints
 
 ```java
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
-    private final EmployeeService service;
+    private final EmployeeService employeeService;
     
-    public EmployeeController(EmployeeService service) {
-        this.service = service;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
     
     @GetMapping("/{id}")
-    public Employee getEmployee(@PathVariable Long id) {
-        return service.findById(id)
-            .orElseThrow(() -> 
-                new EmployeeNotFoundException(id));
+    public ResponseEntity<Employee> getEmployee(@PathVariable Long id) {
+        return employeeService.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    }
+    
+    @PostMapping
+    public ResponseEntity<Employee> createEmployee(
+            @Valid @RequestBody Employee employee) {
+        Employee saved = employeeService.processNewHire(employee);
+        return ResponseEntity.created(/* location */).body(saved);
     }
 }
 ```
@@ -374,20 +487,55 @@ transition: slide-left
 
 # Global Exception Handler
 
-## Centralized Error Handling
+## Modern Error Handling with ProblemDetail
 
 ```java
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
     @ExceptionHandler(EmployeeNotFoundException.class)
-    public ErrorResponse handleNotFound(
-            EmployeeNotFoundException ex) {
-        return new ErrorResponse(
-            HttpStatus.NOT_FOUND.value(),
-            ex.getMessage(),
-            Instant.now()
-        );
+    public ProblemDetail handleEmployeeNotFound(
+            EmployeeNotFoundException ex, WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail
+            .forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setType(URI.create(
+            "https://api.example.com/problems/employee-not-found"));
+        return problemDetail;
+    }
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ProblemDetail handleValidation(
+            IllegalArgumentException ex) {
+        return ProblemDetail
+            .forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+}
+```
+
+---
+transition: slide-left
+---
+
+# Employee Record
+
+## Modern Immutable Data
+
+```java
+public record Employee(Long id, String name, 
+                      String department, Double salary) {
+    
+    // Constructor for new employees (no ID yet)
+    public Employee(String name, String department, Double salary) {
+        this(null, name, department, salary);
+    }
+    
+    // Helper method for immutable updates
+    public Employee withId(Long id) {
+        return new Employee(id, name, department, salary);
+    }
+    
+    public Employee withSalary(Double salary) {
+        return new Employee(id, name, department, salary);
     }
 }
 ```
@@ -398,20 +546,22 @@ transition: slide-left
 
 # Request Validation
 
-## Bean Validation
+## Business Logic Validation
 
 ```java
-public class Employee {
-    @NotNull
-    @Size(min = 2, max = 100)
-    private String name;
+@Service
+public class EmployeeService {
+    private static final double MIN_SALARY = 30000.0;
+    private static final double MAX_SALARY = 500000.0;
     
-    @NotNull
-    private String department;
-    
-    @Min(0)
-    @Max(1000000)
-    private Double salary;
+    private void validateEmployee(Employee employee) {
+        if (employee.salary() < MIN_SALARY || 
+            employee.salary() > MAX_SALARY) {
+            throw new IllegalArgumentException(
+                String.format("Salary %.2f must be between %.2f and %.2f",
+                    employee.salary(), MIN_SALARY, MAX_SALARY));
+        }
+    }
 }
 ```
 
@@ -419,21 +569,35 @@ public class Employee {
 transition: slide-left
 ---
 
-# Validation in Controller
+# Business Logic Endpoints
 
-## @Valid Annotation
+## Beyond Simple CRUD
 
 ```java
-@PostMapping
-@ResponseStatus(HttpStatus.CREATED)
-public Employee createEmployee(
-        @Valid @RequestBody Employee employee) {
-    return service.save(employee);
+@RestController 
+@RequestMapping("/api/employees")
+public class EmployeeController {
+    
+    @PutMapping("/{id}/raise")
+    public ResponseEntity<Employee> giveRaise(
+            @PathVariable Long id,
+            @RequestParam Double amount) {
+        Employee updated = employeeService.giveRaise(id, amount);
+        return ResponseEntity.ok(updated);
+    }
+    
+    @PutMapping("/{id}/standard-raise")  
+    public ResponseEntity<Employee> giveStandardRaise(
+            @PathVariable Long id) {
+        Employee updated = employeeService.giveStandardRaise(id);
+        return ResponseEntity.ok(updated);
+    }
+    
+    @GetMapping("/high-performers")
+    public List<Employee> getHighPerformers() {
+        return employeeService.findHighPerformers();
+    }
 }
-
-// Spring automatically returns 400 Bad Request
-// if validation fails
-```
 
 ---
 transition: slide-left
@@ -518,21 +682,29 @@ transition: slide-left
 
 # Testing REST APIs
 
-## Spring Boot Test
+## Three-Layer Testing Strategy
 
 ```java
-@SpringBootTest
-@AutoConfigureMockMvc
-class EmployeeControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
+// Repository Layer - Pure unit tests
+class EmployeeRepositoryTest {
+    private EmployeeRepository repository = new EmployeeRepository();
     
     @Test
-    void testGetEmployee() throws Exception {
-        mockMvc.perform(get("/api/employees/1"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value("John Doe"));
+    void testSaveAndFindById() {
+        Employee employee = new Employee("John", "Engineering", 75000.0);
+        Employee saved = repository.save(employee);
+        assertThat(saved.id()).isNotNull();
     }
+}
+
+// Service Layer - Spring Boot integration with mocks
+@SpringBootTest(classes = {WebServicesApplication.class})
+class EmployeeServiceTest {
+    @MockitoBean
+    private EmployeeRepository employeeRepository;
+    
+    @Autowired
+    private EmployeeService employeeService;
 }
 ```
 
@@ -540,26 +712,35 @@ class EmployeeControllerTest {
 transition: slide-left
 ---
 
-# Testing POST Requests
+# Controller Layer Testing
 
-## Creating Data in Tests
+## MockMvc Web Layer Tests
 
 ```java
-@Test
-void testCreateEmployee() throws Exception {
-    String json = """
-        {
-            "name": "New Employee",
-            "department": "IT",
-            "salary": 80000
-        }
-        """;
+@WebMvcTest(controllers = EmployeeController.class)
+@Import({GlobalExceptionHandler.class})
+class EmployeeControllerTest {
     
-    mockMvc.perform(post("/api/employees")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json))
-        .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.name").value("New Employee"));
+    @Autowired
+    private MockMvc mockMvc;
+    
+    @MockitoBean
+    private EmployeeService employeeService;
+    
+    @Test
+    void testCreateEmployee() throws Exception {
+        Employee newEmployee = new Employee("Alice", "Sales", 70000.0);
+        Employee savedEmployee = new Employee(4L, "Alice", "Sales", 70000.0);
+        
+        when(employeeService.processNewHire(any(Employee.class)))
+            .thenReturn(savedEmployee);
+        
+        mockMvc.perform(post("/api/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newEmployee)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name").value("Alice"));
+    }
 }
 ```
 
@@ -591,18 +772,23 @@ transition: slide-left
 
 # Running the Application
 
-## Three Ways to Start
+## In Our Project Structure
 
 <v-clicks>
 
-1. IDE: Run main method
-2. Maven: `mvn spring-boot:run`
-3. Gradle: `gradle bootRun`
+- **Multi-module Gradle project**
+- **web-services module** - REST APIs (Goals 20 & 21)
+- **microservices module** - Spring Cloud (Goal 25)
+- **reactive module** - WebFlux (Goal 26)
 
 </v-clicks>
 
 ```bash
+# Run the web-services module
+gradle :web-services:bootRun
+
 # Application starts on http://localhost:8080
+# Try: http://localhost:8080/api/employees/hello
 ```
 
 ---
@@ -614,11 +800,12 @@ layout: center
 
 <v-clicks>
 
-- Spring Boot makes REST API creation simple
-- Use @RestController and mapping annotations
-- Separate concerns with Service layer
-- Validate input with Bean Validation
-- Test with MockMvc
+- **Layered Architecture** - Controller, Service, Repository
+- **Modern Java** - Records, immutable data, pattern matching
+- **Spring Boot** - Auto-configuration, embedded server
+- **Business Logic** - Validation, custom operations
+- **Comprehensive Testing** - All three layers tested
+- **Clean Separation** - Each layer has single responsibility
 
 </v-clicks>
 

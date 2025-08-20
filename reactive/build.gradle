@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+dependencies {
+    // Spring Boot WebFlux for reactive programming
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    
+    // Project Reactor core and test support
+    implementation 'io.projectreactor:reactor-core'
+    testImplementation 'io.projectreactor:reactor-test'
+    
+    // Jackson for JSON processing in reactive endpoints
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.19.1')
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    
+    // Testing dependencies (inherited from root)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
