@@ -20,18 +20,18 @@ graph TD
         ProblemDetail responses"]
     end
 
-    subgraph "Business Layer"
+    subgraph "Services Layer"
         Service["EmployeeService
         @Service
-        Business logic & validation"]
+        Business logic, validation, transaction boundaries"]
         Exception["EmployeeNotFoundException
         Custom business exceptions"]
     end
 
-    subgraph "Data Layer"
+    subgraph "Repository Layer"
         Repository["EmployeeRepository
         @Repository
-        Data access operations"]
+        Data access operations (DAO)"]
         Storage["ConcurrentHashMap
         In-memory storage"]
     end

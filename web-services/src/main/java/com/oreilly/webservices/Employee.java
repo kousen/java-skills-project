@@ -23,7 +23,7 @@ public record Employee(
     @Size(min = 2, max = 50, message = "Department must be between 2 and 50 characters")
     String department,
     
-    @Min(value = 0, message = "Salary must be non-negative")
+    @PositiveOrZero(message = "Salary must be zero or more")
     @Max(value = 1000000, message = "Salary cannot exceed 1,000,000")
     Double salary
 ) {

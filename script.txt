@@ -1,117 +1,75 @@
 [SCENE 1: INTRODUCTION - 30 SECONDS]
 
-(Show Slide 1: Title Slide - "Consuming REST APIs with Java")
+Welcome back! Last time, we learned how to consume REST APIs. Now let's flip the script and create our own REST services. We'll build a comprehensive, production-ready API with proper layered architecture using Spring Boot.
 
-Hi everyone, and welcome to this series on essential Java skills. Today, we're consuming REST APIs using Java's modern HTTP client, and we'll be working with real, live data!
+[SCENE 2: WHY SPRING BOOT? - 30 SECONDS]
 
-(Show Slide 3: Demo API: JsonPlaceholder)
+Spring Boot is the industry standard for a reason. It follows convention over configuration, includes production-ready features built-in, and provides an exceptional developer experience.
 
-We'll use JsonPlaceholder, a free fake REST API that's perfect for learning. It provides real endpoints with posts, users, and comments - and no authentication required!
+Minimal boilerplate code, embedded server included, auto-configuration magic. It's like having a senior architect design your application structure for you.
 
-[SCENE 2: UNDERSTANDING REST APIS - 30 SECONDS]
+[SCENE 3: PROJECT STRUCTURE - 30 SECONDS]
 
-(Show Slide 4: What is a REST API?)
+We're working with a multi-module Gradle project. Our web-services module focuses on REST APIs, with Spring Boot Web starter and validation dependencies already configured.
 
-REST stands for Representational State Transfer. Don't let the fancy name scare you - it's just a way for applications to talk to each other over HTTP.
+Here's our WebServicesApplication. One @SpringBootApplication annotation gives us component scanning, auto-configuration, and an embedded Tomcat server. That's it - we're ready to build APIs.
 
-(Show Slide 5: Common Operations)
+[SCENE 4: LAYERED ARCHITECTURE - 45 SECONDS]
 
-Think of it like ordering from a restaurant menu. You make a request - 'I'd like post number 1, please' - and the server brings you back exactly what you ordered, usually in JSON format. The main operations are GET to retrieve, POST to create, PUT to update, and DELETE to remove.
+Instead of building a simple controller, we'll create proper layered architecture. Controller layer handles REST endpoints, Service layer contains business logic and validation, Repository layer manages data access.
 
-[SCENE 3: JAVA'S MODERN HTTP CLIENT - 30 SECONDS]
+Our EmployeeRepository uses @Repository annotation and handles data persistence. Notice we're using a modern Java record for Employee, with immutable data and helper methods like withId().
 
-(Show Slide 6: Java HTTP Client)
+[SCENE 5: SERVICE LAYER WITH BUSINESS LOGIC - 30 SECONDS]
 
-Before Java 11, making HTTP requests was painful. You had to use HttpURLConnection, which felt like programming in the stone age. But Java 11 introduced a modern HTTP client that's a joy to use.
+The Service layer is where the magic happens. Our EmployeeService contains business constants, validation logic, and operations like processNewHire() and giveRaise(). Notice how it validates salary ranges and handles business rules.
 
-(Transition to IDE showing JsonPlaceholderClient.java)
+We've also added professional transaction boundaries with @Transactional annotations. The service class uses @Transactional for write operations and @Transactional(readOnly = true) for queries. This demonstrates proper enterprise patterns even with in-memory storage.
 
-Look how clean this is! We create a client using the builder pattern, set HTTP/2, add a timeout, and we're ready to go. This client can be reused for multiple requests, which is much more efficient than creating a new one each time.
+Our main application class uses @EnableTransactionManagement to activate Spring's transaction infrastructure. This shows how to structure applications for easy database migration later - just change the storage backend and your transaction boundaries are already defined.
 
-[SCENE 4: MAKING GET REQUESTS - 45 SECONDS]
+The Controller layer stays focused on HTTP concerns. Look at the constructor injection - Spring automatically wires the EmployeeService. The controller methods handle ResponseEntity for proper HTTP status codes and headers.
 
-(Show Slide 8: Making a GET Request)
+[SCENE 6: MODERN JAVA FEATURES - 30 SECONDS]
 
-Let's fetch a real post from JsonPlaceholder. This is a live API call - no simulation!
+We're using Java records for immutable data. No getters, setters, or equals/hashCode boilerplate. The withId() and withSalary() helper methods create new instances for updates - that's immutable design done right.
 
-(Highlight the GET request method in the code)
+Instead of bean validation annotations, we implement business logic validation in the service layer. This gives us complete control over validation rules and custom error messages.
 
-We build the request with a URI pointing to JsonPlaceholder, add headers like 'Accept' to tell the server we want JSON, set a timeout, and specify it's a GET request. Then we send it and get back a response.
+[SCENE 7: EXCEPTION HANDLING - 30 SECONDS]
 
-The response contains everything - the status code, headers, and most importantly, the body with our data. If the status is 200, we know it worked and we can process the real JSON from JsonPlaceholder.
+Modern exception handling uses ProblemDetail from RFC 7807. Our GlobalExceptionHandler catches EmployeeNotFoundException and returns structured error responses with proper HTTP status codes.
 
-[SCENE 5: POST REQUESTS AND JSON HANDLING - 45 SECONDS]
+[SCENE 8: BUSINESS LOGIC ENDPOINTS - 30 SECONDS]
 
-(Show Slide 11: POST Request)
+This is where our architecture shines. We're not just doing basic CRUD - we have business operations like giveRaise(), giveStandardRaise(), and getHighPerformers(). Each endpoint encapsulates real business logic.
 
-Creating a new post is just as straightforward, and JsonPlaceholder will actually process our request!
+[SCENE 9: TESTING STRATEGY - 30 SECONDS]
 
-(Highlight the POST request method)
+Our layered architecture enables comprehensive testing. Repository tests are pure unit tests with no Spring context. Service tests use Spring Boot integration with @MockitoBean. Controller tests use @WebMvcTest for the web layer.
 
-We use a text block to create our JSON - one of my favorite Java features. Then we build a POST request, set the Content-Type header so the server knows we're sending JSON, and attach our data as the body.
+MockMvc simulates HTTP requests without starting a server. We mock the service layer and test HTTP status codes, JSON responses, and request mapping. This gives us fast, focused web layer testing.
 
-Notice how we're using the fluent builder pattern throughout? Each method returns the builder, so we can chain calls together. It reads almost like English.
+[SCENE 10: RUNNING AND SUMMARY - 30 SECONDS]
 
-[SCENE 6: ERROR HANDLING AND BEST PRACTICES - 45 SECONDS]
+Our multi-module project separates concerns beautifully. Run gradle :web-services:bootRun and you'll have a full REST API at localhost:8080. Try the /api/employees/hello endpoint to see it in action.
 
-(Show Slide 10: Error Handling)
+We've built a production-ready REST API with proper layered architecture. Modern Java records, comprehensive business logic, and testing at all three layers. This is how you build maintainable, scalable APIs.
 
-In the real world, things go wrong. Networks fail, servers go down, APIs change.
+Spring Boot makes the plumbing invisible so you can focus on business value. Clean separation of concerns means each layer has a single responsibility, making the code easier to test, maintain, and extend.
 
-(Highlight the error handling code)
+[SCENE 11: TRY IT OUT EXERCISE - 30 SECONDS]
 
-We need to handle different status codes appropriately. 200 means success, 404 means not found, 401 means we're not authorized. And we wrap everything in a try-catch to handle network errors.
+Now it's time to put your REST controller skills to work! Open the `EmployeeSearchController.java` file in the web-services module. You'll find four TODOs that guide you through implementing search endpoints.
 
-(Show Slide 11: Robust API Communication)
+This exercise demonstrates real-world patterns: constructor injection, GET endpoints with path variables, POST endpoints with request bodies, and stream-based filtering. The best part? You'll reuse our existing EmployeeService - no duplicate business logic needed!
 
-Pro tip: Always log errors with enough context to debug later. Your future self will thank you.
+Start with TODO #1 for constructor injection, then implement the department search GET endpoint. The POST endpoint for advanced search is where it gets interesting - you'll use Java streams to filter by multiple criteria. Finally, create a simple endpoint that returns unique department names.
 
-[SCENE 7: ASYNCHRONOUS REQUESTS - 30 SECONDS]
+Run the provided tests to verify your implementation. This exercise shows you how real REST APIs are built in production - clean separation of concerns with focused controllers that delegate to service layers.
 
-(Show Slide 12: Asynchronous Requests)
+[SCENE 12: CONCLUSION - 15 SECONDS]
 
-Sometimes you don't want to wait for a response. Maybe you're making multiple API calls and want them to run in parallel.
+Next time, we'll dive deeper into input validation and preventing security vulnerabilities like SQL injection and XSS attacks. Because building great APIs is just the first step - securing them is equally important!
 
-(Highlight the async method)
-
-The `sendAsync` method returns a CompletableFuture. We can process the response when it arrives using `thenAccept`, and handle errors with `exceptionally`. This keeps your application responsive while waiting for slow APIs.
-
-[SCENE 8: COMPLETE IMPLEMENTATION - 30 SECONDS]
-
-(Show Slide 21: Complete Example)
-
-Let's look at our complete `JsonPlaceholderClient` class.
-
-(Show the full class structure)
-
-This client encapsulates all our HTTP logic. It has methods for each operation - get, create, update, delete. Each method handles the HTTP details and returns proper Java objects. Your application code stays clean and focused on business logic, not HTTP plumbing.
-
-[SCENE 9: BEST PRACTICES - 30 SECONDS]
-
-(Show Slide 21: Best Practices)
-
-Let me share some best practices for API client design.
-
-(Show Slide 22: Performance & Reliability)
-
-Reuse your HttpClient instance - it's thread-safe and manages connections efficiently. Always set timeouts to avoid hanging forever. Consider retry logic for transient failures, and log requests and responses for debugging, but be careful with sensitive data.
-
-[SCENE 10: TRY IT OUT EXERCISE - 30 SECONDS]
-
-(Show Slide: Try It Out Exercise)
-
-Now it's your turn to practice! In the web-services module, you'll find HttpClientExercise.java - a hands-on exercise with TODO sections.
-
-Complete the TODOs to implement your own HTTP client methods using JsonPlaceholder's /todos endpoint. You'll practice GET requests, POST requests, async calls, and error handling - all with real HTTP requests to a different endpoint than our demo!
-
-The exercise comes with tests to verify your implementation, and you can run the main method to see everything in action.
-
-[SCENE 11: CONCLUSION - 15 SECONDS]
-
-(Show Slide: Summary)
-
-You now know how to consume any REST API using Java's built-in HTTP client. No external libraries needed for basic operations! Start simple with GET requests, then add POST, error handling, and async as needed.
-
-(Show Slide: Next Steps)
-
-Next time, we'll flip the script and create our own REST APIs using Spring Boot. Thanks for watching!
+Thanks for watching, and I'll see you in the next video where we'll make our APIs bulletproof!
