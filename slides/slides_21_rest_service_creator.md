@@ -169,16 +169,25 @@ transition: slide-left
 
 # Employee Model
 
-## Domain Object
+## Modern Java Record
 
 ```java
-public class Employee {
-    private Long id;
-    private String name;
-    private String department;
-    private Double salary;
+public record Employee(Long id, String name, 
+                      String department, Double salary) {
     
-    // Constructors, getters, setters
+    // Constructor for new employees (no ID yet)
+    public Employee(String name, String department, Double salary) {
+        this(null, name, department, salary);
+    }
+    
+    // Helper methods for immutable updates
+    public Employee withId(Long id) {
+        return new Employee(id, name, department, salary);
+    }
+    
+    public Employee withSalary(Double salary) {
+        return new Employee(id, name, department, salary);
+    }
 }
 ```
 
@@ -230,8 +239,8 @@ transition: slide-left
 @ResponseStatus(HttpStatus.CREATED)
 public Employee createEmployee(@RequestBody Employee employee) {
     // In real app, save to database
-    employee.setId(generateId());
-    return employee;
+    Employee savedEmployee = employee.withId(generateId());
+    return savedEmployee;
 }
 ```
 
@@ -251,10 +260,10 @@ transition: slide-left
     "salary": 70000
 }
 
-// Automatically converts to Employee object
+// Automatically converts to Employee record
 @PostMapping
 public Employee create(@RequestBody Employee employee) {
-    // employee object is populated from JSON
+    // employee record is populated from JSON
 }
 ```
 
@@ -271,9 +280,9 @@ transition: slide-left
 public Employee updateEmployee(
         @PathVariable Long id,
         @RequestBody Employee employee) {
-    employee.setId(id);
+    Employee updatedEmployee = employee.withId(id);
     // In real app, update in database
-    return employee;
+    return updatedEmployee;
 }
 ```
 
@@ -806,6 +815,57 @@ layout: center
 - **Business Logic** - Validation, custom operations
 - **Comprehensive Testing** - All three layers tested
 - **Clean Separation** - Each layer has single responsibility
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# Try It Out Exercise
+
+## Employee Search Controller
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+### 🎯 **Your Mission**
+Complete 4 TODOs in `EmployeeSearchController.java`:
+
+<v-clicks>
+
+1. **Constructor injection** with EmployeeService
+2. **GET** `/department/{name}` with @PathVariable 
+3. **POST** `/advanced` with @RequestBody filtering
+4. **GET** `/departments` returning unique names
+
+</v-clicks>
+
+</div>
+
+<div>
+
+### 🛠️ **What You'll Practice**
+<v-clicks>
+
+- `@RestController` and mapping annotations
+- Constructor dependency injection  
+- Path variables and request bodies
+- Java streams for filtering
+- ResponseEntity patterns
+- Reusing existing service layers
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<v-clicks>
+
+### 🚀 **Real-World Skills**
+Build search endpoints that demonstrate production REST API patterns!
 
 </v-clicks>
 

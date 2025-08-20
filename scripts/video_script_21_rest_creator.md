@@ -1,7 +1,7 @@
 # Video Script: Creating REST Services with Spring Boot
 
 **Goal:** 21. Build RESTful web services using Spring Boot with proper layered architecture.
-**Target Duration:** 5-6 minutes
+**Target Duration:** 6-7 minutes
 
 ---
 
@@ -143,9 +143,27 @@
 
 ---
 
-### SCENE 11: Conclusion (5:15 - 5:30)
+### SCENE 11: Try It Out Exercise (5:15 - 5:45)
 
-**(Show Slide 20: Next: Input Validation)**
+**(Show Slide 21: Try It Out Exercise - Employee Search Controller)**
+
+**Host:**
+"Now it's time to put your REST controller skills to work! Open the `EmployeeSearchController.java` file in the web-services module. You'll find four TODOs that guide you through implementing search endpoints."
+
+**Host:**
+"This exercise demonstrates real-world patterns: constructor injection, GET endpoints with path variables, POST endpoints with request bodies, and stream-based filtering. The best part? You'll reuse our existing EmployeeService - no duplicate business logic needed!"
+
+**Host:**
+"Start with TODO #1 for constructor injection, then implement the department search GET endpoint. The POST endpoint for advanced search is where it gets interesting - you'll use Java streams to filter by multiple criteria. Finally, create a simple endpoint that returns unique department names."
+
+**Host:**
+"Run the provided tests to verify your implementation. This exercise shows you how real REST APIs are built in production - clean separation of concerns with focused controllers that delegate to service layers."
+
+---
+
+### SCENE 12: Conclusion (5:45 - 6:00)
+
+**(Show Slide 22: Next: Input Validation)**
 
 **Host:**
 "Next time, we'll dive deeper into input validation and preventing security vulnerabilities like SQL injection and XSS attacks. Because building great APIs is just the first step - securing them is equally important!"
