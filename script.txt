@@ -1,103 +1,93 @@
 [SCENE 1: CAMERA INTRODUCTION - 45 SECONDS]
 
-Hi everyone! I'm Ken Kousen, and today we're diving into one of the most critical topics in web development - input validation for security.
+Hi everyone! In this video, we're diving into one of the most critical topics in application security - injection attacks.
 
-If you've ever wondered how major data breaches happen or how attackers compromise databases, you're about to find out. More importantly, you'll learn exactly how to prevent these attacks in your own applications.
+In an injection attack, your application receives data from a user and simply uses it verbatim. That's fine if you have a normal user, but a malicious user will type code into a form, and if the application treats that input as code, you can get into serious trouble.
 
-Let me share a sobering statistic - SQL injection has been the number one web application vulnerability for over a decade. Cross-site scripting attacks steal user credentials and hijack sessions every day. The scary part? Both are completely preventable with proper input validation.
+If you check with OWASP - the Open Worldwide Application Security Project - in their updated top ten lists, injection attacks have been a huge vulnerability for over a decade. Both SQL injection and JavaScript injection - better known as cross-site scripting attacks - steal user credentials and hijack sessions every day. Both are largely preventable with proper input validation.
 
-Today we'll explore the two most dangerous attack vectors - SQL injection and cross-site scripting - and I'll show you how to build bulletproof defenses using modern Java and Spring Boot. We'll create a production-ready validation service with comprehensive test coverage that you can use in real applications.
+Today I'll show you how these attacks work, and more importantly, how to defend against them using two key strategies: escaping inputs so malicious code becomes harmless text, and validating domain objects to ensure they meet business rules and security constraints.
 
-Let's jump into the code and see how these attacks work, and more importantly, how to stop them.
+Let's jump into the code and see these attacks in action, then build bulletproof defenses.
 
 [SCENE 2: SCREENSHARE DEMONSTRATION - 3 MINUTES 30 SECONDS]
 
 [Switch to screenshare - IDE with security module open]
 
-First, let's understand SQL injection. I'll demonstrate this by showing you what NOT to do, then our protection mechanisms.
+[Open InputValidator.java and scroll to the SQL injection comment around line 128]
 
-[Open a new file or comment block to show vulnerable example]
+First, let's understand SQL injection. Here in our code, I've added a comment showing the dangerous approach. Look at this vulnerable pattern: "SELECT * FROM employees WHERE name = '" + userInput + "'".
 
-Imagine if we had code like this: "SELECT * FROM employees WHERE name = '" + userInput + "'". When we concatenate user input directly into SQL queries like this, we're asking for trouble. If I enter "Robert'; DROP TABLE employees; --" as a name, watch what happens - the semicolon ends the first query, DROP TABLE executes next, and the double dash comments out everything else. Your entire employee table just got deleted.
+When we concatenate user input directly into SQL queries like this, a malicious user can enter something like "Robert'; DROP TABLE employees; --". Watch what happens - the semicolon ends the first query, DROP TABLE executes next, and the double dash comments out everything else. Your entire employee table just got deleted.
 
-Never, ever build SQL queries with string concatenation.
+Incidentally, see the famous "Exploits of a Mom" cartoon from XKCD, https://xkcd.com/327/ . "Little Bobby Tables" is quite famous in the security community.
 
-[Show prepared statement example or Spring Data JPA]
+[Show the XSS comment around line 150]
 
-Here's the safe way - prepared statements or Spring Data JPA. The question mark is a placeholder that gets safely filled by setString. The database treats this as data, not SQL commands, making injection impossible.
+Now let's look at cross-site scripting. Here's another comment showing an XSS attack example. If someone enters "<script>alert('XSS Attack!')</script>" in a form field, and you display it directly on a webpage, that script executes in every user's browser. Attackers can steal cookies, redirect users, or completely deface your site.
 
-[Open InputValidator.java and scroll to isSqlSafeInput method around line 129]
-
-Now look at our defensive code. This isSqlSafeInput method detects potential SQL injection attempts by scanning for dangerous keywords and patterns.
-
-[Navigate to Spring Data JPA examples]
-
-If you're using modern frameworks like Spring Data JPA, you're already protected in most cases. These frameworks use parameterized queries under the hood. Named parameters with colons or positional parameters with question marks - both are safe.
-
-[Demonstrate XSS attack scenario]
-
-Now let's tackle cross-site scripting. XSS is sneakier because it targets the users of your application, not your database.
-
-Here's how it works - if someone enters something like "<script>alert('XSS Attack!')</script>" in a form field and you display it directly on a webpage, that script executes in every user's browser. Attackers can steal cookies, redirect users, or completely deface your site.
-
-[Show the containsPotentialXss method around line 149]
-
-Look at our XSS detection code here. The containsPotentialXss method scans for dangerous patterns like script tags, JavaScript URLs, and event handlers.
+So we have two types of injection attacks - SQL injection targets your database, XSS targets your users. Both exploit the same fundamental flaw: treating user input as executable code.
 
 [Show the escapeHtml method around line 166]
 
-And here's our escapeHtml method - it converts dangerous characters to safe HTML entities. That script tag becomes harmless text that displays but doesn't execute.
+Here's our first defense strategy - escaping inputs. This escapeHtml method converts dangerous characters into safe entity references. That script tag becomes "&lt;script&gt;" - harmless text that displays but doesn't execute. Creating a good solid escapeHtml method isn't easy, however, since there are many ways to try to beat it. For that, use a trusted security framework. The core of Spring includes a class called HtmlUtils, for example, that will do a lot of that for you.
 
-[Open InputValidator.java]
+[Show the isSqlSafeInput method around line 135]
 
-Now let's look at our production-ready validation service. This InputValidator class demonstrates modern Java security patterns.
+For SQL injection, this isSqlSafeInput method detects dangerous keywords and patterns. It's a defense-in-depth approach that catches malicious input before it ever reaches your database.
 
-[Walk through the class structure]
+The other SQL practice to follow is always to use parameterized queries. Instead of concatenating strings, you use placeholders and bind variables. This way, the database treats user input as data, never as executable code. If someone adds SQL code inside a name field, from then on their name is a SQL statement.
 
-Notice how we define business constants clearly at the top. Validation patterns are compiled once for performance. The methods are package-private, which enables comprehensive testing while keeping the public API clean.
+[Open DatabaseExamples.java and show the vulnerableQuery vs. safeQuery methods]
 
-[Show specific validation methods]
+Here's the difference in practice. The vulnerable approach concatenates strings directly - perfect for injection attacks. But the safe approach uses a PreparedStatement with a question mark placeholder. When we call setString, the database treats that input as pure data, never as executable SQL.
 
-Here's our validateEmployeeName method - it combines basic pattern validation with XSS detection. First, we check if the name matches our allowed pattern. Then we scan for dangerous XSS patterns like script tags and JavaScript injection. This layered approach means attackers have to bypass multiple checks to succeed.
+The class uses modern Java features (text blocks for multiline SQL) and provides concrete, runnable examples that perfectly illustrate the security concepts you're teaching.
 
-[Open test files]
+[Show the validateEmployee and validateEmployeeBusinessRules methods]
 
-The beauty of this approach? Every validation method is thoroughly tested. We have comprehensive test coverage - field validation tests, security tests that verify SQL injection and XSS detection, and business rule tests.
+Our second defense strategy is object validation. After user input gets bound to our EmployeeDto, we validate the populated object with business rules and security constraints. This ensures that even if something slips through input filtering, the domain object itself is safe and valid.
+
+[Show specific validation methods like validateEmployeeName]
+
+Notice how validateEmployeeName combines both approaches - it checks basic format rules AND scans for XSS patterns. This layered security means attackers have to bypass multiple defenses to succeed.
+
+[Mention framework protection]
+
+In practice, modern frameworks provide automatic protection. Spring Data JPA uses parameterized queries that treat user input as data, never as SQL commands. But additional validation layers like ours provide extra security for business rules and edge cases that frameworks might miss.
 
 [Show SecurityController.java]
 
-Finally, let's see how this integrates with Spring Boot REST APIs. Our SecurityController uses the InputValidator service to provide real-time validation.
-
-[Demonstrate the /validate endpoint]
-
-You can send an employee object to the /validate endpoint and get back detailed validation results. This isn't theoretical - you could test this right now with curl or Postman.
+Finally, look how this integrates with our REST API. The SecurityController provides real-time validation endpoints that return detailed results about what's valid and what isn't. This isn't theoretical - you could test these security validations right now with curl or Postman.
 
 [SCENE 3: TRY IT OUT EXERCISE - 45 SECONDS]
 
 [Stay in screenshare but focus on exercise instructions]
 
-Now it's your turn to practice these security concepts! I've prepared a hands-on exercise that puts these validation techniques to work.
+Now it's your turn to practice these security concepts! I've prepared a hands-on exercise that puts these injection attack defenses to work.
 
-In the security module, you'll find an InputValidator class with several TODO comments. Your challenge is to implement additional validation methods that demonstrate the security principles we just covered.
+In the security module, you'll find an InputValidationExercise class with several TODO comments. Your challenge is to implement additional validation methods that demonstrate both defense strategies we covered.
 
-Start by implementing email validation that prevents XSS attacks. Then add phone number validation with business rules. Finally, create a method that validates department names against a whitelist - this prevents both injection attacks and enforces business policies.
+Start by implementing email validation that combines format checking with XSS detection. Then add phone number validation with business rules. Finally, create a method that validates department names against a whitelist - this prevents injection attacks while enforcing business policies.
 
-Each validation method should follow our layered security approach - basic format validation first, then security checks, then business rules. Don't forget to write tests for each method you implement!
+Each validation method should follow our layered approach - basic format validation first, then security checks, then business rules. Remember to write tests for each method you implement!
 
 The exercise includes example test cases and expected validation patterns. Run the tests to verify your implementation works correctly.
 
 This exercise shows you how real security validation is implemented in production applications - comprehensive, tested, and following defense-in-depth principles.
 
-[SCENE 4: CAMERA WRAP-UP - 30 SECONDS]
+[SCENE 4: CAMERA WRAP-UP - 45 SECONDS]
 
 [Switch back to camera]
 
-Input validation isn't optional - it's the foundation of application security. Today we've seen how to build production-ready validation with comprehensive test coverage.
+Injection attacks aren't going away - they're evolving. We've seen how SQL injection and cross-site scripting exploit the fundamental flaw of treating user input as executable code. Our defenses work by escaping inputs to make them harmless and validating objects to ensure they meet security and business constraints.
 
-Remember the key principles: never trust user input, use prepared statements for database queries, encode all output to prevent XSS, and implement layered validation that checks format, security, and business rules.
+But here's something to think about - a major new threat these days is "prompt injection," where people add malicious statements to AI chat prompts. Even a trivial example like "ignore all previous instructions" is the beginning of a prompt injection attack. The AI security community doesn't have robust defenses for these yet, other than ensuring AI systems don't have access to secrets.
 
-The validation service we built today isn't just demo code - it's production-ready and thoroughly tested. You can use these patterns in your real applications right away.
+The fundamental principle remains the same across all technologies: never trust user input. Whether it's SQL databases, web browsers, or AI language models, always validate, escape, and constrain what users can do with your systems.
 
-Next time, we'll explore Java's cryptographic APIs for encrypting sensitive data. Because preventing attacks is just the first step - protecting data at rest is equally important.
+The validation patterns we built today aren't just demo code - they're production-ready and thoroughly tested. You can use these defensive techniques in your real applications right away.
+
+Next time, we'll explore Java's cryptographic APIs for encrypting sensitive data. Because preventing injection attacks is just the first step - protecting data at rest and in transit is equally important.
 
 Keep your applications secure, and I'll see you in the next video!

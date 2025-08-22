@@ -127,8 +127,8 @@ public class InputValidator {
 
     /*
      * "SELECT * FROM employees WHERE name = '" + userInput + "'"
-     * SQL Injection - potential vulnerability: user input is not escaped
      * The user input: "'; DROP TABLE employees; --" would drop the employees table
+     * SQL Injection - potential vulnerability: user input is not escaped
      */
     
     // Security validation methods - package-private for testing
@@ -149,7 +149,8 @@ public class InputValidator {
         }
 
         // Check for suspicious quote patterns
-        return !input.contains("'") || (!input.contains("=") && !input.contains("or") && !input.contains("and"));
+        return !input.contains("'") ||
+               (!input.contains("=") && !input.contains("or") && !input.contains("and"));
     }
 
     /*
