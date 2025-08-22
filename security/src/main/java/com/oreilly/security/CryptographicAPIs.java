@@ -11,12 +11,26 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 
 /**
  * Demonstrates Java cryptographic APIs for encryption, hashing, and digital signatures.
  * Shows best practices for password hashing, data encryption, and key management.
+ * Enhanced with Java 21 features including virtual threads and pattern matching.
  */
 public class CryptographicAPIs {
+
+    /**
+     * Modern result type for cryptographic operations using sealed interfaces.
+     * Demonstrates Java 21 pattern matching and functional error handling.
+     */
+    @SuppressWarnings("unused")
+    public sealed interface CryptoResult<T> {
+        record Success<T>(T value) implements CryptoResult<T> {}
+        record Error<T>(String message) implements CryptoResult<T> {}
+    }
 
     // AES encryption constants
     private static final String AES_ALGORITHM = "AES";
@@ -52,6 +66,13 @@ public class CryptographicAPIs {
 
         // Secure token generation
         service.demonstrateTokenGeneration();
+
+        // Employee data encryption example
+        EmployeeDataEncryption.demonstrateEmployeeEncryption();
+
+        // Modern Java 21 features
+        service.demonstrateModernErrorHandling();
+        service.demonstrateConcurrentCryptography();
 
         System.out.println("\n=== Cryptography demonstration complete ===");
     }
@@ -257,6 +278,148 @@ public class CryptographicAPIs {
         } catch (Exception e) {
             System.err.println("Token generation error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Demonstrates modern error handling with sealed interfaces and pattern matching.
+     * Shows Java 21 patterns for functional cryptographic operations.
+     */
+    public void demonstrateModernErrorHandling() {
+        System.out.println("\n--- Modern Error Handling with Pattern Matching ---");
+
+        try {
+            SecretKey key = generateAESKey();
+            
+            // Demonstrate successful encryption
+            var successResult = encryptWithResult("Sensitive employee data", key);
+            handleCryptoResult(successResult, "encryption");
+
+            // Demonstrate error handling (simulate error by using null key)
+            var errorResult = encryptWithResult("This will fail", null);
+            handleCryptoResult(errorResult, "encryption");
+
+        } catch (Exception e) {
+            System.err.println("Modern error handling demo error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Demonstrates concurrent cryptography using virtual threads.
+     * Shows Java 21 virtual threads for high-performance crypto operations.
+     */
+    public void demonstrateConcurrentCryptography() {
+        System.out.println("\n--- Concurrent Cryptography with Virtual Threads ---");
+
+        try {
+            // Multiple passwords to hash concurrently
+            List<String> passwords = List.of(
+                "userPassword123",
+                "adminSecure456", 
+                "guestAccess789",
+                "managerKey101",
+                "developerAuth202"
+            );
+
+            System.out.println("Hashing " + passwords.size() + " passwords concurrently...");
+            
+            // Use virtual threads for concurrent hashing
+            CompletableFuture<List<String>> hashingTask = hashMultiplePasswordsConcurrently(passwords);
+            List<String> hashedPasswords = hashingTask.join();
+
+            System.out.println("Successfully hashed all passwords:");
+            for (int i = 0; i < passwords.size(); i++) {
+                System.out.println("Password " + (i + 1) + " hash: " + 
+                    hashedPasswords.get(i).substring(0, 20) + "...");
+            }
+
+            // Demonstrate concurrent encryption
+            List<String> dataToEncrypt = List.of(
+                "SSN: 123-45-6789",
+                "Credit Card: 4111-1111-1111-1111", 
+                "Bank Account: 987654321"
+            );
+
+            System.out.println("\nEncrypting " + dataToEncrypt.size() + " pieces of data concurrently...");
+            
+            SecretKey key = generateAESKey();
+            CompletableFuture<List<String>> encryptionTask = encryptMultipleDataConcurrently(dataToEncrypt, key);
+            List<String> encryptedData = encryptionTask.join();
+
+            System.out.println("Successfully encrypted all data:");
+            for (int i = 0; i < encryptedData.size(); i++) {
+                System.out.println("Encrypted data " + (i + 1) + ": " + 
+                    encryptedData.get(i).substring(0, 20) + "...");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Concurrent crypto demo error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Modern encryption with result type - demonstrates sealed interfaces.
+     */
+    private CryptoResult<String> encryptWithResult(String plainText, SecretKey key) {
+        try {
+            if (key == null) {
+                return new CryptoResult.Error<>("Encryption key cannot be null");
+            }
+            byte[] encrypted = encrypt(plainText, key);
+            String encoded = Base64.getEncoder().encodeToString(encrypted);
+            return new CryptoResult.Success<>(encoded);
+        } catch (Exception e) {
+            return new CryptoResult.Error<>(e.getMessage());
+        }
+    }
+
+    /**
+     * Handle crypto results using pattern matching - demonstrates modern Java 21 syntax.
+     */
+    @SuppressWarnings("SameParameterValue")
+    private void handleCryptoResult(CryptoResult<String> result, String operation) {
+        switch (result) {
+            case CryptoResult.Success<String>(var value) -> 
+                System.out.println("✓ " + operation + " succeeded: " + value.substring(0, 20) + "...");
+            case CryptoResult.Error<String>(var message) -> 
+                System.out.println("✗ " + operation + " failed: " + message);
+        }
+    }
+
+    /**
+     * Hash multiple passwords concurrently using virtual threads.
+     */
+    private CompletableFuture<List<String>> hashMultiplePasswordsConcurrently(List<String> passwords) {
+        return CompletableFuture.supplyAsync(() ->
+            passwords.parallelStream()
+                .map(password -> {
+                    try {
+                        return hashPassword(password);
+                    } catch (Exception e) {
+                        return "ERROR: " + e.getMessage();
+                    }
+                })
+                .toList(),
+            Executors.newVirtualThreadPerTaskExecutor()
+        );
+    }
+
+    /**
+     * Encrypt multiple data items concurrently using virtual threads.
+     */
+    private CompletableFuture<List<String>> encryptMultipleDataConcurrently(List<String> dataItems, SecretKey key) {
+        return CompletableFuture.supplyAsync(() ->
+            dataItems.parallelStream()
+                .map(data -> {
+                    try {
+                        byte[] encrypted = encrypt(data, key);
+                        return Base64.getEncoder().encodeToString(encrypted);
+                    } catch (Exception e) {
+                        return "ERROR: " + e.getMessage();
+                    }
+                })
+                .toList(),
+            Executors.newVirtualThreadPerTaskExecutor()
+        );
     }
 
     /**
@@ -477,7 +640,7 @@ public class CryptographicAPIs {
             System.out.println("\n--- Employee Data Encryption Example ---");
 
             try {
-                // Generate master key
+                // Generate pass key
                 CryptographicAPIs crypto = new CryptographicAPIs();
                 SecretKey masterKey = crypto.generateAESKey();
                 EmployeeDataEncryption encryption = new EmployeeDataEncryption(masterKey);
