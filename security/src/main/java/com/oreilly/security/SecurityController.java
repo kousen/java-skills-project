@@ -89,7 +89,7 @@ public class SecurityController {
         System.out.println("=== Security Layer: Cryptographic APIs ===");
         
         // Trigger all cryptographic demonstrations
-        cryptoAPI.main(new String[]{});
+        CryptographicAPIs.main(new String[]{});
         
         Map<String, String> result = Map.of(
             "message", "Cryptographic APIs demonstration completed",
