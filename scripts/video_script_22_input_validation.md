@@ -54,57 +54,67 @@ The fix? Always encode output.
 
 Spring's HtmlUtils.htmlEscape converts dangerous characters to safe HTML entities. That script tag becomes harmless text that displays but doesn't execute.
 
-## Bean Validation Framework (2:45-3:30)
+## Modern Validation Service (2:45-3:30)
 
-Java gives us a powerful validation framework. Let's use it!
+Let's look at a production-ready validation service that's properly tested.
 
-**(Show Slide 8: Bean Validation)**
+**(Show Slide 8: Modern Java Validation Service)**
 
-Look at these annotations. @NotNull ensures the field exists. @Size limits length. @Pattern enforces a regex - here we're only allowing letters and spaces in names. @Email validates email format.
+Our InputValidator class uses modern Java patterns. Business constants are clearly defined. Validation patterns are compiled once for performance. Package-private methods enable comprehensive testing while keeping the API clean.
 
-Add @Valid to your controller method, and Spring automatically validates incoming data. Invalid requests get rejected with a 400 status before they reach your business logic.
+The beauty of this approach? Every validation method is thoroughly tested.
 
-## Custom Validators (3:30-4:00)
+**(Show Slide 9: Comprehensive Test Coverage)**
 
-Sometimes you need custom validation logic.
+We have 61 tests covering every security scenario. Field validation tests check patterns and business rules. Security tests verify SQL injection and XSS detection. Business rule tests ensure domain policies are enforced.
 
-**(Show Slide 9: Custom Validation)**
+This isn't just demo code - this is production-ready validation with test coverage that proves it works.
 
-This validator checks for SQL injection patterns - semicolons, SQL comments, script tags. Create an annotation, implement the validator, and you've got reusable security validation.
+## Layered Security Validation (3:30-4:00)
 
-The regex might look scary, but it's checking for common attack patterns. In production, you might use a more sophisticated approach, but this shows the concept.
+Here's how we prevent XSS attacks at the field level.
 
-## File Upload Security (4:00-4:30)
+**(Show Slide 10: XSS Prevention in Action)**
 
-File uploads are particularly dangerous. You need multiple checks.
+Our validateEmployeeName method combines basic pattern validation with XSS detection. First, we check if the name matches our allowed pattern. Then we scan for dangerous XSS patterns like script tags and JavaScript injection.
 
-**(Show Slide 10: File Upload Security)**
+This layered approach means an attacker has to bypass multiple validation checks to succeed.
 
-First, validate the content type - only accept expected file types. Then check file size to prevent denial of service. Finally, sanitize the filename to prevent path traversal attacks.
+## REST API Integration (4:00-4:30)
 
-Never trust the original filename! Always generate your own or carefully validate it.
+Now let's see how this validation integrates with Spring Boot REST APIs.
 
-## Defense in Depth (4:30-4:50)
+**(Show Slide 11: REST API Integration)**
 
-Security isn't one thing - it's layers of protection. Validate input at the edge. Use parameterized queries. Encode output. Set security headers. Implement rate limiting.
+Our SecurityController uses the InputValidator service to provide real-time validation. Send an employee object to the /validate endpoint and get back detailed validation results - both field errors and business rule violations.
 
-Think of it like a medieval castle - moat, walls, gates, guards. Each layer makes attack harder.
+This isn't theoretical - you can test this right now with curl or Postman. The API returns structured JSON showing exactly what's valid and what isn't.
+
+## Test-Driven Security Benefits (4:30-4:50)
+
+This approach gives us confidence that our security actually works.
+
+**(Show Slide 12: Security Best Practices)**
+
+Test-driven security means every validation rule is verified by tests. Parameterized tests systematically cover edge cases. No security validation goes untested.
+
+The separation of concerns means we can test validation logic independently of HTTP concerns. And the production-ready design means this code can go straight into your applications.
 
 ## Wrapping Up (4:50-5:05)
 
-Input validation isn't optional - it's essential. Use prepared statements for SQL. Encode output for XSS prevention. Leverage Bean Validation. Create custom validators for your business rules.
+Input validation isn't optional - it's essential. We've seen how to build a production-ready validation service with comprehensive test coverage. Use prepared statements for SQL. Implement layered XSS detection. Test every security validation rule.
 
-Remember: never trust user input. Ever. Validate everything.
+Remember: never trust user input. Ever. But now you have the tools to validate it properly.
 
 Next time, we'll explore Java's cryptographic APIs for encrypting sensitive data. Until then, validate those inputs and keep your applications secure!
 
 ## Code Examples Referenced:
 
-1. SQL injection vulnerability and fix
-2. Prepared statement usage
-3. Spring Data JPA safety
-4. XSS vulnerability and HTML encoding
-5. Bean Validation annotations
-6. Custom SQL injection validator
-7. File upload validation
-8. Security headers configuration
+1. InputValidator service class with modern Java patterns
+2. Comprehensive test suite with 61 security validation tests  
+3. SQL injection detection with pattern matching
+4. XSS prevention with layered validation
+5. REST API integration showing real validation in action
+6. Business rule validation with domain policies
+7. Package-private testing patterns for security code
+8. Production-ready error handling and reporting

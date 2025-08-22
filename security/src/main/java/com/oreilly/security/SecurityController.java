@@ -1,10 +1,8 @@
 package com.oreilly.security;
 
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -17,7 +15,7 @@ import java.util.Map;
 @Validated
 public class SecurityController {
     
-    private final InputValidation inputValidator = new InputValidation();
+    private final InputValidator inputValidator = new InputValidator();
     private final CryptographicAPIs cryptoAPI = new CryptographicAPIs();
     
     /**
@@ -25,25 +23,28 @@ public class SecurityController {
      */
     @PostMapping("/validate")
     public ResponseEntity<Map<String, Object>> validateInput(
-            @RequestBody Map<String, String> request) {
+            @RequestBody EmployeeDto employee) {
         
-        String input = request.get("input");
-        if (input == null) {
+        if (employee == null) {
             return ResponseEntity.badRequest().build();
         }
         
         System.out.println("=== Security Layer: Input Validation ===");
         
-        // Trigger the main demonstration
-        inputValidator.main(new String[]{});
+        // Perform actual validation using our service
+        var validationErrors = inputValidator.validateEmployee(employee);
+        var businessErrors = inputValidator.validateEmployeeBusinessRules(employee);
         
         Map<String, Object> result = Map.of(
-            "message", "Input validation demonstration completed",
-            "input", input,
-            "status", "Check console output for validation examples"
+            "message", "Employee validation completed",
+            "employee", employee.name(),
+            "validationErrors", validationErrors,
+            "businessErrors", businessErrors,
+            "isValid", validationErrors.isEmpty() && businessErrors.isEmpty()
         );
         
-        System.out.println("✓ Input validation demonstration triggered");
+        System.out.println("✓ Input validation complete: " + 
+            (validationErrors.isEmpty() && businessErrors.isEmpty() ? "PASSED" : "FAILED"));
         return ResponseEntity.ok(result);
     }
     

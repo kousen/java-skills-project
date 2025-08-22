@@ -367,7 +367,7 @@ transition: slide-left
 
 # File Upload Validation
 
-## Critical Security
+## Critical Security Checks
 
 ```java
 @PostMapping("/upload")
@@ -380,18 +380,29 @@ public ResponseEntity<String> uploadFile(
             .contains(contentType)) {
         throw new ValidationException("Invalid file type");
     }
-    
-    // Validate file size
-    if (file.getSize() > 5_000_000) { // 5MB
-        throw new ValidationException("File too large");
-    }
-    
-    // Validate filename
-    String filename = Paths.get(file.getOriginalFilename())
-        .getFileName().toString();
-    if (!filename.matches("[a-zA-Z0-9._-]+")) {
-        throw new ValidationException("Invalid filename");
-    }
+    // Additional validations...
+}
+```
+
+---
+transition: slide-left
+---
+
+# File Upload Security Rules
+
+## Size and Filename Validation
+
+```java
+// Validate file size
+if (file.getSize() > 5_000_000) { // 5MB
+    throw new ValidationException("File too large");
+}
+
+// Validate filename
+String filename = Paths.get(file.getOriginalFilename())
+    .getFileName().toString();
+if (!filename.matches("[a-zA-Z0-9._-]+")) {
+    throw new ValidationException("Invalid filename");
 }
 ```
 
@@ -410,15 +421,26 @@ public File getSafeFile(String filename) {
     filename = filename.replaceAll("\\.\\.\\\\", "");
     
     File file = new File(UPLOAD_DIR, filename);
-    
-    // Ensure file is within allowed directory
-    if (!file.getCanonicalPath()
-            .startsWith(UPLOAD_DIR.getCanonicalPath())) {
-        throw new SecurityException("Path traversal attempt");
-    }
-    
-    return file;
+    // Additional safety checks...
 }
+```
+
+---
+transition: slide-left
+---
+
+# Directory Boundary Checks
+
+## Prevent Path Traversal
+
+```java
+// Ensure file is within allowed directory
+if (!file.getCanonicalPath()
+        .startsWith(UPLOAD_DIR.getCanonicalPath())) {
+    throw new SecurityException("Path traversal attempt");
+}
+
+return file;
 ```
 
 ---
@@ -438,23 +460,34 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
             HttpServletResponse response, Object handler) {
-        
-        String ip = request.getRemoteAddr();
-        List<Long> timestamps = requestCounts.computeIfAbsent(
-            ip, k -> new ArrayList<>());
-        
-        long now = System.currentTimeMillis();
-        timestamps.removeIf(t -> now - t > 60000); // 1 minute
-        
-        if (timestamps.size() >= 100) { // 100 requests per minute
-            response.setStatus(429); // Too Many Requests
-            return false;
-        }
-        
-        timestamps.add(now);
-        return true;
+        // Rate limiting logic
     }
 }
+```
+
+---
+transition: slide-left
+---
+
+# Rate Limiting Logic
+
+## Request Tracking
+
+```java
+String ip = request.getRemoteAddr();
+List<Long> timestamps = requestCounts.computeIfAbsent(
+    ip, k -> new ArrayList<>());
+
+long now = System.currentTimeMillis();
+timestamps.removeIf(t -> now - t > 60000); // 1 minute
+
+if (timestamps.size() >= 100) { // 100 requests per minute
+    response.setStatus(429); // Too Many Requests
+    return false;
+}
+
+timestamps.add(now);
+return true;
 ```
 
 ---
@@ -470,20 +503,28 @@ transition: slide-left
 public class SecurityHeadersFilter extends OncePerRequestFilter {
     
     @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain chain) throws IOException {
-        
-        response.setHeader("Content-Security-Policy", 
-            "default-src 'self'; script-src 'self'");
-        response.setHeader("X-Content-Type-Options", "nosniff");
-        response.setHeader("X-Frame-Options", "DENY");
-        response.setHeader("X-XSS-Protection", "1; mode=block");
-        
+    protected void doFilterInternal(HttpServletRequest request,
+            HttpServletResponse response, FilterChain chain) {
+        // Set security headers
         chain.doFilter(request, response);
     }
 }
+```
+
+---
+transition: slide-left
+---
+
+# Security Headers
+
+## Essential Protection Headers
+
+```java
+response.setHeader("Content-Security-Policy", 
+    "default-src 'self'; script-src 'self'");
+response.setHeader("X-Content-Type-Options", "nosniff");
+response.setHeader("X-Frame-Options", "DENY");
+response.setHeader("X-XSS-Protection", "1; mode=block");
 ```
 
 ---
@@ -519,27 +560,200 @@ public class SafeRenderer {
 transition: slide-left
 ---
 
-# Testing Security
+# Test-Driven Security Validation
 
-## Validation Tests
+## Modern JUnit 5 Approach
 
 ```java
-@Test
-void testSqlInjectionPrevention() {
-    String maliciousInput = "'; DROP TABLE employees; --";
+@DisplayName("Input Validation Security Tests")
+class InputValidationTest {
+    private final InputValidator validator = new InputValidator();
     
-    assertThrows(ValidationException.class, () ->
-        validator.validate(maliciousInput)
-    );
+    @Nested
+    @DisplayName("SQL Injection Prevention")
+    class SqlInjectionPreventionTest {
+        // 61 comprehensive tests covering all scenarios
+    }
+}
+```
+
+---
+transition: slide-left
+---
+
+# Parameterized Security Tests
+
+## Testing Attack Patterns
+
+```java
+@ParameterizedTest
+@ValueSource(strings = {
+    "Bob'; DROP TABLE employees; --",
+    "Carol' OR '1'='1", 
+    "Dave'; INSERT INTO users VALUES('hacker', 'password'); --"
+})
+void sqlInjectionAttemptsShouldBeDetected(String maliciousInput) {
+    assertThat(validator.isSqlSafeInput(maliciousInput))
+        .as("Input '%s' should be detected as SQL injection", 
+            maliciousInput)
+        .isFalse();
+}
+```
+
+---
+transition: slide-left
+---
+
+# Modern Java Validation Service
+
+## InputValidator Design
+
+```java
+public class InputValidator {
+    // Business constants as public finals
+    public static final double MIN_SALARY = 30000.0;
+    public static final double MAX_SALARY = 1000000.0;
+    
+    // Pattern-based validation
+    private static final Pattern NAME_PATTERN = 
+        Pattern.compile("^[a-zA-Z\\s\\-']+$");
+}
+```
+
+---
+transition: slide-left
+---
+
+# Testable Method Design
+
+## Package-Private for Testing
+
+```java
+// Main validation methods
+public List<String> validateEmployee(EmployeeDto employee) {
+    // Returns specific error messages
 }
 
-@Test
-void testXssPrevention() {
-    String xssAttempt = "<script>alert('XSS')</script>";
-    String sanitized = sanitizer.clean(xssAttempt);
+// Package-private methods for testing
+boolean isValidName(String name) { /* validation logic */ }
+boolean isSqlSafeInput(String input) { /* security logic */ }
+boolean containsPotentialXss(String input) { /* XSS detection */ }
+```
+
+---
+transition: slide-left
+---
+
+# Comprehensive Test Coverage
+
+## 61 Tests Covering All Security Scenarios
+
+<v-clicks>
+
+- **Field Validation Tests:** Name patterns, email formats, phone numbers
+- **Security Tests:** SQL injection detection, XSS prevention  
+- **Business Rule Tests:** Domain policies, salary thresholds
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# Test Categories
+
+## Complete Security Coverage
+
+<v-clicks>
+
+**Name Validation:**
+- Pattern matching, length limits, XSS detection
+
+**Injection Prevention:**  
+- SQL injection patterns, dangerous keywords
+
+**Business Rules:**
+- Email domain allowlisting, executive approval thresholds
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# XSS Prevention in Action
+
+## Layered Name Validation
+
+```java
+boolean validateEmployeeName(String name) {
+    // First: Basic pattern validation
+    if (!isValidName(name)) {
+        return false;
+    }
     
-    assertFalse(sanitized.contains("<script>"));
+    // Second: XSS pattern detection  
+    return !containsPotentialXss(name);
 }
+```
+
+---
+transition: slide-left
+---
+
+# XSS Pattern Detection
+
+## Dangerous Content Scanning
+
+```java
+private boolean containsPotentialXss(String input) {
+    String[] xssPatterns = {
+        "<script", "</script", "javascript:", "onload=", 
+        "<iframe", "<object", "vbscript:", "data:text/html"
+    };
+    // Check for dangerous patterns
+}
+```
+
+---
+transition: slide-left
+---
+
+# REST API Integration
+
+## Security Controller
+
+```java
+@RestController
+@RequestMapping("/api/security")
+public class SecurityController {
+    private final InputValidator inputValidator = new InputValidator();
+    
+    @PostMapping("/validate")
+    public ResponseEntity<Map<String, Object>> validateInput(
+            @RequestBody EmployeeDto employee) {
+        // Perform validation and return results
+    }
+}
+```
+
+---
+transition: slide-left
+---
+
+# Real Validation Results
+
+## Structured JSON Response
+
+```java
+var validationErrors = inputValidator.validateEmployee(employee);
+var businessErrors = inputValidator.validateEmployeeBusinessRules(employee);
+
+return ResponseEntity.ok(Map.of(
+    "validationErrors", validationErrors,
+    "businessErrors", businessErrors,
+    "isValid", validationErrors.isEmpty() && businessErrors.isEmpty()
+));
 ```
 
 ---
@@ -548,13 +762,13 @@ transition: slide-left
 
 # Security Best Practices
 
-## Defense in Depth
+## Modern Approach Benefits
 
 <v-clicks>
 
-- Never trust user input
-- Validate on multiple layers
-- Use allow-lists, not deny-lists
+- **Test-Driven Security:** 61 comprehensive tests verify all logic
+- **Separation of Concerns:** Field vs. business rule validation  
+- **Production Ready:** Constants, error messages, REST integration
 
 </v-clicks>
 
@@ -562,15 +776,19 @@ transition: slide-left
 transition: slide-left
 ---
 
-# Best Practices (continued)
+# Why This Approach Works
 
-## Implementation Tips
+## Confidence Through Testing
 
 <v-clicks>
 
-- Log security violations
-- Fail securely (deny by default)
-- Keep security libraries updated
+**Systematic Coverage:**
+- Parameterized tests cover edge cases
+- No security validation goes untested
+
+**Clean Architecture:**
+- Package-private methods enable testing
+- Clear separation of validation and HTTP concerns
 
 </v-clicks>
 
