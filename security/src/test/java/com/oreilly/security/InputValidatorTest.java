@@ -10,11 +10,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Comprehensive tests for InputValidation security features
+ * Comprehensive tests for InputValidator security features
  * Demonstrates proper test-driven security validation
  */
 @DisplayName("Input Validation Security Tests")
-class InputValidationTest {
+class InputValidatorTest {
 
     private final InputValidator validator = new InputValidator();
 

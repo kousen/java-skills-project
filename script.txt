@@ -1,75 +1,103 @@
-[SCENE 1: INTRODUCTION - 30 SECONDS]
+[SCENE 1: CAMERA INTRODUCTION - 45 SECONDS]
 
-Welcome back! Last time, we learned how to consume REST APIs. Now let's flip the script and create our own REST services. We'll build a comprehensive, production-ready API with proper layered architecture using Spring Boot.
+Hi everyone! I'm Ken Kousen, and today we're diving into one of the most critical topics in web development - input validation for security.
 
-[SCENE 2: WHY SPRING BOOT? - 30 SECONDS]
+If you've ever wondered how major data breaches happen or how attackers compromise databases, you're about to find out. More importantly, you'll learn exactly how to prevent these attacks in your own applications.
 
-Spring Boot is the industry standard for a reason. It follows convention over configuration, includes production-ready features built-in, and provides an exceptional developer experience.
+Let me share a sobering statistic - SQL injection has been the number one web application vulnerability for over a decade. Cross-site scripting attacks steal user credentials and hijack sessions every day. The scary part? Both are completely preventable with proper input validation.
 
-Minimal boilerplate code, embedded server included, auto-configuration magic. It's like having a senior architect design your application structure for you.
+Today we'll explore the two most dangerous attack vectors - SQL injection and cross-site scripting - and I'll show you how to build bulletproof defenses using modern Java and Spring Boot. We'll create a production-ready validation service with comprehensive test coverage that you can use in real applications.
 
-[SCENE 3: PROJECT STRUCTURE - 30 SECONDS]
+Let's jump into the code and see how these attacks work, and more importantly, how to stop them.
 
-We're working with a multi-module Gradle project. Our web-services module focuses on REST APIs, with Spring Boot Web starter and validation dependencies already configured.
+[SCENE 2: SCREENSHARE DEMONSTRATION - 3 MINUTES 30 SECONDS]
 
-Here's our WebServicesApplication. One @SpringBootApplication annotation gives us component scanning, auto-configuration, and an embedded Tomcat server. That's it - we're ready to build APIs.
+[Switch to screenshare - IDE with security module open]
 
-[SCENE 4: LAYERED ARCHITECTURE - 45 SECONDS]
+First, let's understand SQL injection. I'll demonstrate this by showing you what NOT to do, then our protection mechanisms.
 
-Instead of building a simple controller, we'll create proper layered architecture. Controller layer handles REST endpoints, Service layer contains business logic and validation, Repository layer manages data access.
+[Open a new file or comment block to show vulnerable example]
 
-Our EmployeeRepository uses @Repository annotation and handles data persistence. Notice we're using a modern Java record for Employee, with immutable data and helper methods like withId().
+Imagine if we had code like this: "SELECT * FROM employees WHERE name = '" + userInput + "'". When we concatenate user input directly into SQL queries like this, we're asking for trouble. If I enter "Robert'; DROP TABLE employees; --" as a name, watch what happens - the semicolon ends the first query, DROP TABLE executes next, and the double dash comments out everything else. Your entire employee table just got deleted.
 
-[SCENE 5: SERVICE LAYER WITH BUSINESS LOGIC - 30 SECONDS]
+Never, ever build SQL queries with string concatenation.
 
-The Service layer is where the magic happens. Our EmployeeService contains business constants, validation logic, and operations like processNewHire() and giveRaise(). Notice how it validates salary ranges and handles business rules.
+[Show prepared statement example or Spring Data JPA]
 
-We've also added professional transaction boundaries with @Transactional annotations. The service class uses @Transactional for write operations and @Transactional(readOnly = true) for queries. This demonstrates proper enterprise patterns even with in-memory storage.
+Here's the safe way - prepared statements or Spring Data JPA. The question mark is a placeholder that gets safely filled by setString. The database treats this as data, not SQL commands, making injection impossible.
 
-Our main application class uses @EnableTransactionManagement to activate Spring's transaction infrastructure. This shows how to structure applications for easy database migration later - just change the storage backend and your transaction boundaries are already defined.
+[Open InputValidator.java and scroll to isSqlSafeInput method around line 129]
 
-The Controller layer stays focused on HTTP concerns. Look at the constructor injection - Spring automatically wires the EmployeeService. The controller methods handle ResponseEntity for proper HTTP status codes and headers.
+Now look at our defensive code. This isSqlSafeInput method detects potential SQL injection attempts by scanning for dangerous keywords and patterns.
 
-[SCENE 6: MODERN JAVA FEATURES - 30 SECONDS]
+[Navigate to Spring Data JPA examples]
 
-We're using Java records for immutable data. No getters, setters, or equals/hashCode boilerplate. The withId() and withSalary() helper methods create new instances for updates - that's immutable design done right.
+If you're using modern frameworks like Spring Data JPA, you're already protected in most cases. These frameworks use parameterized queries under the hood. Named parameters with colons or positional parameters with question marks - both are safe.
 
-Instead of bean validation annotations, we implement business logic validation in the service layer. This gives us complete control over validation rules and custom error messages.
+[Demonstrate XSS attack scenario]
 
-[SCENE 7: EXCEPTION HANDLING - 30 SECONDS]
+Now let's tackle cross-site scripting. XSS is sneakier because it targets the users of your application, not your database.
 
-Modern exception handling uses ProblemDetail from RFC 7807. Our GlobalExceptionHandler catches EmployeeNotFoundException and returns structured error responses with proper HTTP status codes.
+Here's how it works - if someone enters something like "<script>alert('XSS Attack!')</script>" in a form field and you display it directly on a webpage, that script executes in every user's browser. Attackers can steal cookies, redirect users, or completely deface your site.
 
-[SCENE 8: BUSINESS LOGIC ENDPOINTS - 30 SECONDS]
+[Show the containsPotentialXss method around line 149]
 
-This is where our architecture shines. We're not just doing basic CRUD - we have business operations like giveRaise(), giveStandardRaise(), and getHighPerformers(). Each endpoint encapsulates real business logic.
+Look at our XSS detection code here. The containsPotentialXss method scans for dangerous patterns like script tags, JavaScript URLs, and event handlers.
 
-[SCENE 9: TESTING STRATEGY - 30 SECONDS]
+[Show the escapeHtml method around line 166]
 
-Our layered architecture enables comprehensive testing. Repository tests are pure unit tests with no Spring context. Service tests use Spring Boot integration with @MockitoBean. Controller tests use @WebMvcTest for the web layer.
+And here's our escapeHtml method - it converts dangerous characters to safe HTML entities. That script tag becomes harmless text that displays but doesn't execute.
 
-MockMvc simulates HTTP requests without starting a server. We mock the service layer and test HTTP status codes, JSON responses, and request mapping. This gives us fast, focused web layer testing.
+[Open InputValidator.java]
 
-[SCENE 10: RUNNING AND SUMMARY - 30 SECONDS]
+Now let's look at our production-ready validation service. This InputValidator class demonstrates modern Java security patterns.
 
-Our multi-module project separates concerns beautifully. Run gradle :web-services:bootRun and you'll have a full REST API at localhost:8080. Try the /api/employees/hello endpoint to see it in action.
+[Walk through the class structure]
 
-We've built a production-ready REST API with proper layered architecture. Modern Java records, comprehensive business logic, and testing at all three layers. This is how you build maintainable, scalable APIs.
+Notice how we define business constants clearly at the top. Validation patterns are compiled once for performance. The methods are package-private, which enables comprehensive testing while keeping the public API clean.
 
-Spring Boot makes the plumbing invisible so you can focus on business value. Clean separation of concerns means each layer has a single responsibility, making the code easier to test, maintain, and extend.
+[Show specific validation methods]
 
-[SCENE 11: TRY IT OUT EXERCISE - 30 SECONDS]
+Here's our validateEmployeeName method - it combines basic pattern validation with XSS detection. First, we check if the name matches our allowed pattern. Then we scan for dangerous XSS patterns like script tags and JavaScript injection. This layered approach means attackers have to bypass multiple checks to succeed.
 
-Now it's time to put your REST controller skills to work! Open the `EmployeeSearchController.java` file in the web-services module. You'll find four TODOs that guide you through implementing search endpoints.
+[Open test files]
 
-This exercise demonstrates real-world patterns: constructor injection, GET endpoints with path variables, POST endpoints with request bodies, and stream-based filtering. The best part? You'll reuse our existing EmployeeService - no duplicate business logic needed!
+The beauty of this approach? Every validation method is thoroughly tested. We have comprehensive test coverage - field validation tests, security tests that verify SQL injection and XSS detection, and business rule tests.
 
-Start with TODO #1 for constructor injection, then implement the department search GET endpoint. The POST endpoint for advanced search is where it gets interesting - you'll use Java streams to filter by multiple criteria. Finally, create a simple endpoint that returns unique department names.
+[Show SecurityController.java]
 
-Run the provided tests to verify your implementation. This exercise shows you how real REST APIs are built in production - clean separation of concerns with focused controllers that delegate to service layers.
+Finally, let's see how this integrates with Spring Boot REST APIs. Our SecurityController uses the InputValidator service to provide real-time validation.
 
-[SCENE 12: CONCLUSION - 15 SECONDS]
+[Demonstrate the /validate endpoint]
 
-Next time, we'll dive deeper into input validation and preventing security vulnerabilities like SQL injection and XSS attacks. Because building great APIs is just the first step - securing them is equally important!
+You can send an employee object to the /validate endpoint and get back detailed validation results. This isn't theoretical - you could test this right now with curl or Postman.
 
-Thanks for watching, and I'll see you in the next video where we'll make our APIs bulletproof!
+[SCENE 3: TRY IT OUT EXERCISE - 45 SECONDS]
+
+[Stay in screenshare but focus on exercise instructions]
+
+Now it's your turn to practice these security concepts! I've prepared a hands-on exercise that puts these validation techniques to work.
+
+In the security module, you'll find an InputValidator class with several TODO comments. Your challenge is to implement additional validation methods that demonstrate the security principles we just covered.
+
+Start by implementing email validation that prevents XSS attacks. Then add phone number validation with business rules. Finally, create a method that validates department names against a whitelist - this prevents both injection attacks and enforces business policies.
+
+Each validation method should follow our layered security approach - basic format validation first, then security checks, then business rules. Don't forget to write tests for each method you implement!
+
+The exercise includes example test cases and expected validation patterns. Run the tests to verify your implementation works correctly.
+
+This exercise shows you how real security validation is implemented in production applications - comprehensive, tested, and following defense-in-depth principles.
+
+[SCENE 4: CAMERA WRAP-UP - 30 SECONDS]
+
+[Switch back to camera]
+
+Input validation isn't optional - it's the foundation of application security. Today we've seen how to build production-ready validation with comprehensive test coverage.
+
+Remember the key principles: never trust user input, use prepared statements for database queries, encode all output to prevent XSS, and implement layered validation that checks format, security, and business rules.
+
+The validation service we built today isn't just demo code - it's production-ready and thoroughly tested. You can use these patterns in your real applications right away.
+
+Next time, we'll explore Java's cryptographic APIs for encrypting sensitive data. Because preventing attacks is just the first step - protecting data at rest is equally important.
+
+Keep your applications secure, and I'll see you in the next video!

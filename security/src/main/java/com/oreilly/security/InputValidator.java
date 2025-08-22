@@ -77,7 +77,7 @@ public class InputValidator {
         }
 
         // Check name against blocklist
-        if (employee.name() != null && isNameBlacklisted(employee.name())) {
+        if (employee.name() != null && isNameBlocked(employee.name())) {
             errors.add("Name appears on restricted list");
         }
 
@@ -125,6 +125,12 @@ public class InputValidator {
         return address != null && !address.trim().isEmpty() && address.length() <= MAX_ADDRESS_LENGTH;
     }
 
+    /*
+     * "SELECT * FROM employees WHERE name = '" + userInput + "'"
+     * SQL Injection - potential vulnerability: user input is not escaped
+     * The user input: "'; DROP TABLE employees; --" would drop the employees table
+     */
+    
     // Security validation methods - package-private for testing
     boolean isSqlSafeInput(String input) {
         if (input == null) return true;
@@ -146,6 +152,9 @@ public class InputValidator {
         return !input.contains("'") || (!input.contains("=") && !input.contains("or") && !input.contains("and"));
     }
 
+    /*
+     * <script>alert('XSS Attack!')</script>
+     */
     boolean containsPotentialXss(String input) {
         if (input == null) return false;
 
@@ -200,7 +209,7 @@ public class InputValidator {
         return name.contains("CEO") || name.contains("CTO") || name.contains("CFO") || name.contains("PRESIDENT");
     }
 
-    boolean isNameBlacklisted(String name) {
+    boolean isNameBlocked(String name) {
         String lowerName = name.toLowerCase().trim();
 
         for (String blocked : NAME_BLOCKLIST) {
