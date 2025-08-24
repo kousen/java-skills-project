@@ -116,7 +116,21 @@ class PayrollProcessor {
             summary.append("Commission Rate: %.1f%%%n".formatted(payrollData.commissionRate() * 100));
         }
 
-        summary.append("Pay Amount: $%.2f".formatted(pay));
+        summary.append("Pay Amount: $%.2f%n".formatted(pay));
+        
+        // Add strategy type information based on current calculator
+        if (payCalculator == PayrollCalculations.HOURLY) {
+            summary.append("Strategy: Hourly with Overtime");
+        } else if (payCalculator == PayrollCalculations.SALARIED) {
+            summary.append("Strategy: Salaried");
+        } else if (payCalculator == PayrollCalculations.COMMISSION) {
+            summary.append("Strategy: Commission Only");
+        } else if (payCalculator == PayrollCalculations.BASE_PLUS_COMMISSION) {
+            summary.append("Strategy: Base Plus Commission");
+        } else {
+            summary.append("Strategy: Custom");
+        }
+        
         return summary.toString();
     }
 

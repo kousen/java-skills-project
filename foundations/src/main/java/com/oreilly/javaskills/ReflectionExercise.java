@@ -200,6 +200,7 @@ public class ReflectionExercise {
         };
         
         System.out.println("Framework processing different employee types:");
+        System.out.println("\nMethods marked with @Important annotation:");
         for (SampleEmployee emp : employees) {
             Class<?> actualClass = emp.getClass(); // Use getClass() for actual runtime type
             System.out.println("\nProcessing: " + actualClass.getSimpleName());

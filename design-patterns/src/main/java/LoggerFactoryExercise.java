@@ -108,10 +108,16 @@ record ConsoleLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void log(LogLevel level, String message) {
-        // TODO: Implement console logging
-        // Check if level is enabled, create LogEntry, format and print
-        // Use System.out for DEBUG/INFO, System.err for WARN/ERROR
-        System.out.println("TODO: Implement console logging"); // Minimal implementation
+        if (!isEnabled(level)) return;
+        
+        var logEntry = new LogEntry(level, config.name(), message);
+        var output = logEntry.formatted();
+        
+        if (level == LogLevel.DEBUG || level == LogLevel.INFO) {
+            System.out.println(output);
+        } else {
+            System.err.println(output);
+        }
     }
     
     @Override
@@ -140,8 +146,7 @@ record ConsoleLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void close() {
-        // TODO: Print "Console logger closed"
-        System.out.println("TODO: Console logger closed"); // Minimal implementation
+        System.out.println("Console logger closed");
     }
 }
 
@@ -166,10 +171,11 @@ record FileLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void log(LogLevel level, String message) {
-        // TODO: Implement file logging simulation
-        // Check if enabled, create LogEntry, print with "FILE:" prefix
-        // Include filename from config.properties().get("filename")
-        System.out.println("TODO: Implement file logging"); // Minimal implementation
+        if (!isEnabled(level)) return;
+        
+        var logEntry = new LogEntry(level, config.name(), message);
+        var filename = config.properties().get("filename");
+        System.out.println("FILE:" + (filename != null ? " [" + filename + "]" : "") + " " + logEntry.formatted());
     }
     
     @Override
@@ -198,8 +204,8 @@ record FileLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void close() {
-        // TODO: Print closing message with filename
-        System.out.println("TODO: File logger closed"); // Minimal implementation
+        var filename = config.properties().get("filename");
+        System.out.println("File logger closed: [" + (filename != null ? filename : "unknown") + "]");
     }
 }
 
@@ -223,9 +229,14 @@ record JsonLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void log(LogLevel level, String message) {
-        // TODO: Implement JSON logging
-        // Format: {"timestamp":"2025-01-01T12:00:00", "level":"INFO", "logger":"TestLogger", "message":"Test message"}
-        System.out.println("TODO: Implement JSON logging"); // Minimal implementation
+        if (!isEnabled(level)) return;
+        
+        var logEntry = new LogEntry(level, config.name(), message);
+        var jsonOutput = "{\"timestamp\":\"" + logEntry.timestamp() + 
+                        "\", \"level\":\"" + logEntry.level() + 
+                        "\", \"logger\":\"" + logEntry.loggerName() + 
+                        "\", \"message\":\"" + logEntry.message() + "\"}";
+        System.out.println(jsonOutput);
     }
     
     @Override
@@ -254,8 +265,7 @@ record JsonLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void close() {
-        // TODO: Print "JSON logger closed"
-        System.out.println("TODO: JSON logger closed"); // Minimal implementation
+        System.out.println("JSON logger closed");
     }
 }
 

@@ -239,7 +239,7 @@ public class LegacyCodeExample {
      * Much more efficient than the legacy version's three loops
      */
     public void processOrder(RefactorOrder order) {
-        if (!"NEW".equals(order.status())) {
+        if (order == null || !"NEW".equals(order.status())) {
             return; // Only process new orders
         }
         

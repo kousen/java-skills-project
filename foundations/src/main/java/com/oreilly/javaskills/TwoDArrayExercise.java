@@ -59,7 +59,7 @@ public class TwoDArrayExercise {
         var employees = List.of("Alice", "Bob", "Carol", "David");
         
         System.out.println("Quarterly Sales Data:");
-        System.out.println("Employee        Q1          Q2          Q3          Q4");
+        System.out.println("Employee    Q1        Q2        Q3        Q4");
         System.out.println("----------------------------------------------------------");
         
         for (int emp = 0; emp < salesData.length; emp++) {

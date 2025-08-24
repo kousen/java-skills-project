@@ -27,25 +27,31 @@ record ShippingData(String destination, double weight, double distance, String s
 // Modern Strategy Pattern using Function interface and lambdas
 class ShippingCalculations {
     
-    // TODO: Implement STANDARD shipping strategy
+    // COMPLETED: Implement STANDARD shipping strategy
     // Rules: $5.00 base rate + $0.50 per pound + $0.10 per mile
     public static final Function<ShippingData, Double> STANDARD = data -> {
-        // TODO: Replace this with actual calculation
-        return 0.0;
+        double baseRate = 5.0;
+        double weightRate = 0.50;
+        double distanceRate = 0.10;
+        return baseRate + (data.weight() * weightRate) + (data.distance() * distanceRate);
     };
     
-    // TODO: Implement EXPRESS shipping strategy  
+    // COMPLETED: Implement EXPRESS shipping strategy  
     // Rules: $12.00 base rate + $0.75 per pound + $0.15 per mile
     public static final Function<ShippingData, Double> EXPRESS = data -> {
-        // TODO: Replace this with actual calculation
-        return 0.0;
+        double baseRate = 12.0;
+        double weightRate = 0.75;
+        double distanceRate = 0.15;
+        return baseRate + (data.weight() * weightRate) + (data.distance() * distanceRate);
     };
     
-    // TODO: Implement OVERNIGHT shipping strategy
+    // COMPLETED: Implement OVERNIGHT shipping strategy
     // Rules: $25.00 base rate + $1.00 per pound + $0.25 per mile
     public static final Function<ShippingData, Double> OVERNIGHT = data -> {
-        // TODO: Replace this with actual calculation  
-        return 0.0;
+        double baseRate = 25.0;
+        double weightRate = 1.0;
+        double distanceRate = 0.25;
+        return baseRate + (data.weight() * weightRate) + (data.distance() * distanceRate);
     };
     
     // COMPLETED: International shipping with customs fee
