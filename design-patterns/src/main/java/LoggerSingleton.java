@@ -1,9 +1,13 @@
+import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.SimpleFormatter;
 
 /**
- * Try It Out Exercise: Implement a thread-safe Singleton Logger
+ * 🎓 STUDENT EXERCISE: Implement a thread-safe Singleton Logger
+ * <p>
+ * ⚠️  FOR STUDENTS: This file contains TODO items for you to implement.
+ * ⚠️  DO NOT COMPLETE - This is a hands-on learning exercise!
  * <p>
  * Your task is to complete this LoggerSingleton class following the Singleton pattern.
  * The class should manage a single java.util.logging.Logger instance across the application.
@@ -15,84 +19,72 @@ import java.time.format.DateTimeFormatter;
  * 4. Configure the logger with console output and INFO level by default
  * <p>
  * TODO: Complete the implementation below
+ * HINT: Compare your solution with LoggerSingletonSolution.java when done.
  */
 public class LoggerSingleton {
     
-    private static volatile LoggerSingleton instance;
+    // TODO: Add the static volatile instance variable
     
+    private final Logger logger;
     private final String loggerName;
-    private Level currentLevel;
     
     // TODO: Implement private constructor
     private LoggerSingleton() {
         this.loggerName = "ApplicationLogger";
-        this.currentLevel = Level.INFO; // Default level
+        
+        // TODO: Initialize the java.util.logging.Logger
+        this.logger = Logger.getLogger(loggerName);
+        
+        // TODO: Configure console handler with simple formatting
+        // ConsoleHandler consoleHandler = new ConsoleHandler();
+        // consoleHandler.setFormatter(new SimpleFormatter());
+        // consoleHandler.setLevel(Level.ALL);
+        // 
+        // logger.addHandler(consoleHandler);
+        // logger.setLevel(Level.INFO);
+        // logger.setUseParentHandlers(false); // Don't use parent handlers
     }
     
-    // COMPLETED: Implement thread-safe getInstance() method using double-checked locking
+    // TODO: Implement thread-safe getInstance() method using double-checked locking
     public static LoggerSingleton getInstance() {
-        if (instance == null) {
-            synchronized (LoggerSingleton.class) {
-                if (instance == null) {
-                    instance = new LoggerSingleton();
-                }
-            }
-        }
-        return instance;
+        // TODO: Implement double-checked locking pattern
+        throw new UnsupportedOperationException("TODO: Implement getInstance() method");
     }
     
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException("Cannot clone singleton instance");
-    }
+    // TODO: Override clone() method to prevent cloning
+    // @Override
+    // protected Object clone() throws CloneNotSupportedException {
+    //     throw new CloneNotSupportedException("Cannot clone singleton instance");
+    // }
     
-    // Logging methods - direct implementation for better test compatibility
+    // Logging methods - delegate to internal logger
     public void info(String message) {
-        if (isLevelEnabled(Level.INFO)) {
-            logMessage(Level.INFO, message);
-        }
+        // TODO: Delegate to logger.info(message)
     }
     
     public void warning(String message) {
-        if (isLevelEnabled(Level.WARNING)) {
-            logMessage(Level.WARNING, message);
-        }
+        // TODO: Delegate to logger.warning(message)
     }
     
     public void severe(String message) {
-        if (isLevelEnabled(Level.SEVERE)) {
-            logMessage(Level.SEVERE, message);
-        }
+        // TODO: Delegate to logger.severe(message)
     }
     
     public void fine(String message) {
-        if (isLevelEnabled(Level.FINE)) {
-            logMessage(Level.FINE, message);
-        }
+        // TODO: Delegate to logger.fine(message)
     }
     
     public void log(Level level, String message) {
-        if (isLevelEnabled(level)) {
-            logMessage(level, message);
-        }
-    }
-    
-    private void logMessage(Level level, String message) {
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm:ss"));
-        String formattedMessage = String.format("%s %s %s: %s", timestamp, level, loggerName, message);
-        System.out.println(formattedMessage);
-    }
-    
-    private boolean isLevelEnabled(Level level) {
-        return level.intValue() >= currentLevel.intValue();
+        // TODO: Delegate to logger.log(level, message)
     }
     
     public void setLevel(Level level) {
-        this.currentLevel = level;
+        // TODO: Delegate to logger.setLevel(level)
     }
     
     public Level getLevel() {
-        return currentLevel;
+        // TODO: Delegate to logger.getLevel()
+        return Level.INFO; // Placeholder - remove when implementing
     }
     
     public String getLoggerName() {

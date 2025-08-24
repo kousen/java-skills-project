@@ -1,8 +1,9 @@
+package solutions;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -17,9 +18,8 @@ import java.util.logging.Level;
 
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("LoggerSingleton Tests - STUDENT EXERCISE")
-@Disabled("🎓 Student Exercise: Enable these tests after completing LoggerSingleton.java TODOs")
-class LoggerSingletonTest {
+@DisplayName("LoggerSingletonSolution Tests")
+class LoggerSingletonSolutionTest {
     
     private ByteArrayOutputStream outputStream;
     private PrintStream originalOut;
@@ -41,9 +41,9 @@ class LoggerSingletonTest {
     @Test
     @DisplayName("Should return same instance for multiple calls")
     void shouldReturnSameInstanceForMultipleCalls() {
-        LoggerSingleton instance1 = LoggerSingleton.getInstance();
-        LoggerSingleton instance2 = LoggerSingleton.getInstance();
-        LoggerSingleton instance3 = LoggerSingleton.getInstance();
+        LoggerSingletonSolution instance1 = LoggerSingletonSolution.getInstance();
+        LoggerSingletonSolution instance2 = LoggerSingletonSolution.getInstance();
+        LoggerSingletonSolution instance3 = LoggerSingletonSolution.getInstance();
         
         assertThat(instance1).isSameAs(instance2);
         assertThat(instance2).isSameAs(instance3);
@@ -55,14 +55,14 @@ class LoggerSingletonTest {
     void shouldBeThreadSafe() throws InterruptedException {
         int threadCount = 100;
         CountDownLatch latch = new CountDownLatch(threadCount);
-        Set<LoggerSingleton> instances = ConcurrentHashMap.newKeySet();
+        Set<LoggerSingletonSolution> instances = ConcurrentHashMap.newKeySet();
         
         try (ExecutorService executor = Executors.newFixedThreadPool(threadCount)) {
             // Create multiple threads that get the singleton instance
             for (int i = 0; i < threadCount; i++) {
                 executor.submit(() -> {
                     try {
-                        LoggerSingleton instance = LoggerSingleton.getInstance();
+                        LoggerSingletonSolution instance = LoggerSingletonSolution.getInstance();
                         instances.add(instance);
                     } finally {
                         latch.countDown();
@@ -86,11 +86,11 @@ class LoggerSingletonTest {
     @DisplayName("Should prevent cloning")
     @SuppressWarnings("JavaReflectionMemberAccess")
     void shouldPreventCloning() {
-        LoggerSingleton instance = LoggerSingleton.getInstance();
+        LoggerSingletonSolution instance = LoggerSingletonSolution.getInstance();
         
         assertThatThrownBy(() -> {
             // Use reflection to access the clone method (students must override it)
-            Method cloneMethod = LoggerSingleton.class.getDeclaredMethod("clone");
+            Method cloneMethod = LoggerSingletonSolution.class.getDeclaredMethod("clone");
             cloneMethod.setAccessible(true);
             cloneMethod.invoke(instance);
         }).hasCauseInstanceOf(CloneNotSupportedException.class);
@@ -99,7 +99,7 @@ class LoggerSingletonTest {
     @Test
     @DisplayName("Should have proper logger configuration")
     void shouldHaveProperLoggerConfiguration() {
-        LoggerSingleton logger = LoggerSingleton.getInstance();
+        LoggerSingletonSolution logger = LoggerSingletonSolution.getInstance();
         
         assertThat(logger.getLoggerName()).isEqualTo("ApplicationLogger");
         assertThat(logger.getLevel()).isEqualTo(Level.INFO);
@@ -108,7 +108,7 @@ class LoggerSingletonTest {
     @Test
     @DisplayName("Should log info messages")
     void shouldLogInfoMessages() {
-        LoggerSingleton logger = LoggerSingleton.getInstance();
+        LoggerSingletonSolution logger = LoggerSingletonSolution.getInstance();
         
         logger.info("Test info message");
         
@@ -120,7 +120,7 @@ class LoggerSingletonTest {
     @Test
     @DisplayName("Should log warning messages")
     void shouldLogWarningMessages() {
-        LoggerSingleton logger = LoggerSingleton.getInstance();
+        LoggerSingletonSolution logger = LoggerSingletonSolution.getInstance();
         
         logger.warning("Test warning message");
         
@@ -132,7 +132,7 @@ class LoggerSingletonTest {
     @Test
     @DisplayName("Should log severe messages")
     void shouldLogSevereMessages() {
-        LoggerSingleton logger = LoggerSingleton.getInstance();
+        LoggerSingletonSolution logger = LoggerSingletonSolution.getInstance();
         
         logger.severe("Test severe message");
         
@@ -144,7 +144,7 @@ class LoggerSingletonTest {
     @Test
     @DisplayName("Should respect log levels")
     void shouldRespectLogLevels() {
-        LoggerSingleton logger = LoggerSingleton.getInstance();
+        LoggerSingletonSolution logger = LoggerSingletonSolution.getInstance();
         
         // Set to WARNING level - should not log INFO
         logger.setLevel(Level.WARNING);
@@ -163,7 +163,7 @@ class LoggerSingletonTest {
     @Test
     @DisplayName("Should allow custom log levels")
     void shouldAllowCustomLogLevels() {
-        LoggerSingleton logger = LoggerSingleton.getInstance();
+        LoggerSingletonSolution logger = LoggerSingletonSolution.getInstance();
         
         logger.log(Level.CONFIG, "Custom config message");
         logger.log(Level.FINE, "Fine level message");
@@ -177,8 +177,8 @@ class LoggerSingletonTest {
     @Test
     @DisplayName("Should maintain same identity hash codes")
     void shouldMaintainSameIdentityHashCodes() {
-        LoggerSingleton logger1 = LoggerSingleton.getInstance();
-        LoggerSingleton logger2 = LoggerSingleton.getInstance();
+        LoggerSingletonSolution logger1 = LoggerSingletonSolution.getInstance();
+        LoggerSingletonSolution logger2 = LoggerSingletonSolution.getInstance();
         
         int hash1 = System.identityHashCode(logger1);
         int hash2 = System.identityHashCode(logger2);
@@ -190,11 +190,11 @@ class LoggerSingletonTest {
     @DisplayName("Should run demonstration without errors")
     void shouldRunDemonstrationWithoutErrors() {
         // This test ensures the main demonstration method works
-        assertThatNoException().isThrownBy(LoggerSingleton::demonstrateSingleton);
+        assertThatNoException().isThrownBy(LoggerSingletonSolution::demonstrateSingleton);
         
         String output = outputStream.toString();
         assertThat(output)
-            .contains("=== LoggerSingleton Demo ===")
+            .contains("=== LoggerSingletonSolution Demo ===")
             .contains("logger1 == logger2: true")
             .contains("All references are same instance: true")
             .contains("Instance hash codes:")

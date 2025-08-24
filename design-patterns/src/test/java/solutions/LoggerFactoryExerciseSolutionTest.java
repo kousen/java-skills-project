@@ -1,17 +1,17 @@
+package solutions;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-@DisplayName("Logger Factory Exercise Tests - STUDENT EXERCISE")
-@Disabled("🎓 Student Exercise: Enable these tests after completing LoggerFactoryExercise.java TODOs")
-class LoggerFactoryExerciseTest {
+@DisplayName("Logger Factory Exercise Tests")
+class LoggerFactoryExerciseSolutionTest {
     
     private LoggerConfig testConfig;
     private ByteArrayOutputStream outputStream;
@@ -144,10 +144,10 @@ class LoggerFactoryExerciseTest {
     @Test
     @DisplayName("AppLoggerFactory should create logger from class")
     void appLoggerFactoryShouldCreateLoggerFromClass() {
-        AppLogger logger = AppLoggerFactory.getLogger(LoggerFactoryExerciseTest.class);
+        AppLogger logger = AppLoggerFactory.getLogger(LoggerFactoryExerciseSolutionTest.class);
         
         assertThat(logger).isNotNull();
-        assertThat(logger.getConfig().name()).isEqualTo("LoggerFactoryExerciseTest");
+        assertThat(logger.getConfig().name()).isEqualTo("LoggerFactoryExerciseSolutionTest");
     }
     
     @Test

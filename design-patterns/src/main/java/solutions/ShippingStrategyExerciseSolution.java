@@ -1,22 +1,24 @@
+package solutions;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 /**
- * 🎓 STUDENT EXERCISE: Strategy Pattern for Shipping Cost Calculation
+ * SOLUTION: Strategy Pattern for Shipping Cost Calculation Exercise
  * <p>
- * ⚠️  FOR STUDENTS: This file contains TODO items for you to implement.
- * ⚠️  DO NOT COMPLETE - This is a hands-on learning exercise!
+ * This is the COMPLETE SOLUTION to the ShippingStrategyExercise.java student exercise.
+ * Students should work on ShippingStrategyExercise.java first, then compare with this solution.
  * <p>
- * This exercise demonstrates the Strategy pattern using a practical example:
+ * This demonstrates the Strategy pattern using a practical example:
  * calculating shipping costs for different service levels.
  * <p>
  * The Strategy pattern is perfect for business rules that vary by context.
  * Instead of using if/else chains, we encapsulate each calculation method
  * as a separate strategy.
  * <p>
- * TODO: Complete the missing strategy implementations below.
- * HINT: Compare your solution with ShippingStrategyExerciseSolution.java when done.
+ * ⚠️  FOR INSTRUCTORS: This file contains completed implementations.
+ * ⚠️  STUDENTS should work on ShippingStrategyExercise.java (the version with TODOs).
  */
 
 // Data container for shipping information
@@ -31,28 +33,34 @@ record ShippingData(String destination, double weight, double distance, String s
 // Modern Strategy Pattern using Function interface and lambdas
 class ShippingCalculations {
     
-    // TODO: Implement STANDARD shipping strategy
+    // COMPLETED: Implement STANDARD shipping strategy
     // Rules: $5.00 base rate + $0.50 per pound + $0.10 per mile
     public static final Function<ShippingData, Double> STANDARD = data -> {
-        // TODO: Calculate: baseRate + (weight * weightRate) + (distance * distanceRate)
-        return 0.0; // Remove this line when implementing
+        double baseRate = 5.0;
+        double weightRate = 0.50;
+        double distanceRate = 0.10;
+        return baseRate + (data.weight() * weightRate) + (data.distance() * distanceRate);
     };
     
-    // TODO: Implement EXPRESS shipping strategy  
+    // COMPLETED: Implement EXPRESS shipping strategy  
     // Rules: $12.00 base rate + $0.75 per pound + $0.15 per mile
     public static final Function<ShippingData, Double> EXPRESS = data -> {
-        // TODO: Calculate: baseRate + (weight * weightRate) + (distance * distanceRate)
-        return 0.0; // Remove this line when implementing
+        double baseRate = 12.0;
+        double weightRate = 0.75;
+        double distanceRate = 0.15;
+        return baseRate + (data.weight() * weightRate) + (data.distance() * distanceRate);
     };
     
-    // TODO: Implement OVERNIGHT shipping strategy
+    // COMPLETED: Implement OVERNIGHT shipping strategy
     // Rules: $25.00 base rate + $1.00 per pound + $0.25 per mile
     public static final Function<ShippingData, Double> OVERNIGHT = data -> {
-        // TODO: Calculate: baseRate + (weight * weightRate) + (distance * distanceRate)
-        return 0.0; // Remove this line when implementing
+        double baseRate = 25.0;
+        double weightRate = 1.0;
+        double distanceRate = 0.25;
+        return baseRate + (data.weight() * weightRate) + (data.distance() * distanceRate);
     };
     
-    // COMPLETED: International shipping with customs fee (provided as example)
+    // COMPLETED: International shipping with customs fee
     public static final Function<ShippingData, Double> INTERNATIONAL = data -> {
         if (!"International".equals(data.destination())) {
             throw new IllegalArgumentException("International strategy requires international destination");
@@ -96,7 +104,7 @@ class ShippingCalculator {
 }
 
 // Demo class showing the Strategy pattern in action
-public class ShippingStrategyExercise {
+public class ShippingStrategyExerciseSolution {
     
     public static void main(String[] args) {
         demonstrateShippingStrategies();

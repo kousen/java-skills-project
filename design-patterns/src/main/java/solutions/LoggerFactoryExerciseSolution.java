@@ -1,23 +1,25 @@
+package solutions;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 🎓 STUDENT EXERCISE: Logger Factory Pattern
+ * SOLUTION: Logger Factory Pattern Exercise
  * <p>
- * ⚠️  FOR STUDENTS: This file contains TODO items for you to implement.
- * ⚠️  DO NOT COMPLETE - This is a hands-on learning exercise!
+ * This is the COMPLETE SOLUTION to the LoggerFactoryExercise.java student exercise.
+ * Students should work on LoggerFactoryExercise.java first, then compare with this solution.
  * <p>
- * This exercise demonstrates the Factory pattern using a realistic example:
+ * This demonstrates the Factory pattern using a realistic example:
  * creating different types of loggers (Console, File, JSON) without
  * the client code knowing the specific logger implementations.
  * <p>
- * This prepares you for Section 19 (Logging) and shows how SLF4J's
+ * This prepares students for Section 19 (Logging) and shows how SLF4J's
  * LoggerFactory works under the hood.
  * <p>
- * TODO: Complete the missing logger implementations below.
- * HINT: Compare your solution with LoggerFactoryExerciseSolution.java when done.
+ * ⚠️  FOR INSTRUCTORS: This file contains completed implementations.
+ * ⚠️  STUDENTS should work on LoggerFactoryExercise.java (the version with TODOs).
  */
 
 // Enum for log levels
@@ -112,10 +114,16 @@ record ConsoleLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void log(LogLevel level, String message) {
-        // TODO: Implement console logging
-        // Check if level is enabled, create LogEntry, format and print
-        // Use System.out for DEBUG/INFO, System.err for WARN/ERROR
-        System.out.println("TODO: Implement console logging"); // Remove this line when implementing
+        if (!isEnabled(level)) return;
+        
+        var logEntry = new LogEntry(level, config.name(), message);
+        var output = logEntry.formatted();
+        
+        if (level == LogLevel.DEBUG || level == LogLevel.INFO) {
+            System.out.println(output);
+        } else {
+            System.err.println(output);
+        }
     }
     
     @Override
@@ -144,8 +152,7 @@ record ConsoleLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void close() {
-        // TODO: Print "Console logger closed"
-        System.out.println("TODO: Console logger closed"); // Remove this line when implementing
+        System.out.println("Console logger closed");
     }
 }
 
@@ -170,10 +177,11 @@ record FileLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void log(LogLevel level, String message) {
-        // TODO: Implement file logging simulation
-        // Check if enabled, create LogEntry, print with "FILE:" prefix
-        // Include filename from config.properties().get("filename")
-        System.out.println("TODO: Implement file logging"); // Remove this line when implementing
+        if (!isEnabled(level)) return;
+        
+        var logEntry = new LogEntry(level, config.name(), message);
+        var filename = config.properties().get("filename");
+        System.out.println("FILE:" + (filename != null ? " [" + filename + "]" : "") + " " + logEntry.formatted());
     }
     
     @Override
@@ -202,8 +210,8 @@ record FileLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void close() {
-        // TODO: Print closing message with filename
-        System.out.println("TODO: File logger closed"); // Remove this line when implementing
+        var filename = config.properties().get("filename");
+        System.out.println("File logger closed: [" + (filename != null ? filename : "unknown") + "]");
     }
 }
 
@@ -227,9 +235,14 @@ record JsonLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void log(LogLevel level, String message) {
-        // TODO: Implement JSON logging
-        // Format: {"timestamp":"2025-01-01T12:00:00", "level":"INFO", "logger":"TestLogger", "message":"Test message"}
-        System.out.println("TODO: Implement JSON logging"); // Remove this line when implementing
+        if (!isEnabled(level)) return;
+        
+        var logEntry = new LogEntry(level, config.name(), message);
+        var jsonOutput = "{\"timestamp\":\"" + logEntry.timestamp() + 
+                        "\", \"level\":\"" + logEntry.level() + 
+                        "\", \"logger\":\"" + logEntry.loggerName() + 
+                        "\", \"message\":\"" + logEntry.message() + "\"}";
+        System.out.println(jsonOutput);
     }
     
     @Override
@@ -258,8 +271,7 @@ record JsonLogger(LoggerConfig config) implements AppLogger {
     
     @Override
     public void close() {
-        // TODO: Print "JSON logger closed"
-        System.out.println("TODO: JSON logger closed"); // Remove this line when implementing
+        System.out.println("JSON logger closed");
     }
 }
 
@@ -368,7 +380,7 @@ class AppLoggerFactory {
 }
 
 // Demo class showing the Logger Factory pattern in action
-public class LoggerFactoryExercise {
+public class LoggerFactoryExerciseSolution {
     
     public static void main(String[] args) {
         demonstrateLoggerFactories();
@@ -409,11 +421,11 @@ public class LoggerFactoryExercise {
         
         // 4. Demonstrate SLF4J-style usage
         System.out.println("\n--- 4. SLF4J-Style Logger Usage ---");
-        AppLogger classLogger = AppLoggerFactory.getLogger(LoggerFactoryExercise.class);
+        AppLogger classLogger = AppLoggerFactory.getLogger(LoggerFactoryExerciseSolution.class);
         AppLogger namedLogger = AppLoggerFactory.getLogger("com.example.service");
         
         if (classLogger != null && namedLogger != null) {
-            classLogger.info("Logger created for class: " + LoggerFactoryExercise.class.getSimpleName());
+            classLogger.info("Logger created for class: " + LoggerFactoryExerciseSolution.class.getSimpleName());
             namedLogger.info("Logger created for service: com.example.service");
         }
         

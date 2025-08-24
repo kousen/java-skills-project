@@ -1,13 +1,13 @@
+package solutions;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.BeforeEach;
 import static org.assertj.core.api.Assertions.*;
 import java.util.function.Function;
 
-@DisplayName("Shipping Strategy Exercise Tests - STUDENT EXERCISE")  
-@Disabled("🎓 Student Exercise: Enable these tests after completing ShippingStrategyExercise.java TODOs")
-class ShippingStrategyExerciseTest {
+@DisplayName("Shipping Strategy Exercise Tests")
+class ShippingStrategyExerciseSolutionTest {
     
     private ShippingData testPackage;
     private ShippingCalculator calculator;
