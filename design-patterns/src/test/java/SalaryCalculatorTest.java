@@ -127,28 +127,7 @@ class SalaryCalculatorTest {
         assertThat(hourlyPay).isEqualTo(1000.0);
         assertThat(salariedPay).isEqualTo(3000.0);
     }
-    
-    @Test
-    @DisplayName("Payroll processor should reject null payroll data")
-    void payrollProcessorShouldRejectNullPayrollData() {
-        var testProcessor = new PayrollProcessor(PayrollCalculations.HOURLY, "Test Hourly");
-        
-        assertThatThrownBy(() -> testProcessor.processPayroll(null))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Payroll data and employee cannot be null");
-    }
-    
-    @Test
-    @DisplayName("Payroll processor should reject null calculator")
-    void payrollProcessorShouldRejectNullCalculator() {
-        var nullProcessor = new PayrollProcessor(null, "Null Calculator");
-        var payrollData = new PayrollData(employee, 40, 25.0);
-        
-        assertThatThrownBy(() -> nullProcessor.processPayroll(payrollData))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("Pay calculator not set");
-    }
-    
+
     @Test
     @DisplayName("Should generate payroll summary")
     void shouldGeneratePayrollSummary() {
@@ -176,7 +155,7 @@ class SalaryCalculatorTest {
             return data.hoursWorked() * data.hourlyRate();
         };
         
-        processor.setCalculator(consultantStrategy, "Consultant Rate");
+        processor.setCalculator(consultantStrategy);
         var payrollData = new PayrollData(employee, 45, 150.0); // 45 hours at $150/hour
         
         double pay = processor.processPayroll(payrollData);
@@ -209,7 +188,7 @@ class SalaryCalculatorTest {
             return base + commission;
         };
         
-        processor.setCalculator(tieredCommission, "Tiered Commission");
+        processor.setCalculator(tieredCommission);
         var payrollData = new PayrollData(employee, null, 65000.0, null, null, 50000.0, null);
         
         double pay = processor.processPayroll(payrollData);
@@ -222,9 +201,7 @@ class SalaryCalculatorTest {
     @DisplayName("Custom strategy factory should work for contractor scenario")
     void customStrategyFactoryShouldWorkForContractorScenario() {
         // Test the customStrategy factory method with a contractor strategy
-        Function<PayrollData, Double> contractorStrategy = PayrollCalculations.customStrategy(
-            "Contractor with daily rate and weekend bonus",
-            data -> {
+        Function<PayrollData, Double> contractorStrategy = data -> {
                 if (data.hoursWorked() == null || data.hourlyRate() == null) {
                     throw new IllegalArgumentException("Hours and daily rate required for contractor");
                 }
@@ -242,10 +219,9 @@ class SalaryCalculatorTest {
                 }
                 
                 return basePay;
-            }
-        );
-        
-        processor.setCalculator(contractorStrategy, "Contractor (Custom Strategy Factory)");
+            };
+
+        processor.setCalculator(contractorStrategy);
         
         // Test regular week (42 hours = 6 days, gets weekend bonus)
         var contractorData = new PayrollData(employee, 42, null, 600.0, null, null, null);

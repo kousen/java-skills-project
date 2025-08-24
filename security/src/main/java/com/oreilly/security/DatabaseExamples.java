@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Database Security Examples - Safe vs Unsafe SQL Practices
- * 
+ * <p>
  * This class demonstrates the difference between vulnerable SQL string concatenation
  * and safe parameterized queries using prepared statements.
  */
@@ -25,7 +25,7 @@ public class DatabaseExamples {
     /**
      * VULNERABLE APPROACH - DON'T DO THIS!
      * String concatenation allows SQL injection attacks.
-     * 
+     * <p>
      * Example attack: If userInput is "Robert'; DROP TABLE employees; --"
      * The resulting query becomes:
      * SELECT * FROM employees WHERE name = 'Robert'; DROP TABLE employees; --'
@@ -48,7 +48,7 @@ public class DatabaseExamples {
     /**
      * SAFE APPROACH - Use prepared statements with parameterized queries.
      * The database treats user input as data only, never as executable SQL.
-     * 
+     * <p>
      * Even if userInput contains "Robert'; DROP TABLE employees; --",
      * it will be treated as a literal string to search for, not as SQL commands.
      */
@@ -69,7 +69,7 @@ public class DatabaseExamples {
         return results;
     }
     
-    /**
+    /*
      * SPRING DATA JPA EQUIVALENT - Framework protection
      * <p>
      * Modern frameworks like Spring Data JPA automatically use parameterized queries:
@@ -105,9 +105,9 @@ public class DatabaseExamples {
     public List<String> safeMultiParameterQuery(String name, String department, double minSalary) 
             throws SQLException {
         String sql = """
-            SELECT name FROM employees 
-            WHERE name LIKE ? 
-            AND department = ? 
+            SELECT name FROM employees
+            WHERE name LIKE ?
+            AND department = ?
             AND salary >= ?
             """;
         

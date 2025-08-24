@@ -10,7 +10,7 @@ dependencies {
     
     // Project Reactor core and test support
     implementation 'io.projectreactor:reactor-core'
-    testImplementation 'io.projectreactor:reactor-test'
+    implementation 'io.projectreactor:reactor-test'  // Needed for StepVerifier in demo code
     
     // Jackson for JSON processing in reactive endpoints
     implementation platform('com.fasterxml.jackson:jackson-bom:2.19.1')

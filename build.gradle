@@ -21,15 +21,15 @@ subprojects {
     }
     
     dependencies {
-        // Basic logging for video 19
+        // Basic logging for video 19 - updated to latest 2025 versions
         implementation 'org.slf4j:slf4j-api:2.0.17'
         implementation 'ch.qos.logback:logback-classic:1.5.18'
         
-        // Testing dependencies - using BOMs for version management
-        testImplementation platform('org.junit:junit-bom:5.11.0')
-        testImplementation platform('org.mockito:mockito-bom:5.18.0')
+        // Testing dependencies - using BOMs for version management with latest 2025 versions
+        testImplementation platform('org.junit:junit-bom:5.13.4')
+        testImplementation platform('org.mockito:mockito-bom:5.15.2')
         testImplementation 'org.junit.jupiter:junit-jupiter'
-        testImplementation 'org.assertj:assertj-core:3.26.3'
+        testImplementation 'org.assertj:assertj-core:3.27.3'
         testImplementation 'org.mockito:mockito-core'
         testImplementation 'org.mockito:mockito-junit-jupiter'
         
@@ -49,18 +49,27 @@ subprojects {
 
 // Spring Boot configuration removed - no longer needed for streamlined project
 
-// Custom task to run examples
+// Custom task to run examples - Gradle 9.0 compatible
 tasks.register('runExample', JavaExec) {
     description = 'Run a specific example: gradle runExample -Pmodule=foundations -PmainClass=NamingConventions'
     group = 'application'
 
-    doFirst {
-        if (!project.hasProperty('module') || !project.hasProperty('mainClass')) {
+    // Configure at configuration time for Gradle 9.0 compatibility
+    if (project.hasProperty('module') && project.hasProperty('mainClass')) {
+        def moduleProject = project.findProject(":${project.property('module')}")
+        if (moduleProject != null) {
+            classpath = moduleProject.sourceSets.main.runtimeClasspath
+            mainClass = project.property('mainClass') as String
+        } else {
+            throw new GradleException("Module '${project.property('module')}' not found")
+        }
+    } else {
+        // Set dummy values to avoid configuration issues
+        mainClass = 'DummyMain'
+        classpath = files()
+        
+        doFirst {
             throw new GradleException("Usage: gradle runExample -Pmodule=<module-name> -PmainClass=<ClassName>")
         }
-
-        def moduleProject = project.findProject(":${module}")
-        classpath = moduleProject.sourceSets.main.runtimeClasspath
-        mainClass = project.property('mainClass') as Property<String>
     }
 }

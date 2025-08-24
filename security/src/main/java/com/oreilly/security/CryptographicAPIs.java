@@ -45,7 +45,7 @@ public class CryptographicAPIs {
     private static final int HASH_LENGTH = 32;
 
     public static void main(String[] args) {
-        CryptographicAPIs service = new CryptographicAPIs();
+        var service = new CryptographicAPIs();
 
         System.out.println("=== Java Cryptography Demonstration ===");
 
@@ -118,8 +118,8 @@ public class CryptographicAPIs {
         try {
             // Generate a secret key
             SecretKey secretKey = generateAESKey();
-            System.out.println("Generated AES key: " + Base64.getEncoder()
-                    .encodeToString(secretKey.getEncoded()));
+            System.out.println("Generated AES key: " +
+                               Base64.getEncoder().encodeToString(secretKey.getEncoded()));
 
             // Sensitive employee data
             String sensitiveData = "SSN: 123-45-6789, Credit Card: 4111-1111-1111-1111";
@@ -127,8 +127,7 @@ public class CryptographicAPIs {
 
             // Encrypt the data
             byte[] encryptedData = encrypt(sensitiveData, secretKey);
-            String encodedEncrypted = Base64.getEncoder()
-                    .encodeToString(encryptedData);
+            String encodedEncrypted = Base64.getEncoder().encodeToString(encryptedData);
             System.out.println("Encrypted data (Base64): " + encodedEncrypted);
 
             // Decrypt the data
@@ -137,8 +136,7 @@ public class CryptographicAPIs {
 
             // Show encryption produces different results each time (due to IV)
             byte[] encryptedData2 = encrypt(sensitiveData, secretKey);
-            String encodedEncrypted2 = Base64.getEncoder()
-                    .encodeToString(encryptedData2);
+            String encodedEncrypted2 = Base64.getEncoder().encodeToString(encryptedData2);
             System.out.println("Second encryption (different IV): " + encodedEncrypted2);
 
         } catch (Exception e) {
@@ -159,8 +157,7 @@ public class CryptographicAPIs {
             PublicKey publicKey = keyPair.getPublic();
 
             System.out.println("Generated RSA key pair");
-            System.out.println("Public key: " + Base64.getEncoder()
-                    .encodeToString(publicKey.getEncoded()));
+            System.out.println("Public key: " + Base64.getEncoder().encodeToString(publicKey.getEncoded()));
 
             // Data to sign
             String employeeData = "Employee: John Doe, Salary: $75000, Department: Engineering";
@@ -168,8 +165,7 @@ public class CryptographicAPIs {
 
             // Sign the data
             byte[] signature = signData(employeeData, privateKey);
-            String encodedSignature = Base64.getEncoder()
-                    .encodeToString(signature);
+            String encodedSignature = Base64.getEncoder().encodeToString(signature);
             System.out.println("Digital signature: " + encodedSignature);
 
             // Verify the signature
@@ -229,13 +225,11 @@ public class CryptographicAPIs {
             byte[] salt = generateSalt();
 
             System.out.println("Password: " + password);
-            System.out.println("Salt: " + Base64.getEncoder()
-                    .encodeToString(salt));
+            System.out.println("Salt: " + Base64.getEncoder().encodeToString(salt));
 
             // Derive encryption key from password
             SecretKey derivedKey = deriveKeyFromPassword(password, salt);
-            System.out.println("Derived key: " + Base64.getEncoder()
-                    .encodeToString(derivedKey.getEncoded()));
+            System.out.println("Derived key: " + Base64.getEncoder().encodeToString(derivedKey.getEncoded()));
 
             // Use derived key for encryption
             String data = "Confidential employee information";
@@ -243,8 +237,7 @@ public class CryptographicAPIs {
             String decrypted = decrypt(encrypted, derivedKey);
 
             System.out.println("Original: " + data);
-            System.out.println("Encrypted: " + Base64.getEncoder()
-                    .encodeToString(encrypted));
+            System.out.println("Encrypted: " + Base64.getEncoder().encodeToString(encrypted));
             System.out.println("Decrypted: " + decrypted);
 
         } catch (Exception e) {
@@ -434,16 +427,14 @@ public class CryptographicAPIs {
         System.arraycopy(salt, 0, combined, 0, salt.length);
         System.arraycopy(hash, 0, combined, salt.length, hash.length);
 
-        return Base64.getEncoder()
-                .encodeToString(combined);
+        return Base64.getEncoder().encodeToString(combined);
     }
 
     /**
      * Verify a password against its hash.
      */
     public boolean verifyPassword(String password, String storedHash) throws Exception {
-        byte[] combined = Base64.getDecoder()
-                .decode(storedHash);
+        byte[] combined = Base64.getDecoder().decode(storedHash);
 
         // Extract salt and hash
         byte[] salt = new byte[SALT_LENGTH];
@@ -473,8 +464,7 @@ public class CryptographicAPIs {
     public byte[] pbkdf2(char[] password, byte[] salt, int iterations, int keyLength) throws Exception {
         PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, keyLength * 8);
         SecretKeyFactory skf = SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
-        return skf.generateSecret(spec)
-                .getEncoded();
+        return skf.generateSecret(spec).getEncoded();
     }
 
     /**

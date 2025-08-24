@@ -1,93 +1,95 @@
 [SCENE 1: CAMERA INTRODUCTION - 45 SECONDS]
 
-Hi everyone! In this video, we're diving into one of the most critical topics in application security - injection attacks.
+Hi everyone! I'm Ken Kousen, and today we're exploring Java's built-in cryptographic capabilities and how to use them in your applications.
 
-In an injection attack, your application receives data from a user and simply uses it verbatim. That's fine if you have a normal user, but a malicious user will type code into a form, and if the application treats that input as code, you can get into serious trouble.
+Java provides a comprehensive cryptography framework through the JCA - the Java Cryptography Architecture. You can hash passwords securely, encrypt sensitive data, and create digital signatures using standard algorithms, all with just a few lines of code. The hard cryptographic work is handled by the JVM - it's enough to know which classes to use and how to use them properly.
 
-If you check with OWASP - the Open Worldwide Application Security Project - in their updated top ten lists, injection attacks have been a huge vulnerability for over a decade. Both SQL injection and JavaScript injection - better known as cross-site scripting attacks - steal user credentials and hijack sessions every day. Both are largely preventable with proper input validation.
+Today I'll show you Java's three most important cryptographic operations: the SecretKeyFactory for password hashing, the Cipher class for data encryption and decryption, and the Signature class for digital authentication. More importantly, you'll see how to use these Java APIs safely and effectively.
 
-Today I'll show you how these attacks work, and more importantly, how to defend against them using two key strategies: escaping inputs so malicious code becomes harmless text, and validating domain objects to ensure they meet business rules and security constraints.
+Let me show you some diagrams that illustrate what these Java classes actually do under the hood.
 
-Let's jump into the code and see these attacks in action, then build bulletproof defenses.
+[SCENE 2: SCREENSHARE DEMONSTRATION - 4 MINUTES 30 SECONDS]
 
-[SCENE 2: SCREENSHARE DEMONSTRATION - 3 MINUTES 30 SECONDS]
+[Switch to screenshare - Open CRYPTOGRAPHY_DIAGRAMS.md]
 
-[Switch to screenshare - IDE with security module open]
+Let me start by showing you what Java's cryptographic classes achieve.
 
-[Open InputValidator.java and scroll to the SQL injection comment around line 128]
+[Show Password Hashing with PBKDF2 diagram]
 
-First, let's understand SQL injection. Here in our code, I've added a comment showing the dangerous approach. Look at this vulnerable pattern: "SELECT * FROM employees WHERE name = '" + userInput + "'".
+Java's SecretKeyFactory class handles password hashing through PBKDF2 - that's P-B-K-D-F-2, or Password-Based Key Derivation Function version 2. PBKDF2 solves a fundamental problem: passwords are weak and fast to crack, but we need strong, slow-to-crack security. PBKDF2 transforms weak passwords into strong cryptographic keys while making brute force attacks impractical through intentional slowness. Java's implementation has been available since Java 6, with stronger SHA-256 variants added in Java 8.
 
-When we concatenate user input directly into SQL queries like this, a malicious user can enter something like "Robert'; DROP TABLE employees; --". Watch what happens - the semicolon ends the first query, DROP TABLE executes next, and the double dash comments out everything else. Your entire employee table just got deleted.
+[Show AES-GCM Encryption Flow diagram]
 
-Incidentally, see the famous "Exploits of a Mom" cartoon from XKCD, https://xkcd.com/327/ . "Little Bobby Tables" is quite famous in the security community.
+For data encryption, Java's Cipher class handles AES-GCM mode. Here's why GCM mode matters: traditional encryption only hides your data - it doesn't tell you if someone modified it. AES-GCM solves two problems in one operation - it encrypts for confidentiality AND generates an authentication tag that detects any tampering. Without GCM, you'd need separate encrypt and authenticate steps. Java's Cipher handles both automatically in a single doFinal() call.
 
-[Show the XSS comment around line 150]
+[Show Digital Signature Process diagram]
 
-Now let's look at cross-site scripting. Here's another comment showing an XSS attack example. If someone enters "<script>alert('XSS Attack!')</script>" in a form field, and you display it directly on a webpage, that script executes in every user's browser. Attackers can steal cookies, redirect users, or completely deface your site.
+Java's Signature class manages the entire digital signature process. Signature.initSign() with your private key prepares for signing, Signature.update() hashes your data, and Signature.sign() creates the signature. For verification, you use Signature.initVerify() with the public key. Java handles the RSA operations and SHA-256 hashing automatically.
 
-So we have two types of injection attacks - SQL injection targets your database, XSS targets your users. Both exploit the same fundamental flaw: treating user input as executable code.
+[Show Digital Certificate Structure diagram]
 
-[Show the escapeHtml method around line 166]
+Java also provides certificate handling through the X509Certificate class. Certificates contain public keys and are signed by Certificate Authorities. Java's certificate validation automatically checks signatures and expiration dates when you call certificate.verify().
 
-Here's our first defense strategy - escaping inputs. This escapeHtml method converts dangerous characters into safe entity references. That script tag becomes "&lt;script&gt;" - harmless text that displays but doesn't execute. Creating a good solid escapeHtml method isn't easy, however, since there are many ways to try to beat it. For that, use a trusted security framework. The core of Spring includes a class called HtmlUtils, for example, that will do a lot of that for you.
+Now let's see these Java classes in action.
 
-[Show the isSqlSafeInput method around line 135]
+[Open CryptographicAPIs.java]
 
-For SQL injection, this isSqlSafeInput method detects dangerous keywords and patterns. It's a defense-in-depth approach that catches malicious input before it ever reaches your database.
+Here's how to use Java's cryptographic APIs effectively. Let's start with password hashing using Java's built-in classes.
 
-The other SQL practice to follow is always to use parameterized queries. Instead of concatenating strings, you use placeholders and bind variables. This way, the database treats user input as data, never as executable code. If someone adds SQL code inside a name field, from then on their name is a SQL statement.
+[Show the hashPassword() method - lines 421-431, and pbkdf2() method - lines 464-468]
 
-[Open DatabaseExamples.java and show the vulnerableQuery vs. safeQuery methods]
+This method shows Java's SecretKeyFactory in action. We specify "PBKDF2WithHmacSHA256" - the SHA-256 variant that's been available since Java 8. Here's why this matters: without PBKDF2, an attacker could test millions of password guesses per second against a simple hash. But with 100 thousand iterations, they can only test hundreds per second. A password that might take 1 hour to crack with simple hashing now takes over 1,000 hours with PBKDF2. Java's SecureRandom generates the unique salt, and Java handles all the computational work automatically.
 
-Here's the difference in practice. The vulnerable approach concatenates strings directly - perfect for injection attacks. But the safe approach uses a PreparedStatement with a question mark placeholder. When we call setString, the database treats that input as pure data, never as executable SQL.
+[Show the encrypt() method - lines 490-505, then decrypt() method - lines 510-525]
 
-The class uses modern Java features (text blocks for multiline SQL) and provides concrete, runnable examples that perfectly illustrate the security concepts you're teaching.
+For encryption, we use Java's Cipher class with "AES/GCM/NoPadding". Notice what happens when we call cipher.doFinal() - Java encrypts the data AND generates an authentication tag, all in one operation. If someone tries to modify even one bit of the encrypted result, the decryption will fail completely. Java's GCM implementation gives you both confidentiality and tamper detection without any extra work.
 
-[Show the validateEmployee and validateEmployeeBusinessRules methods]
+[Show the signData() method - lines 539-544, then verifySignature() method - lines 549-554]
 
-Our second defense strategy is object validation. After user input gets bound to our EmployeeDto, we validate the populated object with business rules and security constraints. This ensures that even if something slips through input filtering, the domain object itself is safe and valid.
+Digital signatures use Java's Signature class with "SHA256withRSA". Java combines SHA-256 hashing with RSA signing in a single operation. Signature.initSign() prepares for signing with our private key, and Signature.sign() produces the digital signature. Java handles the entire cryptographic pipeline.
 
-[Show specific validation methods like validateEmployeeName]
+[Show generateAESKey() method - lines 473-477, and generateRSAKeyPair() method - lines 530-534]
 
-Notice how validateEmployeeName combines both approaches - it checks basic format rules AND scans for XSS patterns. This layered security means attackers have to bypass multiple defenses to succeed.
+Java also generates cryptographic keys for you. KeyPairGenerator creates RSA key pairs, KeyGenerator creates AES keys, and SecureRandom provides cryptographically strong random numbers. All the key management complexity is handled by Java's security providers.
 
-[Mention framework protection]
+[Open DatabaseExamples.java briefly]
 
-In practice, modern frameworks provide automatic protection. Spring Data JPA uses parameterized queries that treat user input as data, never as SQL commands. But additional validation layers like ours provide extra security for business rules and edge cases that frameworks might miss.
+Here's a quick example of how Java's security integrates with database operations. PreparedStatement prevents SQL injection by treating parameters as data, not code. This shows how Java's built-in security features work together - secure crypto plus secure database access.
 
-[Show SecurityController.java]
+[Return to CryptographicAPIs.java and show the main() method - lines 47-78]
 
-Finally, look how this integrates with our REST API. The SecurityController provides real-time validation endpoints that return detailed results about what's valid and what isn't. This isn't theoretical - you could test these security validations right now with curl or Postman.
+Let's see Java's cryptographic capabilities in a complete example. The main method demonstrates Java's password hashing, data encryption, and digital signatures working together in a realistic scenario.
+
+[Show the EmployeeDataEncryption.demonstrateEmployeeEncryption() method - lines 629-664]
+
+This shows Java's Cipher class encrypting employee data. Notice how the same plaintext produces different encrypted results each time - that's Java's Cipher automatically generating unique IVs. The decrypt operation extracts the IV and recovers the original data. All handled by Java's cryptographic framework.
 
 [SCENE 3: TRY IT OUT EXERCISE - 45 SECONDS]
 
-[Stay in screenshare but focus on exercise instructions]
+[Stay in screenshare - Open CryptographyExercise.java]
 
-Now it's your turn to practice these security concepts! I've prepared a hands-on exercise that puts these injection attack defenses to work.
+Now let's practice using Java's cryptographic APIs directly! I've created a focused exercise that walks you through all the key JCA classes.
 
-In the security module, you'll find an InputValidationExercise class with several TODO comments. Your challenge is to implement additional validation methods that demonstrate both defense strategies we covered.
+You'll work with CryptographyExercise.java which has six progressive TODOs. First, implement PBKDF2 password hashing using SecretKeyFactory - you'll see how Java generates salts and handles iterations automatically. Then implement password verification to understand how the salt and hash work together.
 
-Start by implementing email validation that combines format checking with XSS detection. Then add phone number validation with business rules. Finally, create a method that validates department names against a whitelist - this prevents injection attacks while enforcing business policies.
+Next, you'll implement AES-GCM encryption and decryption using Java's Cipher class. You'll see how Java generates IVs automatically and how the authentication tag detects tampering. Finally, you'll implement RSA digital signatures using Java's Signature class for both signing and verification.
 
-Each validation method should follow our layered approach - basic format validation first, then security checks, then business rules. Remember to write tests for each method you implement!
-
-The exercise includes example test cases and expected validation patterns. Run the tests to verify your implementation works correctly.
-
-This exercise shows you how real security validation is implemented in production applications - comprehensive, tested, and following defense-in-depth principles.
+Each TODO focuses on a specific JCA class and includes helper methods for key generation and management. The exercise shows you how to use Java's cryptographic APIs correctly and safely, with real error handling and proper parameter usage.
 
 [SCENE 4: CAMERA WRAP-UP - 45 SECONDS]
 
 [Switch back to camera]
 
-Injection attacks aren't going away - they're evolving. We've seen how SQL injection and cross-site scripting exploit the fundamental flaw of treating user input as executable code. Our defenses work by escaping inputs to make them harmless and validating objects to ensure they meet security and business constraints.
+Java's cryptographic framework gives you enterprise-grade security with surprisingly simple APIs. The JCA handles the complex mathematics - it's enough to know which classes to use.
 
-But here's something to think about - a major new threat these days is "prompt injection," where people add malicious statements to AI chat prompts. Even a trivial example like "ignore all previous instructions" is the beginning of a prompt injection attack. The AI security community doesn't have robust defenses for these yet, other than ensuring AI systems don't have access to secrets.
+Use SecretKeyFactory with PBKDF2 for password hashing - this transforms weak, human-chosen passwords into strong cryptographic material while making attacks prohibitively expensive through intentional computational cost. Use Cipher with AES-GCM for data encryption - Java manages the IVs and authentication tags. Use Signature with RSA and SHA-256 for digital signatures - Java combines the hashing and signing operations.
 
-The fundamental principle remains the same across all technologies: never trust user input. Whether it's SQL databases, web browsers, or AI language models, always validate, escape, and constrain what users can do with your systems.
+The key insight is that Java's security providers do the heavy lifting. The same cryptographic algorithms used by banks and governments are available through standard Java classes. You get military-grade security through familiar object-oriented APIs.
 
-The validation patterns we built today aren't just demo code - they're production-ready and thoroughly tested. You can use these defensive techniques in your real applications right away.
+Java's approach makes cryptography accessible to application developers. You don't need to be a cryptography expert - it's enough to understand which Java classes solve which problems and how to use them correctly.
 
-Next time, we'll explore Java's cryptographic APIs for encrypting sensitive data. Because preventing injection attacks is just the first step - protecting data at rest and in transit is equally important.
+These aren't academic exercises - this is production-ready code using Java's standard security framework. The algorithms are battle-tested, the implementations are optimized, and the APIs are designed for real-world applications.
+
+Next time, we'll explore Git collaboration workflows - another essential skill for professional Java development.
 
 Keep your applications secure, and I'll see you in the next video!

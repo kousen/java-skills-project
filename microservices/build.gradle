@@ -7,6 +7,7 @@ plugins {
 dependencies {
     // Spring Boot Web for REST endpoints
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'  // Needed for WebClient
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     
     // Spring Cloud dependencies for microservices
