@@ -1,92 +1,278 @@
-[SCENE 1: INTRODUCTION - 1 MINUTE]
+[PART 1: ON-CAMERA INTRODUCTION - 90 SECONDS]
 
-Welcome to Java Skills! In this video, we're going to talk about the cryptographic APIs available in Java that are essential for building secure applications. By the end of this video, you'll understand the core security concepts and know which Java classes to use for encryption, digital signatures, and password security.
+Welcome back to our Java Skills series! I'm [Host Name], and today we're covering something that's essential for professional development—Git collaboration workflows.
 
-(Show Slide: Three Essential Security Skills)
+If you've been following along with this series, you've learned a lot about Java code, but now it's time to learn how to work with that code in a team environment. Whether you're contributing to open source projects, working on a development team, or just want to follow industry best practices, mastering Git collaboration is crucial.
 
-Today we're focusing on three fundamental skills every Java developer needs: encrypting sensitive data, verifying document integrity, and securely storing passwords. These are the building blocks that underpin libraries like BCrypt, JWT tokens, and OAuth implementations.
+Today I'm going to show you the complete workflow for contributing to a Java project using fork-based collaboration. This is the standard approach used in open source projects and many professional environments.
 
-[SCENE 2: CRYPTOGRAPHIC CONCEPTS - 3 MINUTES]
+We'll walk through the entire process: forking a repository, creating feature branches, making commits with proper messages, handling conflicts, creating pull requests, and getting your code reviewed and merged.
 
-Let's start with the concepts. Cryptography gives us three essential security properties.
+I'll be using our Java Skills Project as the example—it's actually live on GitHub, so you can follow along with the exact same steps I'm showing you. By the end of this video, you'll know how to contribute to any Java project professionally.
 
-(Show Slide: Public/Private Key Pairs)
+Let's dive in and see how real Git collaboration works.
 
-First is confidentiality through encryption. Public-key cryptography uses key pairs—one key encrypts, the other decrypts. If I encrypt with either key, only the other key can decrypt it. For example, if I encrypt a message with your public key, only you can decrypt it, because only you have your private key. You would then encrypt your reply with my public key, and only I could decrypt it. This keeps data secret during transmission.
+[PART 2: SCREEN-SHARE DEMONSTRATION - 5 MINUTES 30 SECONDS]
 
-(Show Slide: Digital Signatures Concept)
+[SWITCH TO SCREEN SHARE]
 
-The second concept is data integrity and non-repudiation. This is achieved through digital signatures. Here's the key insight: a digital signature is actually a hash of the document encrypted with the sender's private key.
+[SETTING UP THE FORK WORKFLOW - 60 SECONDS]
 
-Let me break that down using a concrete example. Say you are going to do a job for a client, and they want you to sign a non-disclosure agreement. The agreement itself isn't secret—it's a standard boilerplate document, but they need to know that you signed it, and that it wasn't changed during the process. A hash, also called a digest, is like a digital fingerprint of a document. It's a fixed length string of characters representing the overall document, made with a standard algorithm. We hash the NDA, and then encrypt that hash using our private key. That encrypted hash is the digital signature. We then send the signature to the recipient. When they get it, they decrypt it with our public key to get back our generated hash. They also generate what the hash should be from the original document, using the same algorithm we did. Then they compare the two hashes. If they match, we know two things: the document hasn't been tampered with, because the hashes matched, and that the digital signature definitely came from us, because only we could have encrypted it because only we have our private key. That's both integrity and non-repudiation.
+First, let's start with the GitHub repository for our Java Skills Project. I'm going to show you the fork-based workflow, which is what you'd use when contributing to a project you don't own.
 
-(Show Slide: Certificate Trust Chain)
+[Screen: Show GitHub repository page]
+(Display text overlay: "github.com/kousen/java-skills-project")
 
-Third, we need to share public keys securely through certificates. A certificate contains a public key plus identity information, all signed by a trusted Certificate Authority. This creates a chain of trust—you trust the CA, the CA vouches for the certificate, so you can trust the public key.
+Here's our project repository. You can see it has all the Java modules we've been working with throughout this series. Notice we have several open issues here—these represent real features and bugs that need to be implemented.
 
-These concepts work together: certificates distribute public keys, encryption provides confidentiality, and digital signatures provide integrity and authenticity.
+Before contributing to any open source project, you should always look for contribution guidelines and the code of conduct. Most projects have a CONTRIBUTING.md file and a CODE_OF_CONDUCT.md file, or these may be included in the README or documentation. The contribution guidelines tell you about coding standards, testing requirements, and workflow preferences. The code of conduct explains the community standards for respectful collaboration and what behavior is expected from contributors.
 
-[SCENE 3: JAVA ENCRYPTION APIS - 2 MINUTES]
+(Display text overlay: "Always check: CONTRIBUTING.md + CODE_OF_CONDUCT.md")
 
-Now let's see how Java implements these concepts. For encryption and decryption, we use the Cipher class.
+[Screen: Click on Issues tab]
+(Display text overlay: "5 open issues available for contribution")
 
-(Show Code: CryptographicAPIs.java - demonstrateEncryption method)
+Let's say I want to work on issue #1—'Add employee search functionality with pagination.' This is exactly the kind of task you'd pick up as a contributor.
 
-The pattern is always the same: get a Cipher instance, initialize it with a mode and key, then call doFinal() to process the data. Here we're encrypting sensitive data like a credit card number with the public key, then decrypting it with the private key.
+[Screen: Click Fork button]
+(Display text overlay: "Click 'Fork' to create your own copy")
 
-Notice the three key methods: getInstance() to get the cipher, init() to set the mode and key, and doFinal() to actually encrypt or decrypt. This Cipher class is your go-to for any encryption needs in Java.
+First step—I fork the repository. This creates my own copy that I can modify freely without affecting the original.
 
-[SCENE 4: DIGITAL SIGNATURE APIS - 2 MINUTES]
+[Screen: Show forked repository]
 
-For digital signatures, we use the Signature class. Let me show you the two-step process.
+Great! Now I have my own fork. Let's clone it locally and set up the proper remotes.
 
-(Show Code: CryptographicAPIs.java - demonstrateDigitalSignatures method)
+[Screen: Open terminal]
 
-To create a signature: get a Signature instance, initialize it for signing with the private key, update it with the document data, then call sign(). To verify: initialize for verification with the public key, update with the same document data, then call verify() with the signature.
+# Clone MY fork, not the original
+git clone https://github.com/MY-USERNAME/java-skills-project.git
+cd java-skills-project
 
-Watch what happens when someone tries to tamper with the document - the verification fails immediately. That's how we detect any changes and prove the document's integrity.
+(Display text overlay: "Always clone your fork, not the original")
 
-The key methods here are initSign() and initVerify(), update() to feed in the data, and sign() or verify() to complete the operation.
+Now I need to add the original repository as an 'upstream' remote:
 
-[SCENE 5: SECURE HASHING APIS - 1.5 MINUTES]
+# Add the original repo as upstream
+git remote add upstream https://github.com/kousen/java-skills-project.git
+git remote -v
 
-For password security, we use the MessageDigest class with a crucial addition: salt.
+(Display text overlay: "upstream = original repo, origin = your fork")
 
-(Show Code: CryptographicAPIs.java - demonstrateSecureHashing method)
+Perfect! Now I have both remotes configured properly.
 
-Never store passwords in plain text! Instead, generate a random salt, which is just a random string that gets combined with the password, and hash the result. The salt is stored along with the hashed combination. The salt prevents rainbow table attacks and makes each password hash unique.
+[CREATING AND WORKING ON A FEATURE BRANCH - 75 SECONDS]
 
-The process: get a MessageDigest instance, update it with the salt, then digest the password. To verify later, repeat the same process and compare the hashes using MessageDigest.isEqual().
+Before starting any work, I always sync with the upstream repository:
 
-This is the foundation that libraries like BCrypt build upon—they use these same principles with additional security features.
+# Get the latest changes from upstream
+git fetch upstream
+git checkout main
+git merge upstream/main
+git push origin main
 
-[SCENE 6: CERTIFICATE APIS - 1 MINUTE]
+(Display text overlay: "Always sync before starting new work")
 
-The final piece is certificates for secure public key distribution. We've seen encryption and signatures, but how do you get someone's public key safely?
+Now let's create a feature branch for our work:
 
-(Show Code: CryptographicAPIs.java - demonstrateCertificates method)
+# Create feature branch for issue #1
+git checkout -b feature/employee-search
+git push -u origin feature/employee-search
 
-Certificates solve the key distribution problem. A certificate is essentially a digital signature by a trusted Certificate Authority on someone's public key and identity information.
+(Display text overlay: "Branch name connects to issue: feature/employee-search")
 
-Here we see the CA creates a certificate for Alice by signing her public key with the CA's private key. When Bob wants to encrypt data for Alice, he can verify the certificate using the CA's public key. If the verification succeeds, Bob knows he can trust Alice's public key because the CA vouched for it.
+Let me make some changes to implement the employee search functionality. I'll edit a few files to add the search endpoints.
 
-This creates a chain of trust—you trust the CA, the CA vouches for Alice, so you can trust Alice's public key. The same Signature class we just learned handles both document signing and certificate verification.
+[Screen: Show code editor, make realistic changes to a Java file]
 
-[SCENE 7: PRACTICAL APPLICATION - 0.5 MINUTES]
+# Check what we've changed
+git status
+git diff
 
-So when do you use each approach?
+(Display text overlay: "Always review your changes before committing")
 
-(Show Slide: When to Use Each API)
+Now let's commit with a proper commit message:
 
-Use Cipher when you need to encrypt sensitive data for storage or transmission
-Use Signature when you need to verify document integrity or authenticate the sender
-Use MessageDigest with salt when you need to securely store passwords
-Use certificates when you need to distribute public keys securely
+git add web-services/src/main/java/com/oreilly/webservices/EmployeeController.java
+git commit -m "Add employee search functionality with pagination
 
-Remember, third-party libraries like BCrypt for password hashing, JJWT for JSON Web Tokens, and OAuth implementations all build on these core Java APIs. Master these foundations, and you'll understand how all the security libraries work under the hood.
+- Implement search by name, department, and salary range
+- Add pagination support with page/size parameters  
+- Include input validation for search criteria
+- Add comprehensive unit tests for search methods
 
-(Show Slide: Key Takeaways)
+Fixes #1"
 
-Your key takeaways: Cipher for encryption, Signature for digital signatures, MessageDigest for secure hashing, and certificates for secure key distribution. These four concepts are your toolkit for building secure Java applications.
+(Display text overlay: "Good commit messages: imperative mood, explain why, reference issues")
 
-Thanks for watching, and I'll see you in the next video!
+[STAYING IN SYNC AND HANDLING CONFLICTS - 60 SECONDS]
+
+While I was working, the upstream repository might have changed. Let me sync again:
+
+# Ensure we're on the demo branch
+git checkout feature/employee-search-demo
+
+# Fetch latest changes
+git fetch upstream
+
+# Rebase my feature branch against upstream main
+git rebase upstream/main
+
+(Display text overlay: "Rebase keeps a clean, linear history")
+
+Oh look, there's a conflict! This is totally normal in collaborative development.
+
+[Screen: Show conflict in code editor - the actual conflict will appear around the `/search` vs `/find` endpoints]
+
+The conflict will show something like:
+
+// <<<<<<< HEAD (your searchEmployees method)
+    @GetMapping("/search")
+    public ResponseEntity<List<Employee>> searchEmployees(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        // Your pagination implementation
+        return employeeService.findByNameContaining(name);
+    }
+// =======
+    @GetMapping("/find")
+    public ResponseEntity<List<Employee>> findEmployees(@RequestParam String query) {
+        // Their simpler implementation from main
+        return employeeService.search(query);
+    }
+// >>>>>>> upstream/main
+
+(Display text overlay: "Conflicts show: your changes (top) vs their changes (bottom)")
+
+I need to resolve this by choosing the best approach. I'll keep my more comprehensive implementation but adopt their simpler endpoint name:
+
+@GetMapping("/find")
+public ResponseEntity<List<Employee>> searchEmployees(
+        @RequestParam String name,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+    // Keep my pagination implementation but use their endpoint
+    logger.info("Searching employees with name containing: '{}', page: {}, size: {}", name, page, size);
+    
+    List<Employee> employees = employeeService.findByNameContaining(name);
+    
+    // Apply pagination
+    int start = page * size;
+    int end = Math.min(start + size, employees.size());
+    List<Employee> paginatedEmployees = start < employees.size() ? 
+        employees.subList(start, end) : List.of();
+    
+    return ResponseEntity.ok()
+        .header("X-Total-Count", String.valueOf(employees.size()))
+        .body(paginatedEmployees);
+}
+
+# Mark conflict as resolved
+git add web-services/src/main/java/com/oreilly/webservices/EmployeeController.java
+git rebase --continue
+
+(Display text overlay: "Edit file, remove conflict markers, add file, continue rebase")
+
+[CREATING A PULL REQUEST - 75 SECONDS]
+
+Now my feature is ready. Let's push it and create a pull request:
+
+# Push to my fork
+git push --force-with-lease origin feature/employee-search
+
+(Display text overlay: "--force-with-lease is safer than --force")
+
+[Screen: Go to GitHub, show PR creation]
+
+Back on GitHub, I'll create a pull request from my fork to the upstream repository.
+
+[Screen: Click 'New Pull Request,' show cross-repo PR setup]
+(Display text overlay: "Creating PR: from my-fork/feature-branch to upstream/main")
+
+Notice GitHub automatically loads our comprehensive PR template. This is much more detailed than what you typically see in tutorials.
+
+[Screen: Show PR template being filled out]
+(Display text overlay: "Professional PR template includes: testing, security, documentation checklist")
+
+I'll fill this out properly:
+- Summary of what I implemented
+- Testing details 
+- Security considerations
+- Documentation updates
+
+[Screen: Submit PR]
+
+[CODE REVIEW AND CI INTEGRATION - 60 SECONDS]
+
+Once I submit the PR, several things happen automatically:
+
+[Screen: Show PR page with CI checks]
+(Display text overlay: "Automated CI runs: builds project, runs tests, checks quality")
+
+Our GitHub Actions workflow automatically builds the project and runs tests. You can see the green checkmarks showing everything passed.
+
+[Screen: Show review comments section]
+
+Now the maintainer can review my code. They might ask for changes:
+
+(Display text overlay: "Code review is collaborative—be open to feedback")
+
+If they request changes, I just make them on my local branch and push:
+
+# Make requested changes
+git add .
+git commit -m "Address code review feedback - add input validation"
+git push origin feature/employee-search
+
+(Display text overlay: "PR automatically updates when you push to the branch")
+
+[Screen: Show PR getting approved and merged]
+
+Once approved, the maintainer merges the PR. My contribution is now part of the main project!
+
+[CLEANUP - 15 SECONDS]
+
+Finally, I clean up my local environment:
+
+# Switch back to main and sync
+git checkout main
+git fetch upstream
+git merge upstream/main
+git push origin main
+
+# Delete feature branch
+git branch -d feature/employee-search
+git push origin --delete feature/employee-search
+
+(Display text overlay: "Always clean up merged branches")
+
+[END SCREEN SHARE]
+
+[PART 3: ON-CAMERA SUMMARY - 75 SECONDS]
+
+And that's the complete Git collaboration workflow! Let me summarize the key lessons we learned today.
+
+First, always check for contribution guidelines and code of conduct before starting work. Look for CONTRIBUTING.md and CODE_OF_CONDUCT.md files, or similar sections in the README or documentation. These explain the project's technical requirements and community standards for respectful collaboration.
+
+Second, fork-based workflows are the standard for open source and external contributions. You fork the repository, work in your own copy, and submit pull requests to contribute back. This keeps the original repository clean and gives maintainers full control.
+
+Third, proper branch management is crucial. Always create feature branches, never work directly on main. Keep your branches focused on specific issues or features, and use descriptive names that connect to your issues.
+
+Fourth, commit messages matter. Write them in the imperative mood, keep the first line short, and explain why you made the change, not just what you changed. Good commits tell the story of your code.
+
+Fifth, stay synchronized with upstream. Projects evolve constantly, so fetch regularly and rebase your work against the latest main branch. This prevents conflicts and keeps your contributions relevant.
+
+Finally, embrace code review. It's not criticism—it's collaboration. Be open to feedback, ask questions when something's unclear, and remember that the goal is better code for everyone.
+
+For your hands-on exercise, I want you to practice the complete Git collaboration workflow including conflict resolution. The repository includes a special exercise designed just for this purpose.
+
+Start with the conflict resolution exercise: Open `git-workflows/CONFLICT_DEMO_BRANCHES.md` in the repository. This "Try It Out: Git Merge Conflict Resolution" exercise walks you through the exact scenario we just demonstrated - resolving a realistic merge conflict between competing employee search implementations.
+
+Then explore the broader workflow: The `git-workflows/git-workflow-examples.md` file has comprehensive examples covering fork-based workflows, branch strategies, and professional Git practices for team collaboration.
+
+This isn't just practice—if you create a quality pull request, it might actually get merged into the project! That would give you a real open source contribution to show on your résumé.
+
+Git collaboration skills are essential for any professional Java developer. Whether you're joining a team, contributing to open source, or just following best practices, these workflows will serve you well throughout your career.
+
+Next time, we'll dive into microservices architecture with Spring Boot. Until then, happy collaborating!
