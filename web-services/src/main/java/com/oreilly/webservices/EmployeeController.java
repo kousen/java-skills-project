@@ -275,4 +275,23 @@ public class EmployeeController {
                 "totalSalaryExpense", totalExpense
             ));
     }
+    
+    /**
+     * Find employees by query string (alternative implementation).
+     * GET /api/employees/find?query={query}
+     */
+    @GetMapping("/find")
+    public ResponseEntity<List<Employee>> findEmployees(@RequestParam String query) {
+        logger.info("Finding employees with query: {}", query);
+        
+        // Simple search implementation
+        List<Employee> results = employeeService.findAll().stream()
+            .filter(emp -> emp.getName().toLowerCase().contains(query.toLowerCase()))
+            .toList();
+        
+        return ResponseEntity.ok()
+            .header("X-Search-Query", query)
+            .header("X-Result-Count", String.valueOf(results.size()))
+            .body(results);
+    }
 }
