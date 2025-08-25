@@ -1,101 +1,305 @@
 # Video Script: Git Collaboration for Java Projects
 
 **Goal:** 24. Master Git workflows for effective team collaboration on Java projects.
-**Target Duration:** 4-5 minutes
+**Target Duration:** 8–10 minutes
+**Format:** On-camera intro → Screen-share demo → On-camera summary
 
 ---
 
-### SCENE 1: Introduction (0:00 - 0:30)
+## PART 1: ON-CAMERA INTRODUCTION (0:00–1:30)
 
-**(Show Slide 1: Title Slide - "Git Collaboration for Java Projects")**
+**Host on camera:**
 
-**Host:**
-"Welcome back! Today we're stepping away from code to talk about something equally important - Git collaboration. If you're working on a team or planning to contribute to open source projects, mastering Git workflows is essential. Let's learn how to collaborate effectively without stepping on each other's toes."
+"Welcome back to our Java Skills series! I'm [Host Name], and today we're covering something that's essential for professional development—Git collaboration workflows.
 
-## The Branching Strategy (0:15-0:45)
+If you've been following along with this series, you've learned a lot about Java code, but now it's time to learn how to work with that code in a team environment. Whether you're contributing to open source projects, working on a development team, or just want to follow industry best practices, mastering Git collaboration is crucial.
 
-Think of Git branches like parallel universes for your code. The main branch contains your production-ready code - it should always be stable. Feature branches are where you experiment and build new functionality. 
+Today I'm going to show you the complete workflow for contributing to a Java project using fork-based collaboration. This is the standard approach used in open source projects and many professional environments.
 
-This separation is crucial. Imagine if every developer worked directly on main - you'd have conflicts, broken builds, and chaos. Instead, we create a feature branch, work in isolation, then merge back when ready.
+We'll walk through the entire process: forking a repository, creating feature branches, making commits with proper messages, handling conflicts, creating pull requests, and getting your code reviewed and merged.
 
-## Fork vs. Direct Access (0:45-1:00)
+I'll be using our Java Skills Project as the example—it's actually live on GitHub, so you can follow along with the exact same steps I'm showing you. By the end of this video, you'll know how to contribute to any Java project professionally.
 
-Before we dive into workflows, let's clarify the two main collaboration models. If you're contributing to open source or a project you don't own, you'll fork the repository first. This gives you your own copy to work with. If you're on a team with trusted access, you might work directly with branches in the main repository.
+Let's dive in and see how real Git collaboration works."
 
-## Starting a Feature - Fork Workflow (1:00-1:30)
+---
 
-Let's say we're adding employee validation to our Employee Management System using the fork workflow.
+## PART 2: SCREEN-SHARE DEMONSTRATION (1:30–7:00)
 
-[Show fork and branch creation commands]
+**[SWITCH TO SCREEN SHARE]**
 
-First, you fork the repository on GitHub - this creates your own copy. Clone your fork, not the original. Add the original as an "upstream" remote. Now when you start a feature, sync with upstream first, then create your feature branch. Push the branch to your fork, not the upstream repository.
+**Host voice-over during screen demo:**
 
-This keeps you isolated until you're ready to contribute back.
+### Setting Up the Fork Workflow (1:30–2:30)
 
-## Committing Best Practices (1:15-1:45)
+"First, let's start with the GitHub repository for our Java Skills Project. I'm going to show you the fork-based workflow, which is what you'd use when contributing to a project you don't own.
 
-Good commit messages are like good documentation - your future self will thank you.
+**[Screen: Show GitHub repository page]**
+*Display text overlay: "github.com/kousen/java-skills-project"*
 
-[Show commit message example]
+Here's our project repository. You can see it has all the Java modules we've been working with throughout this series. Notice we have several open issues here—these represent real features and bugs that need to be implemented.
 
-Use the imperative mood: "Add validation" not "Added validation." Keep the first line under 50 characters - think of it as a subject line. Then add details explaining why you made the change, not just what you changed.
+Before contributing to any open source project, you should always look for contribution guidelines and the code of conduct. Most projects have a CONTRIBUTING.md file and a CODE_OF_CONDUCT.md file, or these may be included in the README or documentation. The contribution guidelines tell you about coding standards, testing requirements, and workflow preferences. The code of conduct explains the community standards for respectful collaboration and what behavior is expected from contributors.
 
-## Staying in Sync with Upstream (1:45-2:15)
+*Display text overlay: "Always check: CONTRIBUTING.md + CODE_OF_CONDUCT.md"*
 
-While you're working on your fork, the original repository keeps evolving. You need to stay synchronized with upstream changes.
+**[Screen: Click on Issues tab]**
+*Display text overlay: "5 open issues available for contribution"*
 
-[Show upstream sync commands]
+Let's say I want to work on issue #1—'Add employee search functionality with pagination.' This is exactly the kind of task you'd pick up as a contributor.
 
-Fetch from upstream gets the latest changes from the original repository. Then merge those changes into your local main branch and push to your fork. This keeps your fork current. Before finishing your feature, rebase against upstream main to ensure clean integration.
+**[Screen: Click Fork button]**
+*Display text overlay: "Click 'Fork' to create your own copy"*
 
-## Handling Merge Conflicts (2:15-2:45)
+First step—I fork the repository. This creates my own copy that I can modify freely without affecting the original.
 
-Conflicts happen when two people modify the same code. Don't panic - Git shows you exactly what's wrong.
+**[Screen: Show forked repository]**
 
-[Show conflict example]
+Great! Now I have my own fork. Let's clone it locally and set up the proper remotes.
 
-Those angle brackets show the conflicting sections. The top is your changes, the bottom is what's in main. You need to decide which to keep or combine them. Edit the file, remove the conflict markers, then commit.
+**[Screen: Open terminal]**
 
-## Pull Requests from Forks (2:45-3:30)
+```bash
+# Clone MY fork, not the original
+git clone https://github.com/MY-USERNAME/java-skills-project.git
+cd java-skills-project
+```
 
-This is where fork-based collaboration shines. A pull request says "I'd like to contribute my changes from my fork to your project." It's not just about the code - it's about communication across repository boundaries.
+*Display text overlay: "Always clone your fork, not the original"*
 
-[Show cross-repo PR creation]
+Now I need to add the original repository as an 'upstream' remote:
 
-When creating a PR from your fork, you're asking permission to contribute. Write a clear description explaining what you built and why. Document your testing thoroughly since maintainers can't assume your development environment matches theirs.
+```bash
+# Add the original repo as upstream
+git remote add upstream https://github.com/kousen/java-skills-project.git
+git remote -v
+```
 
-Remember: you're not just submitting code, you're joining a community and following their contribution guidelines.
+*Display text overlay: "upstream = original repo, origin = your fork"*
 
-## Code Review Culture (3:30-4:00)
+Perfect! Now I have both remotes configured properly.
 
-Good code reviews make everyone better. As a reviewer, look for bugs, test coverage, and adherence to coding standards. But also be kind - suggest improvements, don't just criticize.
+### Creating and Working on a Feature Branch (2:30–3:45)
 
-As an author, don't take feedback personally. The goal is better code, not ego. Ask questions if something isn't clear. Thank reviewers for their time.
+Before starting any work, I always sync with the upstream repository:
 
-## CI/CD Integration (4:00-4:30)
+```bash
+# Get the latest changes from upstream
+git fetch upstream
+git checkout main
+git merge upstream/main
+git push origin main
+```
 
-Modern Git workflows integrate with CI/CD pipelines. When you push to a branch, automated tests run. Pull requests show if builds pass or fail.
+*Display text overlay: "Always sync before starting new work"*
 
-[Show GitHub Actions example]
+Now let's create a feature branch for our work:
 
-This YAML file tells GitHub to run tests on every push and pull request. You can add more checks - code coverage, security scans, deployment to staging environments.
+```bash
+# Create feature branch for issue #1
+git checkout -b feature/employee-search
+git push -u origin feature/employee-search
+```
 
-## Branch Protection (4:30-4:45)
+*Display text overlay: "Branch name connects to issue: feature/employee-search"*
 
-Protect your main branch! Set up rules requiring pull request reviews and passing CI checks. This prevents accidental direct pushes and ensures all code is reviewed.
+Let me make some changes to implement the employee search functionality. I'll edit a few files to add the search endpoints.
 
-## Wrapping Up (4:45-5:00)
+**[Screen: Show code editor, make realistic changes to a Java file]**
 
-Git collaboration isn't just about commands - it's about working respectfully with others' code. Fork when you're contributing to projects you don't own. Use feature branches for all development. Write clear commits and pull requests. Review code thoughtfully. Keep main stable.
+```bash
+# Check what we've changed
+git status
+git diff
+```
 
-Whether you're contributing to open source or working on a team, these workflows help everyone collaborate effectively. Next time, we'll explore microservices architecture with Spring Boot. Until then, fork responsibly and contribute with confidence!
+*Display text overlay: "Always review your changes before committing"*
 
-## Code Examples Referenced:
+Now let's commit with a proper commit message:
 
-1. Git configuration and aliases
-2. Feature branch creation workflow
-3. Commit message best practices
-4. Merge conflict resolution
-5. Pull request template
-6. GitHub Actions CI configuration
-7. Common Git commands for Java projects
+```bash
+git add web-services/src/main/java/com/oreilly/webservices/EmployeeController.java
+git commit -m "Add employee search functionality with pagination
+
+- Implement search by name, department, and salary range
+- Add pagination support with page/size parameters  
+- Include input validation for search criteria
+- Add comprehensive unit tests for search methods
+
+Fixes #1"
+```
+
+*Display text overlay: "Good commit messages: imperative mood, explain why, reference issues"*
+
+### Staying in Sync and Handling Conflicts (3:45–4:45)
+
+While I was working, the upstream repository might have changed. Let me sync again:
+
+```bash
+# Fetch latest changes
+git fetch upstream
+
+# Rebase my feature branch against upstream main
+git rebase upstream/main
+```
+
+*Display text overlay: "Rebase keeps a clean, linear history"*
+
+Oh look, there's a conflict! This is totally normal in collaborative development.
+
+**[Screen: Show conflict in code editor]**
+
+```java
+// <<<<<<< HEAD
+    public List<Employee> searchEmployees(String name) {
+        // My implementation
+        return employeeService.findByNameContaining(name);
+    }
+// =======
+    public List<Employee> findEmployees(String query) {
+        // Their implementation
+        return employeeService.search(query);
+    }
+// >>>>>>> upstream/main
+```
+
+*Display text overlay: "Conflicts show: your changes (top) vs their changes (bottom)"*
+
+I need to resolve this by choosing the best approach or combining both:
+
+```java
+public List<Employee> searchEmployees(String name) {
+    // Combined the best of both approaches
+    return employeeService.findByNameContaining(name);
+}
+```
+
+```bash
+# Mark conflict as resolved
+git add web-services/src/main/java/com/oreilly/webservices/EmployeeController.java
+git rebase --continue
+```
+
+*Display text overlay: "Edit file, remove conflict markers, add file, continue rebase"*
+
+### Creating a Pull Request (4:45–6:00)
+
+Now my feature is ready. Let's push it and create a pull request:
+
+```bash
+# Push to my fork
+git push --force-with-lease origin feature/employee-search
+```
+
+*Display text overlay: "--force-with-lease is safer than --force"*
+
+**[Screen: Go to GitHub, show PR creation]**
+
+Back on GitHub, I'll create a pull request from my fork to the upstream repository.
+
+**[Screen: Click 'New Pull Request,' show cross-repo PR setup]**
+*Display text overlay: "Creating PR: from my-fork/feature-branch to upstream/main"*
+
+Notice GitHub automatically loads our comprehensive PR template. This is much more detailed than what you typically see in tutorials.
+
+**[Screen: Show PR template being filled out]**
+*Display text overlay: "Professional PR template includes: testing, security, documentation checklist"*
+
+I'll fill this out properly:
+- Summary of what I implemented
+- Testing details 
+- Security considerations
+- Documentation updates
+
+**[Screen: Submit PR]**
+
+### Code Review and CI Integration (6:00–7:00)
+
+Once I submit the PR, several things happen automatically:
+
+**[Screen: Show PR page with CI checks]**
+*Display text overlay: "Automated CI runs: builds project, runs tests, checks quality"*
+
+Our GitHub Actions workflow automatically builds the project and runs tests. You can see the green checkmarks showing everything passed.
+
+**[Screen: Show review comments section]**
+
+Now the maintainer can review my code. They might ask for changes:
+
+*Display text overlay: "Code review is collaborative—be open to feedback"*
+
+If they request changes, I just make them on my local branch and push:
+
+```bash
+# Make requested changes
+git add .
+git commit -m "Address code review feedback - add input validation"
+git push origin feature/employee-search
+```
+
+*Display text overlay: "PR automatically updates when you push to the branch"*
+
+**[Screen: Show PR getting approved and merged]**
+
+Once approved, the maintainer merges the PR. My contribution is now part of the main project!
+
+### Cleanup (7:00 - 7:15)
+
+Finally, I clean up my local environment:
+
+```bash
+# Switch back to main and sync
+git checkout main
+git fetch upstream
+git merge upstream/main
+git push origin main
+
+# Delete feature branch
+git branch -d feature/employee-search
+git push origin --delete feature/employee-search
+```
+
+*Display text overlay: "Always clean up merged branches"*
+
+**[END SCREEN SHARE]**
+
+---
+
+## PART 3: ON-CAMERA SUMMARY (7:15–8:30)
+
+**Host back on camera:**
+
+"And that's the complete Git collaboration workflow! Let me summarize the key lessons we learned today.
+
+First, **always check for contribution guidelines and code of conduct before starting work**. Look for CONTRIBUTING.md and CODE_OF_CONDUCT.md files, or similar sections in the README or documentation. These explain the project's technical requirements and community standards for respectful collaboration.
+
+Second, **fork-based workflows are the standard for open source and external contributions**. You fork the repository, work in your own copy, and submit pull requests to contribute back. This keeps the original repository clean and gives maintainers full control.
+
+Third, **proper branch management is crucial**. Always create feature branches, never work directly on main. Keep your branches focused on specific issues or features, and use descriptive names that connect to your issues.
+
+Fourth, **commit messages matter**. Write them in the imperative mood, keep the first line short, and explain why you made the change, not just what you changed. Good commits tell the story of your code.
+
+Fifth, **stay synchronized with upstream**. Projects evolve constantly, so fetch regularly and rebase your work against the latest main branch. This prevents conflicts and keeps your contributions relevant.
+
+Finally, **embrace code review**. It's not criticism—it's collaboration. Be open to feedback, ask questions when something's unclear, and remember that the goal is better code for everyone.
+
+## Try It Out Exercise
+
+For your hands-on exercise, I want you to fork our Java Skills Project repository and work through this exact workflow. Pick one of the open issues - they're all realistic features that would improve the project. Follow the complete process we just demonstrated: fork, branch, commit, push, and create a pull request.
+
+The git-workflows directory in the repository has detailed step-by-step instructions in the git-workflow-examples.md file. It covers everything we showed here plus additional scenarios like hotfixes and release workflows.
+
+This isn't just practice—if you create a quality pull request, it might actually get merged into the project! That would give you a real open source contribution to show on your résumé.
+
+Git collaboration skills are essential for any professional Java developer. Whether you're joining a team, contributing to open source, or just following best practices, these workflows will serve you well throughout your career.
+
+Next time, we'll dive into microservices architecture with Spring Boot. Until then, happy collaborating!"
+
+---
+
+**Key Screen Text Overlays Used:**
+- Repository URL and navigation cues
+- Command explanations and safety notes  
+- Workflow step identifiers
+- Best practice reminders
+- Visual callouts for important concepts

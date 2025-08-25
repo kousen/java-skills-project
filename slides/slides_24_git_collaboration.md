@@ -125,9 +125,9 @@ transition: slide-left
 ## Getting Started
 
 ```bash
-# Clone the Employee Management project
-git clone https://github.com/company/employee-management.git
-cd employee-management
+# Clone the Java Skills Project
+git clone https://github.com/kousen/java-skills-project.git
+cd java-skills-project
 
 # Check current status
 git status
@@ -147,11 +147,11 @@ transition: slide-left
 git checkout main
 git pull origin main
 
-# Create feature branch
-git checkout -b feature/employee-validation
+# Create feature branch for issue #1
+git checkout -b feature/employee-search
 
 # Alternative single command
-git checkout -b feature/employee-validation origin/main
+git checkout -b feature/employee-search origin/main
 ```
 
 ---
@@ -185,10 +185,10 @@ transition: slide-left
 
 ```bash
 # Commit with descriptive message
-git commit -m "Add email validation to Employee class" \
-            -m "- Added @Email annotation to email field" \
-            -m "- Created test for invalid email formats" \
-            -m "- Updated documentation for validation rules"
+git commit -m "Add employee search functionality" \
+            -m "- Implement search by name, department, salary range" \
+            -m "- Add pagination support for large result sets" \
+            -m "- Include comprehensive unit and integration tests"
 ```
 
 ---
@@ -227,7 +227,7 @@ transition: slide-left
 
 ```bash
 # First push (creates remote branch)
-git push -u origin feature/employee-validation
+git push -u origin feature/employee-search
 
 # Subsequent pushes
 git push
@@ -249,7 +249,7 @@ transition: slide-left
 git fetch origin
 
 # Merge main into your branch
-git checkout feature/employee-validation
+git checkout feature/employee-search
 git merge origin/main
 
 # Or rebase (cleaner history)
@@ -312,7 +312,7 @@ transition: slide-left
 
 ```bash
 # Push your branch
-git push origin feature/employee-validation
+git push origin feature/employee-search
 
 # Then on GitHub:
 # 1. Navigate to repository
@@ -332,20 +332,21 @@ transition: slide-left
 
 ```markdown
 ## Summary
-Add email validation to Employee class
+Add employee search functionality with pagination
 
 ## Changes
-- Added @Email annotation to email field
-- Created comprehensive test suite
-- Updated documentation
+- New REST endpoint: GET /api/employees/search
+- Search by name, department, and salary range
+- Pagination support with page/size parameters
+- Comprehensive test coverage
 
 ## Testing
-- Unit tests pass
-- Integration tests pass
-- Manual testing completed
+- Unit tests for service layer
+- Integration tests for REST endpoints
+- Manual testing with various search criteria
 
 ## Related Issues
-Closes #123
+Fixes #1
 ```
 
 ---
@@ -404,10 +405,10 @@ transition: slide-left
 ```bash
 # Make requested changes
 git add src/main/java/Employee.java
-git commit -m "Add test for null email validation"
+git commit -m "Add pagination parameter validation"
 
 # Push updates
-git push origin feature/employee-validation
+git push origin feature/employee-search
 
 # PR automatically updates!
 ```
@@ -454,10 +455,10 @@ git checkout main
 git pull origin main
 
 # Delete feature branch
-git branch -d feature/employee-validation
+git branch -d feature/employee-search
 
 # Delete remote branch
-git push origin --delete feature/employee-validation
+git push origin --delete feature/employee-search
 ```
 
 ---
@@ -496,23 +497,30 @@ transition: slide-left
 ## GitHub Actions
 
 ```yaml
-# .github/workflows/java.yml
+# .github/workflows/java-ci.yml
 name: Java CI
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   test:
+    name: Build and Test
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up JDK 21
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v4
       with:
         java-version: '21'
-    
-    - name: Run tests
-      run: gradle test
+        distribution: 'temurin'
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+    - name: Build with Gradle
+      run: ./gradlew build
 ```
 
 ---

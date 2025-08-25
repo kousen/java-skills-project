@@ -13,7 +13,12 @@
 - [ ] Dependencies update
 
 ### Related Issues
-<!-- Link any related issues using keywords: fixes #123, closes #456, resolves #789 -->
+<!-- Link any related issues using keywords: fixes #1, closes #2, resolves #3 -->
+<!-- Examples: -->
+<!-- - Fixes #1 (Add employee search functionality) -->
+<!-- - Fixes #2 (Fix security vulnerability in password validation) -->
+<!-- - Closes #3 (Add department management endpoints) -->
+<!-- - Fixes #4 (Improve error handling in file operations) -->
 Fixes #
 
 ## 🔍 Changes Made

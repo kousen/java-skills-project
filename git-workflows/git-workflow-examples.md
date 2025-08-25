@@ -72,7 +72,7 @@ git commit -m "Add employee search functionality with pagination
 - Include unit tests for search methods
 - Update API documentation
 
-Fixes #123"
+Fixes #1"
 
 # Push changes
 git push origin feature/employee-search
@@ -85,6 +85,8 @@ git push origin feature/employee-search
 
 # Create PR from your fork to upstream main
 # Using GitHub CLI (if available)
+# Note: This shows a simplified example. In practice, use the web interface
+# to get the full PR template, or copy from .github/pull_request_template.md
 gh pr create --repo ORIGINAL-OWNER/java-skills-project \
              --title "Add employee search functionality" \
              --body "## Summary
@@ -101,13 +103,26 @@ Implements comprehensive employee search with pagination support.
 - Integration tests for REST endpoints
 - Manual testing with various search criteria
 
-Fixes #123"
+Fixes #1"
 
 # Or create PR through GitHub web interface:
 # 1. Go to the original repository
 # 2. Click "New Pull Request"
 # 3. Click "compare across forks"
 # 4. Select your fork and branch as the source
+
+# Note: This example shows a simplified PR description for clarity.
+# The actual repository includes a comprehensive PR template 
+# (.github/pull_request_template.md) that guides you through:
+# - Detailed change documentation
+# - Testing checklist (unit, integration, manual)
+# - Security considerations
+# - Code quality checklist
+# - Deployment notes
+# - Reviewer guidelines
+# When you create a PR through the GitHub interface, this template
+# will automatically populate, providing a thorough structure for
+# professional pull request documentation.
 ```
 
 ### Code Review Process
@@ -229,7 +244,7 @@ git commit -m "Fix security vulnerability in password validation
 - Fix regex pattern that allowed weak passwords
 - Add additional validation tests
 
-Fixes SECURITY-456"
+Fixes #2"
 
 # Push and create urgent PR
 git push origin hotfix/security-vulnerability
@@ -425,8 +440,8 @@ Include business context and technical details.
 - Reference issue numbers
 - Explain any breaking changes
 
-Fixes #123
-Closes #456
+Fixes #1
+Closes #3
 ```
 
 ### Commit types
@@ -451,7 +466,7 @@ pagination support to handle large datasets efficiently.
 - Service layer methods with proper error handling
 - Comprehensive unit and integration tests
 
-Fixes #123"
+Fixes #1"
 
 git commit -m "fix: Resolve null pointer exception in employee service
 
@@ -459,7 +474,7 @@ Handle case where department is null when calculating
 employee statistics. Add null checks and appropriate
 default values.
 
-Fixes #456"
+Fixes #4"
 
 git commit -m "refactor: Extract search criteria into separate class
 
@@ -469,3 +484,41 @@ service methods cleaner and more maintainable.
 
 No functional changes."
 ```
+
+---
+
+## Pull Request Templates: Simplified vs Comprehensive
+
+### Quick Example vs Production Template
+
+The examples above show **simplified PR descriptions** for clarity and readability. However, this repository includes a **comprehensive PR template** (`.github/pull_request_template.md`) that follows industry best practices.
+
+### When to Use Each Approach:
+
+#### **Simplified PR Description** (shown in examples above):
+- ✅ **Learning Git workflows** - focuses on the essential workflow steps
+- ✅ **Quick demonstrations** - shows core PR concepts without overwhelming detail
+- ✅ **Command-line tutorials** - easier to fit in CLI examples
+
+#### **Comprehensive PR Template** (actual template in this repo):
+- ✅ **Production environments** - ensures nothing important is forgotten
+- ✅ **Team collaboration** - provides consistent structure across all contributors
+- ✅ **Professional development** - demonstrates industry-standard practices
+- ✅ **Complex features** - guides through security, testing, and deployment considerations
+
+### The Complete Template Includes:
+- **Detailed change documentation** with checkboxes
+- **Testing requirements** (unit, integration, manual, performance)
+- **Security considerations** (input validation, authentication, vulnerability checks)
+- **Code quality checklist** (style guidelines, error handling, maintainability)
+- **Java-specific requirements** (naming conventions, exception handling, thread safety)
+- **Documentation updates** (JavaDoc, README, API docs)
+- **Deployment notes** (environment variables, database migrations, configuration)
+- **Reviewer guidelines** and focus areas
+
+### Best Practice Recommendation:
+1. **Learn with simplified examples** (like those shown above)
+2. **Use the comprehensive template** when contributing to this or other professional projects
+3. **Adapt the template** for your own projects based on team needs and project complexity
+
+The goal is to understand the workflow with simple examples, then apply professional standards in real development work.
