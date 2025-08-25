@@ -180,6 +180,34 @@ public class EmployeeController {
     }
     
     /**
+     * Search employees by name with pagination support.
+     * GET /api/employees/search?name={name}&page={page}&size={size}
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<Employee>> searchEmployees(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        
+        logger.info("Searching employees with name containing: '{}', page: {}, size: {}", name, page, size);
+        
+        // This implementation will conflict with findEmployees on main
+        List<Employee> employees = employeeService.findByNameContaining(name);
+        
+        // Apply pagination manually for demo purposes
+        int start = page * size;
+        int end = Math.min(start + size, employees.size());
+        List<Employee> paginatedEmployees = start < employees.size() ? 
+            employees.subList(start, end) : List.of();
+        
+        return ResponseEntity.ok()
+            .header("X-Total-Count", String.valueOf(employees.size()))
+            .header("X-Page", String.valueOf(page))
+            .header("X-Size", String.valueOf(size))
+            .body(paginatedEmployees);
+    }
+    
+    /**
      * Health check endpoint.
      * GET /api/employees/health
      */
