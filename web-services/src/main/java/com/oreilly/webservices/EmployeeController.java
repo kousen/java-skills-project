@@ -286,7 +286,7 @@ public class EmployeeController {
         
         // Simple search implementation
         List<Employee> results = employeeService.findAll().stream()
-            .filter(emp -> emp.getName().toLowerCase().contains(query.toLowerCase()))
+            .filter(emp -> emp.name().toLowerCase().contains(query.toLowerCase()))
             .toList();
         
         return ResponseEntity.ok()
