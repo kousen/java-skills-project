@@ -3,6 +3,7 @@ package com.oreilly.javaskills;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Try It Out Exercise: 2D Arrays for Employee Management
@@ -17,8 +18,8 @@ public class TwoDArrayExercise {
     
     // Constants for readability
     private static final int QUARTERS = 4;
-    private static final NumberFormat CURRENCY = NumberFormat.getCurrencyInstance();
-    private static final NumberFormat PERCENT = NumberFormat.getPercentInstance();
+    private static final NumberFormat CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
+    private static final NumberFormat PERCENT = NumberFormat.getPercentInstance(Locale.US);
     
     public static void main(String[] args) {
         var exercise = new TwoDArrayExercise();
