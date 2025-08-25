@@ -18,12 +18,20 @@ import java.util.Base64;
 
 /**
  * Cryptography Exercise - Practice the Core Java Cryptographic APIs
- * 
+ * <p>
+ * **STUDENT EXERCISE**: Complete the six TODOs below to implement the core cryptographic operations.
+ * This is a hands-on learning exercise - implement each method yourself using the patterns
+ * demonstrated in CryptographicAPIs.java.
+ * <p>
  * This exercise focuses on the three essential cryptographic skills:
  * 1. Encrypt sensitive data (Cipher class)
  * 2. Create digital signatures (Signature class) 
  * 3. Hash passwords securely (MessageDigest class)
- * 
+ * <p>
+ * **Solutions**: Complete implementations are available in the solutions subpackage
+ * (com.oreilly.security.solutions.CryptographyExerciseSolution) for reference after
+ * you've attempted the exercise yourself.
+ * <p>
  * Complete each TODO using the same patterns shown in CryptographicAPIs.java
  */
 public class CryptographyExercise {
