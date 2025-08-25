@@ -4,6 +4,8 @@
 **Target Duration:** 8–10 minutes
 **Format:** On-camera intro → Screen-share demo → On-camera summary
 
+**RECORDING SETUP**: This script demonstrates a realistic fork-based workflow using the actual Java Skills Project repository on GitHub. The repository includes demo branches specifically created for demonstrating merge conflicts during the rebase process.
+
 ---
 
 ## PART 1: ON-CAMERA INTRODUCTION (0:00–1:30)
@@ -135,7 +137,12 @@ Fixes #1"
 
 While I was working, the upstream repository might have changed. Let me sync again:
 
+**DEMO SETUP NOTE**: *Before recording this section, ensure you're on the `feature/employee-search-demo` branch and have the upstream remote pointing to the main repository. The main branch contains a `findEmployees` method at `/find` that will conflict with the `searchEmployees` method at `/search` on this branch.*
+
 ```bash
+# Ensure we're on the demo branch
+git checkout feature/employee-search-demo
+
 # Fetch latest changes
 git fetch upstream
 
@@ -147,17 +154,24 @@ git rebase upstream/main
 
 Oh look, there's a conflict! This is totally normal in collaborative development.
 
-**[Screen: Show conflict in code editor]**
+**[Screen: Show conflict in code editor - the actual conflict will appear around the `/search` vs `/find` endpoints]**
+
+The conflict will show something like:
 
 ```java
-// <<<<<<< HEAD
-    public List<Employee> searchEmployees(String name) {
-        // My implementation
+// <<<<<<< HEAD (your searchEmployees method)
+    @GetMapping("/search")
+    public ResponseEntity<List<Employee>> searchEmployees(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        // Your pagination implementation
         return employeeService.findByNameContaining(name);
     }
 // =======
-    public List<Employee> findEmployees(String query) {
-        // Their implementation
+    @GetMapping("/find")
+    public ResponseEntity<List<Employee>> findEmployees(@RequestParam String query) {
+        // Their simpler implementation from main
         return employeeService.search(query);
     }
 // >>>>>>> upstream/main
@@ -165,12 +179,28 @@ Oh look, there's a conflict! This is totally normal in collaborative development
 
 *Display text overlay: "Conflicts show: your changes (top) vs their changes (bottom)"*
 
-I need to resolve this by choosing the best approach or combining both:
+I need to resolve this by choosing the best approach. I'll keep my more comprehensive implementation but adopt their simpler endpoint name:
 
 ```java
-public List<Employee> searchEmployees(String name) {
-    // Combined the best of both approaches
-    return employeeService.findByNameContaining(name);
+@GetMapping("/find")
+public ResponseEntity<List<Employee>> searchEmployees(
+        @RequestParam String name,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size) {
+    // Keep my pagination implementation but use their endpoint
+    logger.info("Searching employees with name containing: '{}', page: {}, size: {}", name, page, size);
+    
+    List<Employee> employees = employeeService.findByNameContaining(name);
+    
+    // Apply pagination
+    int start = page * size;
+    int end = Math.min(start + size, employees.size());
+    List<Employee> paginatedEmployees = start < employees.size() ? 
+        employees.subList(start, end) : List.of();
+    
+    return ResponseEntity.ok()
+        .header("X-Total-Count", String.valueOf(employees.size()))
+        .body(paginatedEmployees);
 }
 ```
 
