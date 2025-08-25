@@ -17,7 +17,7 @@ title: Java Cryptographic APIs with Modern Patterns
 
 # Java Cryptographic APIs
 
-Modern Encryption with Java 21 Features
+Core Security Concepts and Essential Java Classes
 
 <div class="pt-12">
   <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
@@ -47,25 +47,25 @@ Kousen IT, Inc.
 transition: slide-left
 ---
 
-# Modern Cryptography Goals
+# Three Essential Security Skills
 
-## Security Fundamentals
+## Every Java Developer Needs
 
 <v-clicks>
 
-- **Confidentiality** - Keep data secret
-- **Integrity** - Detect tampering
-- **Authentication** - Verify identity
+- **Encrypt sensitive data** - Keep information confidential
+- **Verify document integrity** - Detect tampering and authenticate senders
+- **Securely store passwords** - Hash with salt for security
 
 </v-clicks>
 
-## Java 21 Enhancements
+## These Are the Building Blocks
 
 <v-clicks>
 
-- **Type Safety** - Sealed interfaces for error handling
-- **Concurrency** - Virtual threads for performance
-- **Modern Patterns** - Pattern matching and records
+- **BCrypt** - Password hashing library
+- **JWT tokens** - Authentication tokens
+- **OAuth implementations** - Authorization frameworks
 
 </v-clicks>
 
@@ -73,23 +73,124 @@ transition: slide-left
 transition: slide-left
 ---
 
-# Type-Safe Error Handling
+# Public/Private Key Pairs
 
-## Sealed Interface Pattern
+## How Encryption Works
+
+<v-clicks>
+
+- **Key pairs** - One key encrypts, the other decrypts
+- **Public key** - Can be shared with anyone
+- **Private key** - Must be kept secret
+
+</v-clicks>
+
+## Confidentiality Example
+
+<v-clicks>
+
+- **Encrypt with your public key** - Only you can decrypt it
+- **You encrypt replies with my public key** - Only I can decrypt them
+- **Data stays secret during transmission**
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# Digital Signatures Concept
+
+## Real-World Example: NDA Signing
+
+<v-clicks>
+
+- **The Problem** - Client needs to know you signed an NDA and it wasn't changed
+- **Solution** - Digital signatures provide integrity and non-repudiation
+
+</v-clicks>
+
+## What is a Hash?
+
+<v-clicks>
+
+- **Digital fingerprint** - Fixed length string representing the document
+- **Standard algorithm** - Same input always produces same hash
+- **Tamper detection** - Any change produces completely different hash
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# How Digital Signatures Work
+
+## Step-by-Step Process
+
+<v-clicks>
+
+1. **Hash the NDA document** - Creates digital fingerprint
+2. **Encrypt hash with your private key** - This is the digital signature
+3. **Send signature to recipient**
+
+</v-clicks>
+
+## Verification Process
+
+<v-clicks>
+
+4. **Recipient decrypts signature with your public key** - Gets your hash
+5. **Recipient generates hash from document** - Using same algorithm
+6. **Compare the two hashes** - If they match: integrity + non-repudiation proven
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# Certificate Trust Chain
+
+## Secure Public Key Distribution
+
+<v-clicks>
+
+- **The Problem** - How do you get someone's public key safely?
+- **The Solution** - Certificates create a chain of trust
+
+</v-clicks>
+
+## How Certificates Work
+
+<v-clicks>
+
+- **Certificate Authority (CA)** - Trusted third party
+- **CA vouches for identity** - Signs public key + identity info
+- **Chain of trust** - You trust CA → CA vouches for certificate → You trust public key
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# Java Encryption APIs
+
+## The Cipher Class
 
 ```java
-@SuppressWarnings("unused")
-public sealed interface CryptoResult<T> {
-    record Success<T>(T value) implements CryptoResult<T> {}
-    record Error<T>(String message) implements CryptoResult<T> {}
-}
+// Three key methods - always the same pattern:
+Cipher cipher = Cipher.getInstance("RSA");
+cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+byte[] encrypted = cipher.doFinal(sensitiveData.getBytes());
 ```
 
 <v-clicks>
 
-- **Compile-time safety** - All cases must be handled
-- **No exceptions** - Functional error handling
-- **Generic** - Works with any data type
+- **getInstance()** - Get the cipher
+- **init()** - Set the mode and key
+- **doFinal()** - Actually encrypt or decrypt
 
 </v-clicks>
 
@@ -97,335 +198,48 @@ public sealed interface CryptoResult<T> {
 transition: slide-left
 ---
 
-# Pattern Matching with Cryptography
+# Java Digital Signature APIs
 
-## Modern Java 21 Syntax
+## The Signature Class
 
 ```java
-private void handleCryptoResult(CryptoResult<String> result, String operation) {
-    switch (result) {
-        case CryptoResult.Success<String>(var value) -> 
-            System.out.println("✓ " + operation + " succeeded: " + 
-                value.substring(0, 20) + "...");
-        case CryptoResult.Error<String>(var message) -> 
-            System.out.println("✗ " + operation + " failed: " + message);
-    }
-}
-```
+// Creating a signature:
+Signature signature = Signature.getInstance("SHA256withRSA");
+signature.initSign(privateKey);
+signature.update(document.getBytes());
+byte[] digitalSignature = signature.sign();
 
-<v-clicks>
-
-- **Destructuring** - Extract values directly in patterns
-- **Type safety** - Compiler ensures all cases handled
-- **Clean syntax** - No if-else chains needed
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Modern Encryption Method
-
-## Functional Approach
-
-```java
-private CryptoResult<String> encryptWithResult(String plainText, SecretKey key) {
-    try {
-        if (key == null) {
-            return new CryptoResult.Error<>("Encryption key cannot be null");
-        }
-        byte[] encrypted = encrypt(plainText, key);
-        String encoded = Base64.getEncoder().encodeToString(encrypted);
-        return new CryptoResult.Success<>(encoded);
-    } catch (Exception e) {
-        return new CryptoResult.Error<>(e.getMessage());
-    }
-}
-```
-
-<v-clicks>
-
-- **No exceptions thrown** - Results wrapped in sealed types
-- **Explicit error handling** - Null checks return errors
-- **Composable** - Results can be chained functionally
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Virtual Threads for Crypto
-
-## High-Performance Concurrency
-
-```java
-private CompletableFuture<List<String>> hashMultiplePasswordsConcurrently(
-        List<String> passwords) {
-    return CompletableFuture.supplyAsync(() ->
-        passwords.parallelStream()
-            .map(password -> {
-                try {
-                    return hashPassword(password);
-                } catch (Exception e) {
-                    return "ERROR: " + e.getMessage();
-                }
-            })
-            .toList(),
-        Executors.newVirtualThreadPerTaskExecutor()  // Virtual threads!
-    );
-}
-```
-
----
-transition: slide-left
----
-
-# Why Virtual Threads?
-
-## Performance Benefits
-
-<v-clicks>
-
-- **Lightweight** - Thousands of threads with minimal overhead
-- **No blocking** - Perfect for I/O intensive crypto operations
-- **Scalable** - Handle massive concurrent workloads
-
-</v-clicks>
-
-## Real-World Use Cases
-
-<v-clicks>
-
-- **Batch password hashing** - Process thousands concurrently
-- **Data encryption** - Encrypt multiple records in parallel
-- **Certificate validation** - Verify many certificates simultaneously
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Concurrent Crypto Demo
-
-## Multiple Operations in Parallel
-
-```java
-public void demonstrateConcurrentCryptography() {
-    List<String> passwords = List.of(
-        "userPassword123", "adminSecure456", "guestAccess789"
-    );
-    
-    // Hash passwords concurrently
-    CompletableFuture<List<String>> hashingTask = 
-        hashMultiplePasswordsConcurrently(passwords);
-    List<String> hashedPasswords = hashingTask.join();
-    
-    // All passwords hashed simultaneously!
-}
-```
-
-<v-clicks>
-
-- **Parallel processing** - All operations run simultaneously
-- **Non-blocking** - Main thread remains responsive
-- **Efficient** - Virtual threads minimize resource usage
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Password Hashing with PBKDF2
-
-## Industry Standard Implementation
-
-```java
-public String hashPassword(String password) throws Exception {
-    byte[] salt = generateSalt();
-    byte[] hash = pbkdf2(password.toCharArray(), salt, 
-        PBKDF2_ITERATIONS, HASH_LENGTH);
-    
-    // Combine salt and hash
-    byte[] combined = new byte[salt.length + hash.length];
-    System.arraycopy(salt, 0, combined, 0, salt.length);
-    System.arraycopy(hash, 0, combined, salt.length, hash.length);
-    
-    return Base64.getEncoder().encodeToString(combined);
-}
-```
-
-<v-clicks>
-
-- **PBKDF2** - Password-Based Key Derivation Function 2
-- **Salt included** - Prevents rainbow table attacks
-- **100,000 iterations** - Slow by design, prevents brute force
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# AES-GCM Encryption
-
-## Authenticated Encryption
-
-```java
-public byte[] encrypt(String plainText, SecretKey key) throws Exception {
-    byte[] plainTextBytes = plainText.getBytes(StandardCharsets.UTF_8);
-    
-    Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-    cipher.init(Cipher.ENCRYPT_MODE, key);
-    
-    byte[] iv = cipher.getIV();
-    byte[] cipherText = cipher.doFinal(plainTextBytes);
-    
-    // Combine IV and ciphertext
-    ByteBuffer byteBuffer = ByteBuffer.allocate(iv.length + cipherText.length);
-    byteBuffer.put(iv);
-    byteBuffer.put(cipherText);
-    
-    return byteBuffer.array();
-}
+// Verifying a signature:
+signature.initVerify(publicKey);
+signature.update(document.getBytes());
+boolean valid = signature.verify(digitalSignature);
 ```
 
 ---
 transition: slide-left
 ---
 
-# Why AES-GCM?
+# Java Password Hashing APIs
 
-## Advanced Security Features
-
-<v-clicks>
-
-- **Confidentiality** - Data is encrypted and unreadable
-- **Authentication** - Detects any tampering attempts
-- **Performance** - Hardware-accelerated on modern CPUs
-
-</v-clicks>
-
-## Implementation Details
-
-<v-clicks>
-
-- **256-bit keys** - Military-grade encryption strength
-- **Unique IV** - Each encryption produces different output
-- **Built-in MAC** - Message Authentication Code included
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Digital Signatures
-
-## RSA with SHA-256
+## The MessageDigest Class with Salt
 
 ```java
-public byte[] signData(String data, PrivateKey privateKey) throws Exception {
-    Signature signature = Signature.getInstance("SHA256withRSA");
-    signature.initSign(privateKey);
-    signature.update(data.getBytes(StandardCharsets.UTF_8));
-    return signature.sign();
-}
+// Generate random salt - crucial for security!
+SecureRandom random = SecureRandom.getInstanceStrong();
+byte[] salt = new byte[16];
+random.nextBytes(salt);
 
-public boolean verifySignature(String data, byte[] signatureBytes, 
-                              PublicKey publicKey) throws Exception {
-    Signature signature = Signature.getInstance("SHA256withRSA");
-    signature.initVerify(publicKey);
-    signature.update(data.getBytes(StandardCharsets.UTF_8));
-    return signature.verify(signatureBytes);
-}
-```
-
----
-transition: slide-left
----
-
-# Modern Employee Encryption
-
-## Record-Based Data Structures
-
-```java
-public record EmployeeDataEncryption(SecretKey masterKey) {
-    
-    public EncryptedEmployee encryptEmployeeData(Employee employee) 
-            throws Exception {
-        CryptographicAPIs crypto = new CryptographicAPIs();
-        
-        // Encrypt sensitive fields
-        byte[] encryptedSSN = crypto.encrypt(employee.ssn(), masterKey);
-        byte[] encryptedSalary = crypto.encrypt(
-            employee.salary().toString(), masterKey);
-        
-        return new EncryptedEmployee(
-            employee.id(), employee.name(), employee.email(),
-            employee.department(), encryptedSSN, encryptedSalary
-        );
-    }
-}
-```
-
----
-transition: slide-left
----
-
-# Employee Records
-
-## Immutable Data Structures
-
-```java
-/**
- * Employee class for demonstration.
- */
-public record Employee(
-        Long id,
-        String name,
-        String email,
-        String department,
-        String ssn,
-        Double salary
-) {}
-
-/**
- * Encrypted employee class.
- */
-public record EncryptedEmployee(
-        Long id, String name, String email, String department,
-        byte[] encryptedSSN, byte[] encryptedSalary
-) {}
-```
-
----
-transition: slide-left
----
-
-# Secure Token Generation
-
-## Cryptographically Strong Randomness
-
-```java
-public String generateSecureToken(int length) {
-    SecureRandom random = new SecureRandom();
-    byte[] bytes = new byte[length];
-    random.nextBytes(bytes);
-    return Base64.getUrlEncoder()
-        .withoutPadding()
-        .encodeToString(bytes);
-}
+// Hash password with salt
+MessageDigest digest = MessageDigest.getInstance("SHA-256");
+digest.update(salt);
+byte[] hashedPassword = digest.digest(password.getBytes());
 ```
 
 <v-clicks>
 
-- **SecureRandom** - Cryptographically strong random number generator
-- **URL-safe encoding** - Safe for use in URLs and tokens
-- **Configurable length** - Adjust security level as needed
+- **Never store passwords in plain text!**
+- **Salt prevents rainbow table attacks**
+- **Same password + same salt = same hash**
 
 </v-clicks>
 
@@ -433,55 +247,30 @@ public String generateSecureToken(int length) {
 transition: slide-left
 ---
 
-# Key Derivation
+# Certificate APIs
 
-## Password-Based Key Generation
-
-```java
-public SecretKey deriveKeyFromPassword(String password, byte[] salt) 
-        throws Exception {
-    byte[] keyBytes = pbkdf2(password.toCharArray(), salt, 
-        PBKDF2_ITERATIONS, 32);
-    return new SecretKeySpec(keyBytes, "AES");
-}
-
-public byte[] pbkdf2(char[] password, byte[] salt, int iterations, 
-                    int keyLength) throws Exception {
-    PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, keyLength * 8);
-    SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-    return skf.generateSecret(spec).getEncoded();
-}
-```
-
----
-transition: slide-left
----
-
-# Message Integrity
-
-## SHA-256 Hashing
+## Using the Same Signature Class
 
 ```java
-public String sha256Hash(String input) throws Exception {
-    MessageDigest digest = MessageDigest.getInstance("SHA-256");
-    byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
-    return bytesToHex(hash);
-}
+// CA signs Alice's certificate (like a digital signature on her public key)
+String certificateInfo = "Subject: Alice, Public Key: " + alice_pubkey;
+Signature caSignature = Signature.getInstance("SHA256withRSA");
+caSignature.initSign(caPrivateKey);
+caSignature.update(certificateInfo.getBytes());
+byte[] certSignature = caSignature.sign();
 
-private String bytesToHex(byte[] bytes) {
-    StringBuilder result = new StringBuilder();
-    for (byte b : bytes) {
-        result.append(String.format("%02x", b));
-    }
-    return result.toString();
-}
+// Bob verifies the certificate using CA's public key  
+Signature verifyCA = Signature.getInstance("SHA256withRSA");
+verifyCA.initVerify(caPublicKey);
+verifyCA.update(certificateInfo.getBytes());
+boolean certValid = verifyCA.verify(certSignature);
 ```
 
 <v-clicks>
 
-- **One-way function** - Cannot be reversed
-- **Deterministic** - Same input always produces same hash
-- **Avalanche effect** - Small change = completely different hash
+- **Same Signature class** - Just applied to certificates
+- **CA vouches for Alice's public key**
+- **Bob can now trust Alice's public key for encryption**
 
 </v-clicks>
 
@@ -489,74 +278,26 @@ private String bytesToHex(byte[] bytes) {
 transition: slide-left
 ---
 
-# Complete Modern Demo
+# When to Use Each API
 
-## Full Cryptographic Demonstration
-
-```java
-public static void main(String[] args) {
-    CryptographicAPIs service = new CryptographicAPIs();
-    
-    // Traditional demonstrations
-    service.demonstratePasswordHashing();
-    service.demonstrateAESEncryption();
-    service.demonstrateDigitalSignatures();
-    
-    // Modern Java 21 features
-    service.demonstrateModernErrorHandling();
-    service.demonstrateConcurrentCryptography();
-    
-    // Real-world example
-    EmployeeDataEncryption.demonstrateEmployeeEncryption();
-}
-```
-
----
-transition: slide-left
----
-
-# Modern Error Handling Demo
-
-## Pattern Matching in Action
-
-```java
-public void demonstrateModernErrorHandling() {
-    try {
-        SecretKey key = generateAESKey();
-        
-        // Successful encryption
-        var successResult = encryptWithResult("Sensitive data", key);
-        handleCryptoResult(successResult, "encryption");
-        
-        // Error handling
-        var errorResult = encryptWithResult("This will fail", null);
-        handleCryptoResult(errorResult, "encryption");
-        
-    } catch (Exception e) {
-        System.err.println("Demo error: " + e.getMessage());
-    }
-}
-```
-
----
-transition: slide-left
----
-
-# Performance Comparison
-
-## Traditional vs Virtual Threads
+## Choose the Right Tool
 
 <v-clicks>
 
-**Traditional Threading:**
-- **Limited** - Platform threads are expensive
-- **Blocking** - Thread pool exhaustion under load
-- **Complex** - Manual thread management required
+- **Cipher class** - Encrypt sensitive data for storage or transmission
+- **Signature class** - Verify document integrity or authenticate the sender
+- **MessageDigest with salt** - Securely store passwords
+- **Certificates** - Distribute public keys securely
 
-**Virtual Threads:**
-- **Scalable** - Millions of threads possible
-- **Efficient** - Minimal memory overhead
-- **Simple** - Built into CompletableFuture
+</v-clicks>
+
+## Foundation for Libraries
+
+<v-clicks>
+
+- **BCrypt** - Password hashing (builds on MessageDigest)
+- **JWT tokens** - Authentication tokens (builds on Signature)
+- **OAuth implementations** - Authorization frameworks (builds on all three)
 
 </v-clicks>
 
@@ -564,114 +305,28 @@ transition: slide-left
 transition: slide-left
 ---
 
-# Best Practices
+# Key Takeaways
 
-## Modern Java Security
-
-<v-clicks>
-
-- **Use sealed interfaces** for error handling
-- **Leverage virtual threads** for concurrent operations
-- **Apply pattern matching** for cleaner code
-- **Embrace records** for immutable data
-
-</v-clicks>
-
-## Traditional Security Rules
+## Your Cryptographic Toolkit
 
 <v-clicks>
 
-- **Never hardcode keys** - Use environment variables
-- **Use established algorithms** - AES, RSA, SHA-256
-- **Implement proper key rotation** - Regular key updates
+- **Cipher class** - For encryption and decryption
+- **Signature class** - For digital signatures and certificates
+- **MessageDigest class** - For secure password hashing with salt
+- **Certificates** - For secure public key distribution
 
 </v-clicks>
 
----
-transition: slide-left
----
-
-# Common Pitfalls
-
-## What to Avoid
+## Master These Foundations
 
 <v-clicks>
 
-- **Broken algorithms** - MD5, SHA-1, DES
-- **Poor randomness** - Using Math.random() for crypto
-- **Key reuse** - Same key for different purposes
+- **Understand the concepts** - Why each tool exists
+- **Know which classes to use** - The right tool for each job
+- **Foundation for all security libraries** - BCrypt, JWT, OAuth build on these
 
 </v-clicks>
-
-## Modern Mistakes
-
-<v-clicks>
-
-- **Ignoring sealed types** - Missing error cases
-- **Platform thread usage** - Not leveraging virtual threads
-- **Exception-based flow** - Instead of result types
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Integration with Spring Boot
-
-## Security Configuration
-
-```java
-@Configuration
-@EnableWebSecurity
-public class CryptoSecurityConfig {
-    
-    @Bean
-    public CryptographicAPIs cryptoService() {
-        return new CryptographicAPIs();
-    }
-    
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12); // Strong work factor
-    }
-}
-```
-
-<v-clicks>
-
-- **Bean configuration** - Dependency injection ready
-- **Spring Security integration** - Works with existing auth
-- **Production ready** - Proper configuration management
-
-</v-clicks>
-
----
-transition: slide-left
----
-
-# Real-World Example
-
-## Complete Employee Service
-
-```java
-@Service
-public class SecureEmployeeService {
-    private final CryptographicAPIs cryptoAPIs;
-    private final SecretKey masterKey;
-    
-    public CompletableFuture<List<EncryptedEmployee>> 
-            encryptEmployeesBatch(List<Employee> employees) {
-        
-        return CompletableFuture.supplyAsync(() ->
-            employees.parallelStream()
-                .map(this::encryptEmployee)
-                .collect(toList()),
-            Executors.newVirtualThreadPerTaskExecutor()
-        );
-    }
-}
-```
 
 ---
 transition: slide-left
@@ -680,15 +335,9 @@ layout: center
 
 # Summary
 
-<v-clicks>
+Your toolkit for building secure Java applications: 
 
-- **Modern patterns** - Sealed interfaces and pattern matching
-- **High performance** - Virtual threads for concurrency
-- **Type safety** - Compile-time error handling
-- **Industry standard** - AES, RSA, PBKDF2 algorithms
-- **Production ready** - Spring Boot integration
-
-</v-clicks>
+**Cipher**, **Signature**, **MessageDigest**, and **Certificates**
 
 ---
 transition: slide-left

@@ -1,162 +1,133 @@
-# Video Script: Java Cryptographic APIs with Modern Patterns
+# Video Script: Topic 23—Cryptographic APIs
 
-**Goal:** 23. Implement cryptographic security using Java 21's modern patterns including sealed interfaces, virtual threads, and pattern matching for enterprise-grade encryption and authentication.
-**Target Duration:** 6–7 minutes
-
----
-
-### SCENE 1: Introduction (0:00–0:30)
-
-**(Show Slide 1: Title—"Java Cryptographic APIs—Modern Encryption with Java 21 Features")**
-
-**Host:**
-"Welcome to our exploration of modern cryptography in Java! Today we're not just covering encryption and security—we're demonstrating how Java 21's latest features revolutionize how we handle cryptographic operations. You'll see sealed interfaces for type-safe error handling, virtual threads for high-performance concurrent crypto, and pattern matching that makes security code both safer and more elegant."
+**Duration**: ~11 minutes  
+**Learning Objective**: Understand cryptographic concepts and master the core Java APIs for encryption, digital signatures, secure hashing, and certificates.
 
 ---
 
-### SCENE 2: Modern vs. Traditional Approach (0:30–1:15)
+## Scene 1: Introduction (1 minute)
 
-**(Show Slide 3: Modern Cryptography Goals)**
+**Host:** Welcome to Java Skills! In this video, we're going to talk about the cryptographic APIs available in Java that are essential for building secure applications. By the end of this video, you'll understand the core security concepts and know which Java classes to use for encryption, digital signatures, and password security.
 
-**Host:**
-"Traditional Java cryptography relied heavily on exceptions and blocking operations. But with Java 21, we can do much better. We still need the same security fundamentals—confidentiality, integrity, and authentication—but now we have type-safe error handling with sealed interfaces, lightning-fast concurrency with virtual threads, and cleaner code with pattern matching."
+**[Show Slide: Three Essential Security Skills]**
 
-**(Show Slide 4: Type-Safe Error Handling)**
-
-"Look at this sealed interface pattern. Instead of throwing exceptions that might be missed, we wrap all cryptographic results in a CryptoResult type. The compiler guarantees we handle both success and error cases. This is functional programming meeting enterprise security."
+Today we're focusing on three fundamental skills every Java developer needs: encrypting sensitive data, verifying document integrity, and securely storing passwords. These are the building blocks that underpin libraries like BCrypt, JWT tokens, and OAuth implementations.
 
 ---
 
-### SCENE 3: Pattern Matching Magic (1:15–2:00)
+## Scene 2: Cryptographic Concepts (3 minutes)
 
-**(Show Slide 5: Pattern Matching with Cryptography)**
+**Host:** Let's start with the concepts. Cryptography gives us three essential security properties.
 
-**Host:**
-"Here's where Java 21 really shines. This pattern matching switch automatically destructures our results. No more nested try-catch blocks or instanceof checks. The compiler enforces that we handle every possible outcome, making our crypto code both safer and more readable."
+**[Show Slide: Public/Private Key Pairs]**
 
-**(Show Slide 6: Modern Encryption Method)**
+First is **confidentiality** through encryption. Public-key cryptography uses key pairs—one key encrypts, the other decrypts. If I encrypt with either key, only the other key can decrypt it. For example, if I encrypt a message with your public key, only you can decrypt it, because only you have your private key. You would then encrypt your reply with my public key, and only I could decrypt it. This keeps data secret during transmission.
 
-"Notice how our encryption method returns a CryptoResult instead of throwing exceptions. Null keys return explicit errors, not NullPointerExceptions. This functional approach makes error handling predictable and composable."
+**[Show Slide: Digital Signatures Concept]**
 
----
+The second concept is **data integrity and non-repudiation**. This is achieved through digital signatures. Here's the key insight: a digital signature is actually a hash of the document encrypted with the sender's private key. 
 
-### SCENE 4: Virtual Threads Revolution (2:00–3:00)
+Let me break that down using a concrete example. Say you are going to do a job for a client, and they want you to sign a non-disclosure agreement. The agreement itself isn't secret—it's a standard boilerplate document, but they need to know that you signed it, and that it wasn't changed during the process. A hash, also called a digest, is like a digital fingerprint of a document. It's a fixed length string of characters representing the overall document, made with a standard algorithm. We hash the NDA, and then encrypt that hash using our private key. That encrypted hash is the digital signature. We then send the signature to the recipient. When they get it, they decrypt it with our public key to get back our generated hash. They also generate what the hash should be from the original document, using the same algorithm we did. Then they compare the two hashes. If they match, we know two things: the document hasn't been tampered with, because the hashes matched, and that the digital signature definitely came from us, because only we could have encrypted it because only we have our private key. That's both integrity and non-repudiation.
 
-**(Show Slide 7: Virtual Threads for Crypto)**
+**[Show Slide: Certificate Trust Chain]**
 
-**Host:**
-"Now here's the game-changer - virtual threads. Traditional thread pools would struggle with thousands of concurrent crypto operations. But virtual threads are so lightweight, we can spawn millions of them. Look at this concurrent password hashing—we're using Executors.newVirtualThreadPerTaskExecutor(). This would be impossible with platform threads."
+Third, we need to share public keys securely through certificates. A certificate contains a public key plus identity information, all signed by a trusted Certificate Authority. This creates a chain of trust—you trust the CA, the CA vouches for the certificate, so you can trust the public key.
 
-**(Show Slide 8: Why Virtual Threads?)**
-
-"The performance benefits are massive. Password hashing is CPU-intensive, but with virtual threads, we can process thousands of passwords concurrently without blocking. Perfect for batch operations, user registration spikes, or data migration scenarios."
-
-**(Show Slide 9: Concurrent Crypto Demo)**
-
-"This demo shows the power in action. We're hashing multiple passwords simultaneously, not sequentially. The virtual threads handle all the complexity—we just get blazing fast performance."
+These concepts work together: certificates distribute public keys, encryption provides confidentiality, and digital signatures provide integrity and authenticity.
 
 ---
 
-### SCENE 5: Core Cryptographic Operations (3:00–4:30)
+## Scene 3: Java Encryption APIs (2 minutes)
 
-**(Show Slide 10: Password Hashing with PBKDF2)**
+**Host:** Now let's see how Java implements these concepts. For encryption and decryption, we use the `Cipher` class.
 
-**Host:**
-"Let's dive into the core security operations. Password hashing uses PBKDF2 with 100 thousand iterations and random salts. This is industry standard—slow by design to prevent brute force attacks. Notice we're using modern Java patterns throughout—explicit charset handling and clean byte operations."
+**[Show Code: CryptographicAPIs.java - demonstrateEncryption method]**
 
-**(Show Slide 11: AES-GCM Encryption)**
+The pattern is always the same: get a `Cipher` instance, initialize it with a mode and key, then call `doFinal()` to process the data. Here we're encrypting sensitive data like a credit card number with the public key, then decrypting it with the private key.
 
-"For data encryption, we're using AES-GCM mode. This provides both confidentiality and authentication in one operation. The initialization vector ensures each encryption is unique, and GCM mode detects any tampering attempts."
-
-**(Show Slide 12: Why AES-GCM?)**
-
-"AES-GCM is the gold standard. It's hardware-accelerated on modern CPUs, provides military-grade 256-bit encryption, and includes built-in message authentication. This is what banks and governments use."
+Notice the three key methods: `getInstance()` to get the cipher, `init()` to set the mode and key, and `doFinal()` to actually encrypt or decrypt. This `Cipher` class is your go-to for any encryption needs in Java.
 
 ---
 
-### SCENE 6: Modern Data Structures (4:30 - 5:15)
+## Scene 4: Digital Signature APIs (2 minutes) 
 
-**(Show Slide 13: Digital Signatures)**
+**Host:** For digital signatures, we use the `Signature` class. Let me show you the two-step process.
 
-**Host:**
-"Digital signatures prove authenticity. We sign with RSA private keys and verify with public keys. SHA-256 ensures integrity, and the signature proves the data came from someone holding the private key."
+**[Show Code: CryptographicAPIs.java - demonstrateDigitalSignatures method]**
 
-**(Show Slide 14: Modern Employee Encryption)**
+To create a signature: get a `Signature` instance, initialize it for signing with the private key, update it with the document data, then call `sign()`. To verify: initialize for verification with the public key, update with the same document data, then call `verify()` with the signature.
 
-"Here's where Java 21 records really shine. Look how clean this employee encryption code is. Records give us immutable data structures perfect for security operations. No getters, setters, or boilerplate—just pure, secure data handling."
+Watch what happens when someone tries to tamper with the document - the verification fails immediately. That's how we detect any changes and prove the document's integrity.
 
-**(Show Slide 15: Employee Records)**
-
-"These record definitions are incredibly concise. The Employee and EncryptedEmployee records are immutable by default, thread-safe, and provide automatic equals, hashCode, and toString methods. This is modern Java at its best."
+The key methods here are `initSign()` and `initVerify()`, `update()` to feed in the data, and `sign()` or `verify()` to complete the operation.
 
 ---
 
-### SCENE 7: Advanced Features (5:15–6:00)
+## Scene 5: Secure Hashing APIs (1.5 minutes)
 
-**(Show Slide 16: Secure Token Generation)**
+**Host:** For password security, we use the `MessageDigest` class with a crucial addition: salt.
 
-**Host:**
-"Secure token generation uses cryptographically strong randomness. SecureRandom provides the entropy, and Base64 URL encoding makes tokens safe for web use. Perfect for API keys, session tokens, or password reset codes."
+**[Show Code: CryptographicAPIs.java - demonstrateSecureHashing method]**
 
-**(Show Slide 17: Complete Modern Demo)**
+Never store passwords in plain text! Instead, generate a random salt, which is just a random string that gets combined with the password, and hash the result. The salt is stored along with the hashed combination. The salt prevents rainbow table attacks and makes each password hash unique.
 
-"This main method shows the full progression. We start with traditional cryptographic operations, then showcase the modern Java 21 features—error handling with sealed interfaces, concurrent operations with virtual threads, and real-world employee encryption."
+The process: get a `MessageDigest` instance, update it with the salt, then digest the password. To verify later, repeat the same process and compare the hashes using `MessageDigest.isEqual()`.
 
-**(Show Slide 18: Modern Error Handling Demo)**
-
-"The error handling demo shows both success and failure cases. Pattern matching makes the error handling explicit and exhaustive. No hidden exceptions, no missed error conditions."
+This is the foundation that libraries like BCrypt build upon—they use these same principles with additional security features.
 
 ---
 
-### SCENE 8: Production Ready (6:00–6:45)
+## Scene 6: Certificate APIs (1 minute)
 
-**(Show Slide 19: Performance Comparison)**
+**Host:** The final piece is certificates for secure public key distribution. We've seen encryption and signatures, but how do you get someone's public key safely?
 
-**Host:**
-"The performance difference is dramatic. Traditional platform threads limit you to thousands of concurrent operations. Virtual threads scale to millions. For enterprise applications processing massive amounts of data, this is revolutionary."
+**[Show Code: CryptographicAPIs.java - demonstrateCertificates method]**
 
-**(Show Slide 20: Best Practices)**
+Certificates solve the key distribution problem. A certificate is essentially a digital signature by a trusted Certificate Authority on someone's public key and identity information. 
 
-"Modern Java security combines the best of both worlds. We keep the proven security algorithms—AES, RSA, SHA-256—but wrap them in modern Java 21 patterns. Sealed interfaces for safety, virtual threads for performance, records for clean data handling."
+Here we see the CA creates a certificate for Alice by signing her public key with the CA's private key. When Bob wants to encrypt data for Alice, he can verify the certificate using the CA's public key. If the verification succeeds, Bob knows he can trust Alice's public key because the CA vouched for it.
 
-**(Show Slide 21: Integration with Spring Boot)**
-
-"Everything integrates beautifully with Spring Boot. These patterns are production-ready, not just academic exercises. You can use sealed interfaces, virtual threads, and modern crypto patterns in real enterprise applications today."
+This creates a chain of trust—you trust the CA, the CA vouches for Alice, so you can trust Alice's public key. The same `Signature` class we just learned handles both document signing and certificate verification.
 
 ---
 
-### SCENE 9: Wrap-up (6:45–7:00)
+## Scene 7: Practical Application (0.5 minutes)
 
-**(Show Slide 22: Summary)**
+**Host:** So when do you use each approach?
 
-**Host:**
-"Java 21 transforms cryptography from error-prone, sequential operations into type-safe, concurrent, high-performance security. Sealed interfaces eliminate missed error cases, virtual threads enable massive concurrency, and pattern matching makes security code elegant. The algorithms are battle-tested, but the developer experience is cutting-edge."
+**[Show Slide: When to Use Each API]**
 
-**(Show Slide 23: Next Topic)**
+- Use `Cipher` when you need to encrypt sensitive data for storage or transmission
+- Use `Signature` when you need to verify document integrity or authenticate the sender
+- Use `MessageDigest` with salt when you need to securely store passwords
+- Use certificates when you need to distribute public keys securely
 
-"Next up, we'll explore Git collaboration workflows—the perfect complement to secure code development. Thanks for watching!"
+Remember, third-party libraries like BCrypt for password hashing, JJWT for JSON Web Tokens, and OAuth implementations all build on these core Java APIs. Master these foundations, and you'll understand how all the security libraries work under the hood.
 
----
+**[Show Slide: Key Takeaways]**
 
-## Try It Out Exercise
+Your key takeaways: `Cipher` for encryption, `Signature` for digital signatures, `MessageDigest` for secure hashing, and certificates for secure key distribution. These four concepts are your toolkit for building secure Java applications.
 
-**Challenge:** Implement a secure document processing service that:
-1. Uses sealed interfaces for all cryptographic operations
-2. Processes multiple documents concurrently with virtual threads  
-3. Encrypts document content with AES-GCM
-4. Signs document metadata with RSA
-5. Returns type-safe results using pattern matching
-
-**Advanced:** Add key rotation, audit logging, and Spring Boot integration.
+Thanks for watching, and I'll see you in the next video!
 
 ---
 
-## Key Takeaways
+## Technical Notes for Filming
 
-- **Modern patterns enhance security—**Type safety prevents missed error cases
-- **Virtual threads enable massive concurrency**—Process thousands of crypto operations simultaneously  
-- **Pattern matching improves code quality**—Explicit, exhaustive error handling
-- **Records perfect for crypto** - Immutable, secure data structures
-- **Production ready** - All patterns work with Spring Boot and enterprise frameworks
+**Code References:**
+- Main demo: `security/src/main/java/com/oreilly/security/CryptographicAPIs.java`
+- Focus on the four main methods: `demonstrateEncryption()`, `demonstrateDigitalSignatures()`, `demonstrateSecureHashing()`, `demonstrateCertificates()`
+- Show actual code execution output to demonstrate concepts
 
-The combination of proven cryptographic algorithms with modern Java language features creates the most secure, performant, and maintainable crypto code possible.
+**Key Teaching Points:**
+1. **Concepts first**: Explain WHY before showing HOW
+2. **Four clear use cases**: Encryption, signatures, hashing, certificates
+3. **Standard Java APIs only**: No third-party dependencies in demos
+4. **Practical context**: Mention where BCrypt/JWT fit in the bigger picture
+5. **Essential methods**: Focus on the key methods developers need to remember
+6. **Certificate trust chains**: Show how certificates enable secure key distribution
+
+**Slide Timing:**
+- Intro concepts: 3-4 slides max
+- Code demos: Show actual IDE with working examples
+- Summary: Single slide with the four key concepts

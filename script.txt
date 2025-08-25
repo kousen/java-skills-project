@@ -1,95 +1,92 @@
-[SCENE 1: CAMERA INTRODUCTION - 45 SECONDS]
+[SCENE 1: INTRODUCTION - 1 MINUTE]
 
-Hi everyone! I'm Ken Kousen, and today we're exploring Java's built-in cryptographic capabilities and how to use them in your applications.
+Welcome to Java Skills! In this video, we're going to talk about the cryptographic APIs available in Java that are essential for building secure applications. By the end of this video, you'll understand the core security concepts and know which Java classes to use for encryption, digital signatures, and password security.
 
-Java provides a comprehensive cryptography framework through the JCA - the Java Cryptography Architecture. You can hash passwords securely, encrypt sensitive data, and create digital signatures using standard algorithms, all with just a few lines of code. The hard cryptographic work is handled by the JVM - it's enough to know which classes to use and how to use them properly.
+(Show Slide: Three Essential Security Skills)
 
-Today I'll show you Java's three most important cryptographic operations: the SecretKeyFactory for password hashing, the Cipher class for data encryption and decryption, and the Signature class for digital authentication. More importantly, you'll see how to use these Java APIs safely and effectively.
+Today we're focusing on three fundamental skills every Java developer needs: encrypting sensitive data, verifying document integrity, and securely storing passwords. These are the building blocks that underpin libraries like BCrypt, JWT tokens, and OAuth implementations.
 
-Let me show you some diagrams that illustrate what these Java classes actually do under the hood.
+[SCENE 2: CRYPTOGRAPHIC CONCEPTS - 3 MINUTES]
 
-[SCENE 2: SCREENSHARE DEMONSTRATION - 4 MINUTES 30 SECONDS]
+Let's start with the concepts. Cryptography gives us three essential security properties.
 
-[Switch to screenshare - Open CRYPTOGRAPHY_DIAGRAMS.md]
+(Show Slide: Public/Private Key Pairs)
 
-Let me start by showing you what Java's cryptographic classes achieve.
+First is confidentiality through encryption. Public-key cryptography uses key pairs—one key encrypts, the other decrypts. If I encrypt with either key, only the other key can decrypt it. For example, if I encrypt a message with your public key, only you can decrypt it, because only you have your private key. You would then encrypt your reply with my public key, and only I could decrypt it. This keeps data secret during transmission.
 
-[Show Password Hashing with PBKDF2 diagram]
+(Show Slide: Digital Signatures Concept)
 
-Java's SecretKeyFactory class handles password hashing through PBKDF2 - that's P-B-K-D-F-2, or Password-Based Key Derivation Function version 2. PBKDF2 solves a fundamental problem: passwords are weak and fast to crack, but we need strong, slow-to-crack security. PBKDF2 transforms weak passwords into strong cryptographic keys while making brute force attacks impractical through intentional slowness. Java's implementation has been available since Java 6, with stronger SHA-256 variants added in Java 8.
+The second concept is data integrity and non-repudiation. This is achieved through digital signatures. Here's the key insight: a digital signature is actually a hash of the document encrypted with the sender's private key.
 
-[Show AES-GCM Encryption Flow diagram]
+Let me break that down using a concrete example. Say you are going to do a job for a client, and they want you to sign a non-disclosure agreement. The agreement itself isn't secret—it's a standard boilerplate document, but they need to know that you signed it, and that it wasn't changed during the process. A hash, also called a digest, is like a digital fingerprint of a document. It's a fixed length string of characters representing the overall document, made with a standard algorithm. We hash the NDA, and then encrypt that hash using our private key. That encrypted hash is the digital signature. We then send the signature to the recipient. When they get it, they decrypt it with our public key to get back our generated hash. They also generate what the hash should be from the original document, using the same algorithm we did. Then they compare the two hashes. If they match, we know two things: the document hasn't been tampered with, because the hashes matched, and that the digital signature definitely came from us, because only we could have encrypted it because only we have our private key. That's both integrity and non-repudiation.
 
-For data encryption, Java's Cipher class handles AES-GCM mode. Here's why GCM mode matters: traditional encryption only hides your data - it doesn't tell you if someone modified it. AES-GCM solves two problems in one operation - it encrypts for confidentiality AND generates an authentication tag that detects any tampering. Without GCM, you'd need separate encrypt and authenticate steps. Java's Cipher handles both automatically in a single doFinal() call.
+(Show Slide: Certificate Trust Chain)
 
-[Show Digital Signature Process diagram]
+Third, we need to share public keys securely through certificates. A certificate contains a public key plus identity information, all signed by a trusted Certificate Authority. This creates a chain of trust—you trust the CA, the CA vouches for the certificate, so you can trust the public key.
 
-Java's Signature class manages the entire digital signature process. Signature.initSign() with your private key prepares for signing, Signature.update() hashes your data, and Signature.sign() creates the signature. For verification, you use Signature.initVerify() with the public key. Java handles the RSA operations and SHA-256 hashing automatically.
+These concepts work together: certificates distribute public keys, encryption provides confidentiality, and digital signatures provide integrity and authenticity.
 
-[Show Digital Certificate Structure diagram]
+[SCENE 3: JAVA ENCRYPTION APIS - 2 MINUTES]
 
-Java also provides certificate handling through the X509Certificate class. Certificates contain public keys and are signed by Certificate Authorities. Java's certificate validation automatically checks signatures and expiration dates when you call certificate.verify().
+Now let's see how Java implements these concepts. For encryption and decryption, we use the Cipher class.
 
-Now let's see these Java classes in action.
+(Show Code: CryptographicAPIs.java - demonstrateEncryption method)
 
-[Open CryptographicAPIs.java]
+The pattern is always the same: get a Cipher instance, initialize it with a mode and key, then call doFinal() to process the data. Here we're encrypting sensitive data like a credit card number with the public key, then decrypting it with the private key.
 
-Here's how to use Java's cryptographic APIs effectively. Let's start with password hashing using Java's built-in classes.
+Notice the three key methods: getInstance() to get the cipher, init() to set the mode and key, and doFinal() to actually encrypt or decrypt. This Cipher class is your go-to for any encryption needs in Java.
 
-[Show the hashPassword() method - lines 421-431, and pbkdf2() method - lines 464-468]
+[SCENE 4: DIGITAL SIGNATURE APIS - 2 MINUTES]
 
-This method shows Java's SecretKeyFactory in action. We specify "PBKDF2WithHmacSHA256" - the SHA-256 variant that's been available since Java 8. Here's why this matters: without PBKDF2, an attacker could test millions of password guesses per second against a simple hash. But with 100 thousand iterations, they can only test hundreds per second. A password that might take 1 hour to crack with simple hashing now takes over 1,000 hours with PBKDF2. Java's SecureRandom generates the unique salt, and Java handles all the computational work automatically.
+For digital signatures, we use the Signature class. Let me show you the two-step process.
 
-[Show the encrypt() method - lines 490-505, then decrypt() method - lines 510-525]
+(Show Code: CryptographicAPIs.java - demonstrateDigitalSignatures method)
 
-For encryption, we use Java's Cipher class with "AES/GCM/NoPadding". Notice what happens when we call cipher.doFinal() - Java encrypts the data AND generates an authentication tag, all in one operation. If someone tries to modify even one bit of the encrypted result, the decryption will fail completely. Java's GCM implementation gives you both confidentiality and tamper detection without any extra work.
+To create a signature: get a Signature instance, initialize it for signing with the private key, update it with the document data, then call sign(). To verify: initialize for verification with the public key, update with the same document data, then call verify() with the signature.
 
-[Show the signData() method - lines 539-544, then verifySignature() method - lines 549-554]
+Watch what happens when someone tries to tamper with the document - the verification fails immediately. That's how we detect any changes and prove the document's integrity.
 
-Digital signatures use Java's Signature class with "SHA256withRSA". Java combines SHA-256 hashing with RSA signing in a single operation. Signature.initSign() prepares for signing with our private key, and Signature.sign() produces the digital signature. Java handles the entire cryptographic pipeline.
+The key methods here are initSign() and initVerify(), update() to feed in the data, and sign() or verify() to complete the operation.
 
-[Show generateAESKey() method - lines 473-477, and generateRSAKeyPair() method - lines 530-534]
+[SCENE 5: SECURE HASHING APIS - 1.5 MINUTES]
 
-Java also generates cryptographic keys for you. KeyPairGenerator creates RSA key pairs, KeyGenerator creates AES keys, and SecureRandom provides cryptographically strong random numbers. All the key management complexity is handled by Java's security providers.
+For password security, we use the MessageDigest class with a crucial addition: salt.
 
-[Open DatabaseExamples.java briefly]
+(Show Code: CryptographicAPIs.java - demonstrateSecureHashing method)
 
-Here's a quick example of how Java's security integrates with database operations. PreparedStatement prevents SQL injection by treating parameters as data, not code. This shows how Java's built-in security features work together - secure crypto plus secure database access.
+Never store passwords in plain text! Instead, generate a random salt, which is just a random string that gets combined with the password, and hash the result. The salt is stored along with the hashed combination. The salt prevents rainbow table attacks and makes each password hash unique.
 
-[Return to CryptographicAPIs.java and show the main() method - lines 47-78]
+The process: get a MessageDigest instance, update it with the salt, then digest the password. To verify later, repeat the same process and compare the hashes using MessageDigest.isEqual().
 
-Let's see Java's cryptographic capabilities in a complete example. The main method demonstrates Java's password hashing, data encryption, and digital signatures working together in a realistic scenario.
+This is the foundation that libraries like BCrypt build upon—they use these same principles with additional security features.
 
-[Show the EmployeeDataEncryption.demonstrateEmployeeEncryption() method - lines 629-664]
+[SCENE 6: CERTIFICATE APIS - 1 MINUTE]
 
-This shows Java's Cipher class encrypting employee data. Notice how the same plaintext produces different encrypted results each time - that's Java's Cipher automatically generating unique IVs. The decrypt operation extracts the IV and recovers the original data. All handled by Java's cryptographic framework.
+The final piece is certificates for secure public key distribution. We've seen encryption and signatures, but how do you get someone's public key safely?
 
-[SCENE 3: TRY IT OUT EXERCISE - 45 SECONDS]
+(Show Code: CryptographicAPIs.java - demonstrateCertificates method)
 
-[Stay in screenshare - Open CryptographyExercise.java]
+Certificates solve the key distribution problem. A certificate is essentially a digital signature by a trusted Certificate Authority on someone's public key and identity information.
 
-Now let's practice using Java's cryptographic APIs directly! I've created a focused exercise that walks you through all the key JCA classes.
+Here we see the CA creates a certificate for Alice by signing her public key with the CA's private key. When Bob wants to encrypt data for Alice, he can verify the certificate using the CA's public key. If the verification succeeds, Bob knows he can trust Alice's public key because the CA vouched for it.
 
-You'll work with CryptographyExercise.java which has six progressive TODOs. First, implement PBKDF2 password hashing using SecretKeyFactory - you'll see how Java generates salts and handles iterations automatically. Then implement password verification to understand how the salt and hash work together.
+This creates a chain of trust—you trust the CA, the CA vouches for Alice, so you can trust Alice's public key. The same Signature class we just learned handles both document signing and certificate verification.
 
-Next, you'll implement AES-GCM encryption and decryption using Java's Cipher class. You'll see how Java generates IVs automatically and how the authentication tag detects tampering. Finally, you'll implement RSA digital signatures using Java's Signature class for both signing and verification.
+[SCENE 7: PRACTICAL APPLICATION - 0.5 MINUTES]
 
-Each TODO focuses on a specific JCA class and includes helper methods for key generation and management. The exercise shows you how to use Java's cryptographic APIs correctly and safely, with real error handling and proper parameter usage.
+So when do you use each approach?
 
-[SCENE 4: CAMERA WRAP-UP - 45 SECONDS]
+(Show Slide: When to Use Each API)
 
-[Switch back to camera]
+Use Cipher when you need to encrypt sensitive data for storage or transmission
+Use Signature when you need to verify document integrity or authenticate the sender
+Use MessageDigest with salt when you need to securely store passwords
+Use certificates when you need to distribute public keys securely
 
-Java's cryptographic framework gives you enterprise-grade security with surprisingly simple APIs. The JCA handles the complex mathematics - it's enough to know which classes to use.
+Remember, third-party libraries like BCrypt for password hashing, JJWT for JSON Web Tokens, and OAuth implementations all build on these core Java APIs. Master these foundations, and you'll understand how all the security libraries work under the hood.
 
-Use SecretKeyFactory with PBKDF2 for password hashing - this transforms weak, human-chosen passwords into strong cryptographic material while making attacks prohibitively expensive through intentional computational cost. Use Cipher with AES-GCM for data encryption - Java manages the IVs and authentication tags. Use Signature with RSA and SHA-256 for digital signatures - Java combines the hashing and signing operations.
+(Show Slide: Key Takeaways)
 
-The key insight is that Java's security providers do the heavy lifting. The same cryptographic algorithms used by banks and governments are available through standard Java classes. You get military-grade security through familiar object-oriented APIs.
+Your key takeaways: Cipher for encryption, Signature for digital signatures, MessageDigest for secure hashing, and certificates for secure key distribution. These four concepts are your toolkit for building secure Java applications.
 
-Java's approach makes cryptography accessible to application developers. You don't need to be a cryptography expert - it's enough to understand which Java classes solve which problems and how to use them correctly.
-
-These aren't academic exercises - this is production-ready code using Java's standard security framework. The algorithms are battle-tested, the implementations are optimized, and the APIs are designed for real-world applications.
-
-Next time, we'll explore Git collaboration workflows - another essential skill for professional Java development.
-
-Keep your applications secure, and I'll see you in the next video!
+Thanks for watching, and I'll see you in the next video!
