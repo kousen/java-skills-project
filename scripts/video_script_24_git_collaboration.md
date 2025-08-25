@@ -315,9 +315,11 @@ Finally, **embrace code review**. It's not criticism—it's collaboration. Be op
 
 ## Try It Out Exercise
 
-For your hands-on exercise, I want you to fork our Java Skills Project repository and work through this exact workflow. Pick one of the open issues - they're all realistic features that would improve the project. Follow the complete process we just demonstrated: fork, branch, commit, push, and create a pull request.
+For your hands-on exercise, I want you to practice the complete Git collaboration workflow including conflict resolution. The repository includes a special exercise designed just for this purpose.
 
-The git-workflows directory in the repository has detailed step-by-step instructions in the git-workflow-examples.md file. It covers everything we showed here plus additional scenarios like hotfixes and release workflows.
+**Start with the conflict resolution exercise**: Open `git-workflows/CONFLICT_DEMO_BRANCHES.md` in the repository. This "Try It Out: Git Merge Conflict Resolution" exercise walks you through the exact scenario we just demonstrated - resolving a realistic merge conflict between competing employee search implementations.
+
+**Then explore the broader workflow**: The `git-workflows/git-workflow-examples.md` file has comprehensive examples covering fork-based workflows, branch strategies, and professional Git practices for team collaboration.
 
 This isn't just practice—if you create a quality pull request, it might actually get merged into the project! That would give you a real open source contribution to show on your résumé.
 
