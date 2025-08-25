@@ -18,15 +18,19 @@ Think of Git branches like parallel universes for your code. The main branch con
 
 This separation is crucial. Imagine if every developer worked directly on main - you'd have conflicts, broken builds, and chaos. Instead, we create a feature branch, work in isolation, then merge back when ready.
 
-## Starting a Feature (0:45-1:15)
+## Fork vs. Direct Access (0:45-1:00)
 
-Let's say we're adding employee validation to our Employee Management System.
+Before we dive into workflows, let's clarify the two main collaboration models. If you're contributing to open source or a project you don't own, you'll fork the repository first. This gives you your own copy to work with. If you're on a team with trusted access, you might work directly with branches in the main repository.
 
-[Show branch creation commands]
+## Starting a Feature - Fork Workflow (1:00-1:30)
 
-First, make sure you're on main and pull the latest changes. Then create a feature branch. I like the naming convention "feature/description" - it's clear what the branch is for.
+Let's say we're adding employee validation to our Employee Management System using the fork workflow.
 
-Now you're in your own workspace. Make changes, test them, break things - it won't affect anyone else.
+[Show fork and branch creation commands]
+
+First, you fork the repository on GitHub - this creates your own copy. Clone your fork, not the original. Add the original as an "upstream" remote. Now when you start a feature, sync with upstream first, then create your feature branch. Push the branch to your fork, not the upstream repository.
+
+This keeps you isolated until you're ready to contribute back.
 
 ## Committing Best Practices (1:15-1:45)
 
@@ -36,13 +40,13 @@ Good commit messages are like good documentation - your future self will thank y
 
 Use the imperative mood: "Add validation" not "Added validation." Keep the first line under 50 characters - think of it as a subject line. Then add details explaining why you made the change, not just what you changed.
 
-## Staying in Sync (1:45-2:15)
+## Staying in Sync with Upstream (1:45-2:15)
 
-While you're working on your feature, other developers are merging their changes to main. You need to stay updated.
+While you're working on your fork, the original repository keeps evolving. You need to stay synchronized with upstream changes.
 
-[Show merge/rebase commands]
+[Show upstream sync commands]
 
-Fetch gets the latest changes without modifying your branch. Then you can merge or rebase. Merging preserves history, showing where branches diverged. Rebasing gives a cleaner, linear history. Choose based on your team's preference.
+Fetch from upstream gets the latest changes from the original repository. Then merge those changes into your local main branch and push to your fork. This keeps your fork current. Before finishing your feature, rebase against upstream main to ensure clean integration.
 
 ## Handling Merge Conflicts (2:15-2:45)
 
@@ -52,15 +56,15 @@ Conflicts happen when two people modify the same code. Don't panic - Git shows y
 
 Those angle brackets show the conflicting sections. The top is your changes, the bottom is what's in main. You need to decide which to keep or combine them. Edit the file, remove the conflict markers, then commit.
 
-## Pull Requests (2:45-3:30)
+## Pull Requests from Forks (2:45-3:30)
 
-This is where the magic happens. A pull request says "I'd like to merge my changes into main." It's not just about the code - it's about communication.
+This is where fork-based collaboration shines. A pull request says "I'd like to contribute my changes from my fork to your project." It's not just about the code - it's about communication across repository boundaries.
 
-[Show PR template]
+[Show cross-repo PR creation]
 
-Write a clear description. Explain what you built and why. List the changes. Document your testing. Link to any related issues. This helps reviewers understand your work.
+When creating a PR from your fork, you're asking permission to contribute. Write a clear description explaining what you built and why. Document your testing thoroughly since maintainers can't assume your development environment matches theirs.
 
-Remember: you're not just asking for code review, you're sharing knowledge with your team.
+Remember: you're not just submitting code, you're joining a community and following their contribution guidelines.
 
 ## Code Review Culture (3:30-4:00)
 
@@ -82,9 +86,9 @@ Protect your main branch! Set up rules requiring pull request reviews and passin
 
 ## Wrapping Up (4:45-5:00)
 
-Git collaboration isn't just about commands - it's about teamwork. Use feature branches for all development. Write clear commits and pull requests. Review code thoughtfully. Keep main stable.
+Git collaboration isn't just about commands - it's about working respectfully with others' code. Fork when you're contributing to projects you don't own. Use feature branches for all development. Write clear commits and pull requests. Review code thoughtfully. Keep main stable.
 
-Next time, we'll explore microservices architecture with Spring Boot. Until then, branch responsibly and merge with confidence!
+Whether you're contributing to open source or working on a team, these workflows help everyone collaborate effectively. Next time, we'll explore microservices architecture with Spring Boot. Until then, fork responsibly and contribute with confidence!
 
 ## Code Examples Referenced:
 

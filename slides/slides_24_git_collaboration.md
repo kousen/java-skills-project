@@ -185,11 +185,10 @@ transition: slide-left
 
 ```bash
 # Commit with descriptive message
-git commit -m "Add email validation to Employee class
-
-- Added @Email annotation to email field
-- Created test for invalid email formats
-- Updated documentation for validation rules"
+git commit -m "Add email validation to Employee class" \
+            -m "- Added @Email annotation to email field" \
+            -m "- Created test for invalid email formats" \
+            -m "- Updated documentation for validation rules"
 ```
 
 ---
@@ -268,12 +267,12 @@ transition: slide-left
 ```java
 // File: Employee.java
 public class Employee {
-<<<<<<< HEAD
+// <<<<<<< HEAD
     private String firstName;
     private String lastName;
-=======
-    private String fullName;
->>>>>>> origin/main
+// =======
+//  private String fullName;
+// >>>>>>> origin/main
 }
 ```
 
@@ -549,7 +548,7 @@ transition: slide-left
 
 ## Essential Patterns
 
-```gitignore
+```bash
 # Java
 *.class
 *.jar

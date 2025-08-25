@@ -1,19 +1,54 @@
 # Git Workflow Examples for Java Projects
 
-## Feature Branch Workflow
+## Workflow Models Overview
+
+### Fork-Based Workflow (Open Source / External Contributors)
+**Use when:** Contributing to projects you don't own, open source projects, or strict security environments.
+- Contributors fork the repository
+- No direct push access to main repository
+- All changes via Pull Requests from forks
+- Maintainers have full control over what gets merged
+
+### Branch-Based Workflow (Team Development)
+**Use when:** Working on a team project with trusted collaborators.
+- Team members have push access to the main repository
+- Create feature branches directly in the main repo
+- Pull Requests used for code review, not access control
+- Faster iteration, less overhead
+
+---
+
+## Fork-Based Workflow (Recommended for Open Source)
+
+### Initial Setup - Fork and Clone
+```bash
+# 1. Fork the repository on GitHub (click "Fork" button)
+# 2. Clone YOUR fork (not the original repo)
+git clone https://github.com/YOUR-USERNAME/java-skills-project.git
+cd java-skills-project
+
+# 3. Add the original repo as "upstream" remote
+git remote add upstream https://github.com/ORIGINAL-OWNER/java-skills-project.git
+
+# 4. Verify your remotes
+git remote -v
+# origin    https://github.com/YOUR-USERNAME/java-skills-project.git (fetch)
+# origin    https://github.com/YOUR-USERNAME/java-skills-project.git (push)
+# upstream  https://github.com/ORIGINAL-OWNER/java-skills-project.git (fetch)
+# upstream  https://github.com/ORIGINAL-OWNER/java-skills-project.git (push)
+```
 
 ### Starting a new feature
 ```bash
-# Make sure you're on main and up to date
+# Always sync with upstream first
 git checkout main
-git pull origin main
+git fetch upstream
+git merge upstream/main
+git push origin main
 
 # Create and switch to feature branch
 git checkout -b feature/employee-search
 git push -u origin feature/employee-search
-
-# Or use the alias from .gitconfig
-git feature employee-search
 ```
 
 ### Working on the feature
@@ -26,8 +61,8 @@ git status
 git diff
 
 # Stage specific files
-git add src/main/java/EmployeeService.java
-git add src/main/java/EmployeeController.java
+git add web-services/src/main/java/com/oreilly/webservices/EmployeeService.java
+git add web-services/src/main/java/com/oreilly/webservices/EmployeeController.java
 
 # Commit with descriptive message
 git commit -m "Add employee search functionality with pagination
@@ -45,9 +80,14 @@ git push origin feature/employee-search
 
 ### Creating a Pull Request
 ```bash
+# Push your feature branch to YOUR fork
+git push origin feature/employee-search
+
+# Create PR from your fork to upstream main
 # Using GitHub CLI (if available)
-gh pr create --title "Add employee search functionality" --body "
-## Summary
+gh pr create --repo ORIGINAL-OWNER/java-skills-project \
+             --title "Add employee search functionality" \
+             --body "## Summary
 Implements comprehensive employee search with pagination support.
 
 ## Changes
@@ -63,14 +103,21 @@ Implements comprehensive employee search with pagination support.
 
 Fixes #123"
 
-# Or create PR through GitHub web interface
+# Or create PR through GitHub web interface:
+# 1. Go to the original repository
+# 2. Click "New Pull Request"
+# 3. Click "compare across forks"
+# 4. Select your fork and branch as the source
 ```
 
 ### Code Review Process
 ```bash
-# Reviewer checks out the branch to test locally
-git fetch origin
-git checkout feature/employee-search
+# Maintainer/reviewer can check out the PR branch to test locally
+gh pr checkout 123  # Using GitHub CLI
+
+# Or manually:
+git fetch upstream pull/123/head:pr-123
+git checkout pr-123
 
 # Run tests
 ./gradlew test
@@ -78,7 +125,7 @@ git checkout feature/employee-search
 # Check code quality
 ./gradlew check
 
-# After review feedback, make changes
+# After review feedback, contributor makes changes on their fork
 git add .
 git commit -m "Address code review feedback
 
@@ -86,31 +133,78 @@ git commit -m "Address code review feedback
 - Add input validation for salary ranges
 - Improve error messages"
 
+# Push to your fork - PR automatically updates
 git push origin feature/employee-search
 ```
 
 ### Merging the Pull Request
 ```bash
-# After approval, update branch with latest main
+# After approval, contributor can sync with latest upstream
 git checkout feature/employee-search
-git fetch origin
-git rebase origin/main
+git fetch upstream
+git rebase upstream/main
 
-# Push the rebased branch
+# Push the rebased branch (use --force-with-lease for safety)
 git push --force-with-lease origin feature/employee-search
 
-# Merge through GitHub UI or command line
-# GitHub UI is recommended for better tracking
+# Maintainer merges through GitHub UI (recommended)
+# This preserves PR history and attribution
 
-# Clean up after merge
+# After merge, contributor cleans up their fork
+git checkout main
+git fetch upstream
+git merge upstream/main
+git push origin main
+git branch -d feature/employee-search
+git push origin --delete feature/employee-search
+```
+
+---
+
+## Branch-Based Workflow (Team Development)
+
+### Starting a new feature (Team Member)
+```bash
+# Make sure you're on main and up to date
+git checkout main
+git pull origin main
+
+# Create and switch to feature branch
+git checkout -b feature/employee-search
+git push -u origin feature/employee-search
+```
+
+### Working on the feature
+```bash
+# Make your changes (same as fork-based workflow)
+# Edit files, commit, and push to origin
+
+# The key difference: you're pushing to the main repository
+git push origin feature/employee-search
+```
+
+### Creating a Pull Request (Same Repository)
+```bash
+# Create PR within the same repository
+gh pr create --title "Add employee search functionality" --body "..."
+
+# Or through GitHub web interface:
+# 1. Go to the repository
+# 2. Click "New Pull Request"
+# 3. Select your feature branch
+# 4. Target branch is usually 'main'
+```
+
+### After Merge Cleanup
+```bash
+# Clean up after merge (simpler since same repo)
 git checkout main
 git pull origin main
 git branch -d feature/employee-search
 git push origin --delete feature/employee-search
-
-# Or use the cleanup alias
-git cleanup
 ```
+
+---
 
 ## Hotfix Workflow
 
@@ -126,9 +220,9 @@ git push -u origin hotfix/security-vulnerability
 git hotfix security-vulnerability
 
 # Make the critical fix
-# Edit: SecurityService.java
+# Edit: CryptographicAPIs.java
 
-git add src/main/java/SecurityService.java
+git add security/src/main/java/com/oreilly/security/CryptographicAPIs.java
 git commit -m "Fix security vulnerability in password validation
 
 - Strengthen password complexity requirements
@@ -234,24 +328,24 @@ git status
 
 ```java
 public class EmployeeService {
-<<<<<<< HEAD
+// <<<<<<< HEAD
     public Employee findByEmail(String email) {
         // Your implementation
         return employeeRepository.findByEmailIgnoreCase(email);
     }
-=======
-    public Employee findByEmail(String email) {
-        // Their implementation
-        return employeeRepository.findByEmail(email.toLowerCase());
-    }
->>>>>>> feature/email-search
+// =======
+//    public Employee findByEmail(String email) {
+//        // Their implementation
+//        return employeeRepository.findByEmail(email.toLowerCase());
+//    }
+// >>>>>>> feature/email-search
 }
 ```
 
 ```bash
 # Resolve by choosing the best approach or combining both
 # After editing, mark as resolved
-git add src/main/java/EmployeeService.java
+git add web-services/src/main/java/com/oreilly/webservices/EmployeeService.java
 
 # Continue the rebase or merge
 git rebase --continue

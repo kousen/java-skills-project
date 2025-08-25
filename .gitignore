@@ -309,6 +309,9 @@ replay_pid*
 # Generated teleprompter scripts
 script.txt
 
+# Presentation slides (exclude from repository)
+slides/
+
 # Planning and notes (uncomment if these are temporary)
 # topics.txt
 # notes.txt
