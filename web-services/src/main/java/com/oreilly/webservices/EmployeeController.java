@@ -294,4 +294,34 @@ public class EmployeeController {
             .header("X-Result-Count", String.valueOf(results.size()))
             .body(results);
     }
+
+    /**
+     * Search employees by name with pagination support.
+     * GET /api/employees/search?name={name}&page={page}&size={size}
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<Employee>> searchEmployees(
+            @RequestParam String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        logger.info("Searching employees with name containing: '{}', page: {}, size: {}", name, page, size);
+
+        // Use findAll() and filter - matches what's actually available
+        List<Employee> employees = employeeService.findAll().stream()
+                .filter(emp -> emp.name().toLowerCase().contains(name.toLowerCase()))
+                .toList();
+
+        // Apply pagination manually for demo purposes
+        int start = page * size;
+        int end = Math.min(start + size, employees.size());
+        List<Employee> paginatedEmployees = start < employees.size() ?
+                employees.subList(start, end) : List.of();
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(employees.size()))
+                .header("X-Page", String.valueOf(page))
+                .header("X-Size", String.valueOf(size))
+                .body(paginatedEmployees);
+    }
 }
