@@ -190,9 +190,11 @@ public class EmployeeController {
             @RequestParam(defaultValue = "10") int size) {
         
         logger.info("Searching employees with name containing: '{}', page: {}, size: {}", name, page, size);
-        
-        // This implementation will conflict with findEmployees on main
-        List<Employee> employees = employeeService.findByNameContaining(name);
+
+        // Use findAll() and filter - matches what's actually available
+        List<Employee> employees = employeeService.findAll().stream()
+                .filter(emp -> emp.name().toLowerCase().contains(name.toLowerCase()))
+                .toList();
         
         // Apply pagination manually for demo purposes
         int start = page * size;
