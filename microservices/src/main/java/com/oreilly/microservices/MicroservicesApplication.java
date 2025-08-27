@@ -1,25 +1,30 @@
 package com.oreilly.microservices;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.beans.factory.annotation.Value;
-
+import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.support.WebClientAdapter;
+import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 
-import java.util.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Microservices Architecture Demonstration
@@ -32,55 +37,38 @@ import java.time.LocalDateTime;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients
 public class MicroservicesApplication {
     
     public static void main(String[] args) {
-        // This would normally start a Spring Boot application
-        // For demonstration, we'll show the microservice concepts
-        
-        System.out.println("=== Microservices Architecture Demonstration ===");
-        
-        // Simulate microservice startup
-        EmployeeServiceDemo employeeService = new EmployeeServiceDemo();
-        DepartmentServiceDemo departmentService = new DepartmentServiceDemo();
-        PayrollServiceDemo payrollService = new PayrollServiceDemo();
-        
-        employeeService.demonstrateService();
-        departmentService.demonstrateService();
-        payrollService.demonstrateService();
-        
-        // Demonstrate inter-service communication
-        demonstrateServiceCommunication();
-        
-        System.out.println("\n=== Microservices demonstration complete ===");
-    }
-    
-    private static void demonstrateServiceCommunication() {
-        System.out.println("\n--- Inter-Service Communication ---");
-        System.out.println("1. Employee Service calls Department Service");
-        System.out.println("2. Payroll Service calls both Employee and Department Services");
-        System.out.println("3. Circuit breaker handles service failures");
-        System.out.println("4. Load balancer distributes requests");
+        SpringApplication.run(MicroservicesApplication.class, args);
     }
 }
 
 /**
  * Employee Service - Manages employee data
  * Demonstrates service registration and basic CRUD operations
+ *
+ * NOTE: This controller is part of the simulated microservice environment.
+ * In a real application, this would be a separate Spring Boot application.
  */
 @RestController
 @RequestMapping("/api/employees")
 @RefreshScope
 class EmployeeController {
     
-    @Autowired
-    private MicroserviceEmployeeService employeeService;
+    private final MicroserviceEmployeeService employeeService;
     
-    @Autowired
-    private DepartmentServiceClient departmentClient;
-    
+    private final DepartmentHttpExchangeClient departmentClient;
+
+    public EmployeeController(MicroserviceEmployeeService employeeService,
+                              DepartmentHttpExchangeClient departmentClient) {
+        this.employeeService = employeeService;
+        this.departmentClient = departmentClient;
+    }
+
     @GetMapping("/{id}")
+    @CircuitBreaker(name = "departmentService", fallbackMethod = "getEmployeeFallback")
+    @Retry(name = "departmentService")
     public ResponseEntity<EmployeeWithDepartment> getEmployee(@PathVariable Long id) {
         MicroserviceEmployee employee = employeeService.findById(id);
         if (employee == null) {
@@ -88,9 +76,46 @@ class EmployeeController {
         }
         
         // Call Department Service to get department details
-        MicroserviceDepartment department = departmentClient.getDepartment(employee.getDepartmentId());
+        MicroserviceDepartment department =
+                departmentClient.getDepartment(employee.departmentId());
         
         EmployeeWithDepartment result = new EmployeeWithDepartment(employee, department);
+        return ResponseEntity.ok(result);
+    }
+    
+    @GetMapping("/{id}/async")
+    public CompletableFuture<ResponseEntity<EmployeeWithDepartment>> getEmployeeAsync(@PathVariable Long id) {
+        return CompletableFuture.supplyAsync(() -> {
+            MicroserviceEmployee employee = employeeService.findById(id);
+            if (employee == null) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // Simulate async call to Department Service
+            MicroserviceDepartment department =
+                    departmentClient.getDepartment(employee.departmentId());
+            
+            EmployeeWithDepartment result = new EmployeeWithDepartment(employee, department);
+            return ResponseEntity.ok(result);
+        });
+    }
+    
+    public ResponseEntity<EmployeeWithDepartment> getEmployeeFallback(Long id, Exception e) {
+        System.out.println("🔄 Circuit breaker activated for employee " + id + ": " + e.getMessage());
+        
+        MicroserviceEmployee employee = employeeService.findById(id);
+        if (employee == null) {
+            return ResponseEntity.notFound().build();
+        }
+        
+        // Return employee with a default department when department service is down
+        MicroserviceDepartment defaultDepartment = new MicroserviceDepartment(
+            employee.departmentId(), 
+            "Department Unavailable", 
+            "Department service is currently unavailable"
+        );
+        
+        EmployeeWithDepartment result = new EmployeeWithDepartment(employee, defaultDepartment);
         return ResponseEntity.ok(result);
     }
     
@@ -108,14 +133,20 @@ class EmployeeController {
 /**
  * Department Service - Manages department data
  * Demonstrates service boundaries and data ownership
+ *
+ * NOTE: This controller is part of the simulated microservice environment.
+ * In a real application, this would be a separate Spring Boot application.
  */
 @RestController
 @RequestMapping("/api/departments")
 class DepartmentController {
     
-    @Autowired
-    private DepartmentService departmentService;
-    
+    private final DepartmentService departmentService;
+
+    public DepartmentController(DepartmentService departmentService) {
+        this.departmentService = departmentService;
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<MicroserviceDepartment> getDepartment(@PathVariable Long id) {
         MicroserviceDepartment department = departmentService.findById(id);
@@ -133,86 +164,105 @@ class DepartmentController {
  */
 class EmployeeServiceDemo {
     public void demonstrateService() {
-        System.out.println("\n--- Employee Service ---");
-        System.out.println("Service Name: employee-service");
-        System.out.println("Port: 8081");
-        System.out.println("Eureka Registration: ✓");
-        System.out.println("Endpoints:");
-        System.out.println("  GET /api/employees/{id}");
-        System.out.println("  POST /api/employees");
-        System.out.println("  GET /api/employees");
-        System.out.println("Database: Employee data only");
-        System.out.println("External calls: Department Service (for employee details)");
+        System.out.println("""
+            
+            --- Employee Service ---
+            Service Name: employee-service
+            Port: 8081
+            Eureka Registration: ✓
+            Endpoints:
+              GET /api/employees
+              GET /api/employees/{id}
+              POST /api/employees
+            Database: Employee data only
+            External calls: Department Service (for employee details)
+            """);
     }
 }
 
 class DepartmentServiceDemo {
     public void demonstrateService() {
-        System.out.println("\n--- Department Service ---");
-        System.out.println("Service Name: department-service");
-        System.out.println("Port: 8082");
-        System.out.println("Eureka Registration: ✓");
-        System.out.println("Endpoints:");
-        System.out.println("  GET /api/departments/{id}");
-        System.out.println("  GET /api/departments");
-        System.out.println("Database: Department data only");
-        System.out.println("External calls: None (leaf service)");
+        System.out.println("""
+            
+            --- Department Service ---
+            Service Name: department-service
+            Port: 8082
+            Eureka Registration: ✓
+            Endpoints:
+              GET /api/departments
+              GET /api/departments/{id}
+            Database: Department data only
+            External calls: None (leaf service)
+            """);
     }
 }
 
 class PayrollServiceDemo {
     public void demonstrateService() {
-        System.out.println("\n--- Payroll Service ---");
-        System.out.println("Service Name: payroll-service");
-        System.out.println("Port: 8083");
-        System.out.println("Eureka Registration: ✓");
-        System.out.println("Endpoints:");
-        System.out.println("  POST /api/payroll/calculate");
-        System.out.println("  GET /api/payroll/employee/{id}");
-        System.out.println("Database: Payroll calculations only");
-        System.out.println("External calls: Employee Service + Department Service");
-        System.out.println("Circuit Breaker: ✓ (handles service failures)");
+        System.out.println("""
+            
+            --- Payroll Service ---
+            Service Name: payroll-service
+            Port: 8083
+            Eureka Registration: ✓
+            Endpoints:
+              POST /api/payroll/calculate
+              GET /api/payroll/employee/{id}
+            Database: Payroll calculations only
+            External calls: Employee Service + Department Service
+            Circuit Breaker: ✓ (handles service failures)
+            """);
     }
 }
 
 /**
  * Service layer with circuit breaker and retry patterns
  */
+@Service
 class MicroserviceEmployeeService {
     
-    private Map<Long, MicroserviceEmployee> employees = new HashMap<>();
+    private final Map<Long, MicroserviceEmployee> employees = new HashMap<>();
     
     public MicroserviceEmployeeService() {
         // Initialize with sample data
-        employees.put(1L, new MicroserviceEmployee(1L, "Alice Johnson", "alice@company.com", 1L, 85000.0));
-        employees.put(2L, new MicroserviceEmployee(2L, "Bob Smith", "bob@company.com", 2L, 75000.0));
+        employees.put(1L, new MicroserviceEmployee(1L, "Alice Johnson",
+                "alice@company.com", 1L, 85000.0));
+        employees.put(2L, new MicroserviceEmployee(2L, "Bob Smith",
+                "bob@company.com", 2L, 75000.0));
     }
     
     public MicroserviceEmployee findById(Long id) {
-        return employees.get(id);
+        return switch (employees.get(id)) {
+            case null -> null;
+            case MicroserviceEmployee employee -> employee;
+        };
     }
     
     public MicroserviceEmployee save(MicroserviceEmployee employee) {
-        if (employee.getId() == null) {
-            employee.setId((long) (employees.size() + 1));
+        if (employee.id() == null) {
+            employee = new MicroserviceEmployee((long) (employees.size() + 1), 
+                employee.name(), employee.email(), employee.departmentId(), employee.salary());
         }
-        employees.put(employee.getId(), employee);
+        employees.put(employee.id(), employee);
         return employee;
     }
     
     public void publishEmployeeCreatedEvent(MicroserviceEmployee employee) {
-        System.out.println("📢 Publishing EmployeeCreatedEvent: " + employee.getName());
+        System.out.println("📢 Publishing EmployeeCreatedEvent: " + employee.name());
         // In real implementation, this would use message queue or event bus
     }
 }
 
+@Service
 class DepartmentService {
     
-    private Map<Long, MicroserviceDepartment> departments = new HashMap<>();
+    private final Map<Long, MicroserviceDepartment> departments = new HashMap<>();
     
     public DepartmentService() {
-        departments.put(1L, new MicroserviceDepartment(1L, "Engineering", "Software Development"));
-        departments.put(2L, new MicroserviceDepartment(2L, "Marketing", "Product Marketing"));
+        departments.put(1L, new MicroserviceDepartment(1L, "Engineering",
+                "Software Development"));
+        departments.put(2L, new MicroserviceDepartment(2L, "Marketing",
+                "Product Marketing"));
     }
     
     public MicroserviceDepartment findById(Long id) {
@@ -221,27 +271,6 @@ class DepartmentService {
     
     public List<MicroserviceDepartment> findAll() {
         return new ArrayList<>(departments.values());
-    }
-}
-
-/**
- * Inter-service communication with circuit breaker
- */
-class DepartmentServiceClient {
-    
-    @LoadBalanced
-    private RestTemplate restTemplate;
-    
-    @CircuitBreaker(name = "department-service", fallbackMethod = "getDepartmentFallback")
-    @Retry(name = "department-service")
-    public MicroserviceDepartment getDepartment(Long id) {
-        String url = "http://department-service/api/departments/" + id;
-        return restTemplate.getForObject(url, MicroserviceDepartment.class);
-    }
-    
-    public MicroserviceDepartment getDepartmentFallback(Long id, Exception ex) {
-        System.out.println("🔴 Circuit breaker activated for department " + id);
-        return new MicroserviceDepartment(id, "Unknown Department", "Service Unavailable");
     }
 }
 
@@ -278,14 +307,24 @@ class MicroserviceConfiguration {
     
     @Bean
     @LoadBalanced
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
+    public RestClient.Builder restClientBuilder() {
+        return RestClient.builder();
     }
     
     @Bean
     @LoadBalanced
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder();
+    }
+
+    @Bean
+    public DepartmentHttpExchangeClient departmentHttpExchangeClient() {
+        var webClient = WebClient.builder()
+            .baseUrl("http://localhost:8082")
+            .build();
+        var adapter = WebClientAdapter.create(webClient);
+        var factory = HttpServiceProxyFactory.builderFor(adapter).build();
+        return factory.createClient(DepartmentHttpExchangeClient.class);
     }
 }
 
@@ -319,9 +358,9 @@ class EmployeeEventPublisher {
     
     public void publishEmployeeCreated(MicroserviceEmployee employee) {
         EmployeeCreatedEvent event = new EmployeeCreatedEvent(
-            employee.getId(),
-            employee.getName(),
-            employee.getDepartmentId(),
+            employee.id(),
+            employee.name(),
+            employee.departmentId(),
             LocalDateTime.now()
         );
         
@@ -333,11 +372,11 @@ class EmployeeEventPublisher {
 class EmployeeEventListener {
     
     public void handleEmployeeCreated(EmployeeCreatedEvent event) {
-        System.out.println("📥 Received EmployeeCreatedEvent: " + event.getEmployeeName());
+        System.out.println("📥 Received EmployeeCreatedEvent: " + event.employeeName());
         
         // Update local cache, send notifications, etc.
-        updatePayrollService(event.getEmployeeId());
-        sendWelcomeEmail(event.getEmployeeName());
+        updatePayrollService(event.employeeId());
+        sendWelcomeEmail(event.employeeName());
     }
     
     private void updatePayrollService(Long employeeId) {
@@ -370,98 +409,30 @@ class ServiceHealthIndicator {
 }
 
 // Data Transfer Objects and Entities
-class MicroserviceEmployee {
-    private Long id;
-    private String name;
-    private String email;
-    private Long departmentId;
-    private Double salary;
-    
-    public MicroserviceEmployee() {}
-    
-    public MicroserviceEmployee(Long id, String name, String email, Long departmentId, Double salary) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.departmentId = departmentId;
-        this.salary = salary;
-    }
-    
-    // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public Long getDepartmentId() { return departmentId; }
-    public void setDepartmentId(Long departmentId) { this.departmentId = departmentId; }
-    public Double getSalary() { return salary; }
-    public void setSalary(Double salary) { this.salary = salary; }
+record MicroserviceEmployee(
+    Long id,
+    String name,
+    String email,
+    Long departmentId,
+    Double salary
+) {}
+
+record MicroserviceDepartment(
+    Long id,
+    String name,
+    String description
+) {}
+
+record EmployeeWithDepartment(
+    MicroserviceEmployee employee,
+    MicroserviceDepartment department
+) {}
+
+record EmployeeCreatedEvent(
+        Long employeeId,
+        String employeeName,
+        Long departmentId,
+        LocalDateTime timestamp
+) {
 }
 
-class MicroserviceDepartment {
-    private Long id;
-    private String name;
-    private String description;
-    
-    public MicroserviceDepartment() {}
-    
-    public MicroserviceDepartment(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
-    
-    // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-}
-
-class EmployeeWithDepartment {
-    private MicroserviceEmployee employee;
-    private MicroserviceDepartment department;
-    
-    public EmployeeWithDepartment(MicroserviceEmployee employee, MicroserviceDepartment department) {
-        this.employee = employee;
-        this.department = department;
-    }
-    
-    public MicroserviceEmployee getEmployee() { return employee; }
-    public void setEmployee(MicroserviceEmployee employee) { this.employee = employee; }
-    public MicroserviceDepartment getDepartment() { return department; }
-    public void setDepartment(MicroserviceDepartment department) { this.department = department; }
-}
-
-class EmployeeCreatedEvent {
-    private Long employeeId;
-    private String employeeName;
-    private Long departmentId;
-    private LocalDateTime timestamp;
-    
-    public EmployeeCreatedEvent(Long employeeId, String employeeName, Long departmentId, LocalDateTime timestamp) {
-        this.employeeId = employeeId;
-        this.employeeName = employeeName;
-        this.departmentId = departmentId;
-        this.timestamp = timestamp;
-    }
-    
-    public Long getEmployeeId() { return employeeId; }
-    public String getEmployeeName() { return employeeName; }
-    public Long getDepartmentId() { return departmentId; }
-    public LocalDateTime getTimestamp() { return timestamp; }
-    
-    @Override
-    public String toString() {
-        return "EmployeeCreatedEvent{" +
-                "employeeId=" + employeeId +
-                ", employeeName='" + employeeName + '\'' +
-                ", departmentId=" + departmentId +
-                ", timestamp=" + timestamp +
-                '}';
-    }
-}

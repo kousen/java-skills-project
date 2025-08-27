@@ -183,7 +183,6 @@ docs/generated/
 *.backup
 *.orig
 *.save
-# slides_*.md  # Commented out - we now use this naming pattern
 *_backup.md
 *_old.md
 
@@ -309,8 +308,8 @@ replay_pid*
 # Generated teleprompter scripts
 script.txt
 
-# Presentation slides (exclude from repository)
-slides/
+# Video scripts (exclude from repository)
+scripts/
 
 # Planning and notes (uncomment if these are temporary)
 # topics.txt
