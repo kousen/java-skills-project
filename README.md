@@ -1,7 +1,5 @@
 # Java Skills Project
 
-Here is a change to the README file.
-
 A comprehensive multi-module Gradle project for learning modern Java development through practical examples. This project demonstrates Java concepts using a consistent Employee Management System theme, designed for skill-gap filling where developers can jump to specific topics they need to learn.
 
 ## 🎯 Project Overview
