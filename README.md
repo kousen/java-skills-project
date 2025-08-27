@@ -1,4 +1,4 @@
-# Java Skills Project (from the upstream branch)
+# Java Skills Project
 
 A comprehensive multi-module Gradle project for learning modern Java development through practical examples. This project demonstrates Java concepts using a consistent Employee Management System theme, designed for skill-gap filling where developers can jump to specific topics they need to learn.
 
