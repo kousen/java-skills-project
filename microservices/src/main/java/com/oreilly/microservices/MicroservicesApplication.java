@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Microservices Architecture Demonstration
- * Shows Spring Boot microservice patterns including:
+ * Shows Spring Boot microservice patterns including
  * - Service discovery with Eureka
  * - Load balancing
  * - Circuit breaker pattern
@@ -47,7 +47,7 @@ public class MicroservicesApplication {
 /**
  * Employee Service - Manages employee data
  * Demonstrates service registration and basic CRUD operations
- *
+ * <p>
  * NOTE: This controller is part of the simulated microservice environment.
  * In a real application, this would be a separate Spring Boot application.
  */
@@ -100,6 +100,7 @@ class EmployeeController {
         });
     }
     
+    @SuppressWarnings("unused")
     public ResponseEntity<EmployeeWithDepartment> getEmployeeFallback(Long id, Exception e) {
         System.out.println("🔄 Circuit breaker activated for employee " + id + ": " + e.getMessage());
         
@@ -133,7 +134,7 @@ class EmployeeController {
 /**
  * Department Service - Manages department data
  * Demonstrates service boundaries and data ownership
- *
+ * <p>
  * NOTE: This controller is part of the simulated microservice environment.
  * In a real application, this would be a separate Spring Boot application.
  */
@@ -278,9 +279,6 @@ class DepartmentService {
  * API Gateway simulation
  */
 class ApiGateway {
-    
-    @LoadBalanced
-    private WebClient.Builder webClientBuilder;
     
     public void routeToEmployeeService(String path) {
         System.out.println("🌐 API Gateway routing to employee-service: " + path);
