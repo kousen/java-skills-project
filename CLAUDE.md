@@ -112,7 +112,7 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - **Topic 21**: Spring Boot REST services with scene-based script format
 - **Topic 22**: Input validation and security with proper slide callouts
 - **Topic 23**: Cryptographic APIs with complete `SecurityService.java`
-- **Topic 24**: Git collaboration workflows with professional formatting
+- **Topic 24**: Git collaboration workflows with realistic conflict resolution and hands-on exercises
 - **Topic 25**: Microservices architecture with fixed slide references (28 slides)
 - **Topic 26**: Reactive programming with proper scene structure
 

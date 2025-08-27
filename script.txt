@@ -1,16 +1,12 @@
 [PART 1: ON-CAMERA INTRODUCTION - 90 SECONDS]
 
-Welcome back to our Java Skills series! I'm [Host Name], and today we're covering something that's essential for professional development—Git collaboration workflows.
+Welcome back to the Java series. Even though we've been talking about Java. This time we're going to talk about something equally important to your professional development, and that's git collaboration. Almost everybody works on a team these days, and Git and GitHub are the two primary tools that we use to maintain our code under what we call source code control.
 
-If you've been following along with this series, you've learned a lot about Java code, but now it's time to learn how to work with that code in a team environment. Whether you're contributing to open source projects, working on a development team, or just want to follow industry best practices, mastering Git collaboration is crucial.
+Whether you're contributing to open source projects or working on a development team, or just want to follow industry best practices, mastering git collaboration is crucial.  So let's talk about the complete workflow for contributing to a Java project on git or GitHub using a forked based collaboration. There are other approaches, but this one is widespread. This is a standard approach used in many open source projects as well as professional environments. We'll walk through the whole process, forking a repository, creating a feature branch, making commits with proper messages, handling conflicts, creating pull requests, getting your code reviewed, and ultimately merged into the repository.
 
-Today I'm going to show you the complete workflow for contributing to a Java project using fork-based collaboration. This is the standard approach used in open source projects and many professional environments.
+Since we need an example, a project to work with, I'm going to use the source code repository for our current project, the Java Skills project, as the example. It is currently live on GitHub, and you can follow along with the exact same steps that I'm going to walk through. By the end of the video, hopefully you'll see how to contribute to any Java project successfully.
 
-We'll walk through the entire process: forking a repository, creating feature branches, making commits with proper messages, handling conflicts, creating pull requests, and getting your code reviewed and merged.
-
-I'll be using our Java Skills Project as the example—it's actually live on GitHub, so you can follow along with the exact same steps I'm showing you. By the end of this video, you'll know how to contribute to any Java project professionally.
-
-Let's dive in and see how real Git collaboration works.
+So let's dive in and see how real git collaboration works.
 
 [PART 2: SCREEN-SHARE DEMONSTRATION - 5 MINUTES 30 SECONDS]
 
@@ -18,12 +14,11 @@ Let's dive in and see how real Git collaboration works.
 
 [SETTING UP THE FORK WORKFLOW - 60 SECONDS]
 
-First, let's start with the GitHub repository for our Java Skills Project. I'm going to show you the fork-based workflow, which is what you'd use when contributing to a project you don't own.
-
 [Screen: Show GitHub repository page]
+
 (Display text overlay: "github.com/kousen/java-skills-project")
 
-Here's our project repository. You can see it has all the Java modules we've been working with throughout this series. Notice we have several open issues here—these represent real features and bugs that need to be implemented.
+First, let's start with a GitHub repository for our Java skills project. I'm going to show you the fork-based workflow, which is what you'd use when contributing to a project that you don't own. Here is our project repository. You see that it has all the Java modules we've been working with throughout this series, the design patterns, the foundations, the OOP core, et cetera.
 
 Before contributing to any open source project, you should always look for contribution guidelines and the code of conduct. Most projects have a CONTRIBUTING.md file and a CODE_OF_CONDUCT.md file, or these may be included in the README or documentation. The contribution guidelines tell you about coding standards, testing requirements, and workflow preferences. The code of conduct explains the community standards for respectful collaboration and what behavior is expected from contributors.
 
@@ -32,12 +27,14 @@ Before contributing to any open source project, you should always look for contr
 [Screen: Click on Issues tab]
 (Display text overlay: "5 open issues available for contribution")
 
-Let's say I want to work on issue #1—'Add employee search functionality with pagination.' This is exactly the kind of task you'd pick up as a contributor.
+Notice that we also have several open issues here. These represent real features and or bugs that need to be implemented or fixed. But before jumping in, you should always look for the contribution guidelines and the code of conduct.  Most projects have them, and they have particular names for the files, and if you name them the right thing, then on GitHub they will show up as links right at the top of the Read me here.
+
+So let's start with issue #1—'Add employee search functionality with pagination.' This is exactly the kind of task you'd pick up as a contributor. Once we have selected an issue, it's time to fork the repository. That's the start of the process for modifying a project you don't own. On the code page of the repository, there's a fork button, and that's where you start. A fork is a copy of a repository under your own account. Forking repository allows you to freely experiment with changes without affecting the original project
 
 [Screen: Click Fork button]
 (Display text overlay: "Click 'Fork' to create your own copy")
 
-First step—I fork the repository. This creates my own copy that I can modify freely without affecting the original.
+First step—I fork the repository. I'm going to fork this to my groovy-podcast organization account, but you would fork it to your personal GitHub account. This creates my own copy that I can modify freely without affecting the original.
 
 [Screen: Show forked repository]
 
@@ -46,7 +43,7 @@ Great! Now I have my own fork. Let's clone it locally and set up the proper remo
 [Screen: Open terminal]
 
 # Clone MY fork, not the original
-git clone https://github.com/MY-USERNAME/java-skills-project.git
+git clone https://github.com/groovy-podcast/java-skills-project.git
 cd java-skills-project
 
 (Display text overlay: "Always clone your fork, not the original")
@@ -122,7 +119,7 @@ git rebase upstream/main
 
 Oh look, there's a conflict! This is totally normal in collaborative development.
 
-[Screen: Show conflict in code editor - the actual conflict will appear around the `/search` vs `/find` endpoints]
+[Screen: Show conflict in code editor - the actual conflict will appear around the `/search` vs. `/find` endpoints]
 
 The conflict will show something like:
 

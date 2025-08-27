@@ -4,8 +4,6 @@ Here is a change to the README file.
 
 A comprehensive multi-module Gradle project for learning modern Java development through practical examples. This project demonstrates Java concepts using a consistent Employee Management System theme, designed for skill-gap filling where developers can jump to specific topics they need to learn.
 
-No, I'd rather add the new line HERE.
-
 ## 🎯 Project Overview
 
 This project contains practical, working examples for **27 Java skills topics**, covering everything from basic syntax to advanced enterprise patterns. Each module builds upon previous concepts while remaining self-contained for flexible learning.
@@ -63,7 +61,7 @@ All slides follow the **new naming convention** with topic numbers for easy refe
 - **slides_21_rest_service_creator.md** - Spring Boot REST service creation
 - **slides_22_input_validation.md** - Security validation and XSS/SQL injection prevention
 - **slides_23_cryptographic_apis.md** - Encryption, hashing, and digital signatures
-- **slides_24_git_collaboration.md** - Version control and team workflows
+- **slides_24_git_collaboration.md** - Git collaboration workflows with realistic conflict resolution
 - **slides_25_microservices.md** - Distributed systems with Spring Boot
 - **slides_26_reactive_programming.md** - Async programming with Project Reactor
 
@@ -302,10 +300,18 @@ Transform into enterprise application:
 
 ### 📁 Supporting Files and Documentation
 **Complete project resources for video production:**
-- **git-workflows/** - Git configuration examples and workflow documentation
+- **git-workflows/** - Git configuration examples, workflow documentation, and hands-on conflict resolution exercise
 - **.github/** - Professional CI/CD pipeline and PR templates  
 - **scripts/** - 27 professional video scripts with scene structure
 - **slides/** - Comprehensive slide presentations for all topics
+
+### 🔀 Git Collaboration Features (Topic 24)
+**Complete setup for demonstrating professional Git workflows:**
+- ✅ **Realistic fork-based workflow** with actual GitHub repository integration
+- ✅ **Live conflict resolution demo** using browser-based README.md changes
+- ✅ **Student hands-on exercise** in `git-workflows/CONFLICT_DEMO_BRANCHES.md`
+- ✅ **Professional PR templates** and GitHub Actions CI/CD pipeline
+- ✅ **Contribution guidelines** and code of conduct documentation
 
 ### 🎯 Benefits of Streamlined Approach
 - **100% functional codebase** - every module compiles and runs
