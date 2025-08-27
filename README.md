@@ -2,6 +2,8 @@
 
 A comprehensive multi-module Gradle project for learning modern Java development through practical examples. This project demonstrates Java concepts using a consistent Employee Management System theme, designed for skill-gap filling where developers can jump to specific topics they need to learn.
 
+No, I'd rather add the extra line HERE.
+
 ## 🎯 Project Overview
 
 This project contains practical, working examples for **27 Java skills topics**, covering everything from basic syntax to advanced enterprise patterns. Each module builds upon previous concepts while remaining self-contained for flexible learning.
