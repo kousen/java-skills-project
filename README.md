@@ -1,5 +1,7 @@
 # Java Skills Project
 
+Here is an additional comment.
+
 A comprehensive multi-module Gradle project for learning modern Java development through practical examples. This project demonstrates Java concepts using a consistent Employee Management System theme, designed for skill-gap filling where developers can jump to specific topics they need to learn.
 
 No, I'd rather add the extra line HERE.
