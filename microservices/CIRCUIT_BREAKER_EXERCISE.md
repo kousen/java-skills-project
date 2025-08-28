@@ -151,7 +151,7 @@ This exercise demonstrates the Circuit Breaker pattern in action using an intera
 
 3. **Watch Circuit Close**
    
-   Call the service again:
+   Call the service again (circuit immediately tests recovery):
    ```
    GET http://localhost:8081/api/demo/circuit-breaker/call-service
    ```
@@ -161,11 +161,12 @@ This exercise demonstrates the Circuit Breaker pattern in action using an intera
    {
      "status": "SUCCESS",
      "circuitState": "CLOSED",
-     "failureCount": 0
+     "failureCount": 0,
+     "note": "Service appears healthy, testing recovery"
    }
    ```
    
-   **What this means:** The service is healthy again, so the circuit closes and normal operation resumes.
+   **What this means:** The circuit detected the service is healthy and immediately tested recovery. Since the test succeeded, the circuit closed and normal operation resumed.
 
 ### Part 4: Experiment on Your Own
 

@@ -63,8 +63,13 @@ public class CircuitBreakerController {
                     circuitState = "HALF-OPEN";
                     response.put("note", "Circuit breaker entering HALF-OPEN state for testing");
                     // Fall through to test the service
+                } else if (!simulateFailure.get()) {
+                    // Service is healthy again, attempt recovery
+                    circuitState = "HALF-OPEN";
+                    response.put("note", "Service appears healthy, testing recovery");
+                    // Fall through to test the service
                 } else {
-                    // Circuit is open, return fallback
+                    // Circuit is open and service still failing, return fallback
                     response.put("status", "FALLBACK");
                     response.put("message", "Circuit breaker OPEN - returning fallback response");
                     response.put("data", "Department Unavailable - Service is currently down");
