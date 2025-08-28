@@ -51,10 +51,13 @@ public class MicroservicesConcepts {
         registry.checkHealth("employee-service");
         System.out.println("✓ Health check passed for employee-service");
         
-        System.out.println("\nBenefits:");
-        System.out.println("- No hardcoded service URLs");
-        System.out.println("- Automatic service discovery");
-        System.out.println("- Dynamic scaling support");
+        System.out.println("""
+            
+            Benefits:
+            - No hardcoded service URLs
+            - Automatic service discovery
+            - Dynamic scaling support
+            """);
     }
     
     /**
@@ -71,11 +74,14 @@ public class MicroservicesConcepts {
             System.out.println("✓ Request " + (i + 1) + " routed to: " + selectedInstance);
         }
         
-        System.out.println("\nLoad Balancing Strategies:");
-        System.out.println("- Round Robin: Equal distribution");
-        System.out.println("- Weighted: Based on capacity");
-        System.out.println("- Least Connections: Route to least busy");
-        System.out.println("- Health-based: Avoid unhealthy instances");
+        System.out.println("""
+            
+            Load Balancing Strategies:
+            - Round Robin: Equal distribution
+            - Weighted: Based on capacity
+            - Least Connections: Route to least busy
+            - Health-based: Avoid unhealthy instances
+            """);
     }
     
     /**
@@ -90,10 +96,13 @@ public class MicroservicesConcepts {
             System.out.println("Call " + i + ": " + (success ? "✓ Success" : "✗ Failed/Circuit Open"));
         }
         
-        System.out.println("\nCircuit Breaker States:");
-        System.out.println("- CLOSED: Normal operation, requests pass through");
-        System.out.println("- OPEN: Service failing, requests rejected immediately");
-        System.out.println("- HALF_OPEN: Testing if service recovered");
+        System.out.println("""
+            
+            Circuit Breaker States:
+            - CLOSED: Normal operation, requests pass through
+            - OPEN: Service failing, requests rejected immediately
+            - HALF_OPEN: Testing if service recovered
+            """);
     }
     
     /**
@@ -109,12 +118,15 @@ public class MicroservicesConcepts {
         gateway.routeRequest("POST", "/api/departments");
         gateway.routeRequest("GET", "/api/payroll/employee/123");
         
-        System.out.println("\nAPI Gateway Responsibilities:");
-        System.out.println("- Request routing to appropriate services");
-        System.out.println("- Authentication and authorization");
-        System.out.println("- Rate limiting and throttling");
-        System.out.println("- Request/response transformation");
-        System.out.println("- Monitoring and analytics");
+        System.out.println("""
+            
+            API Gateway Responsibilities:
+            - Request routing to appropriate services
+            - Authentication and authorization
+            - Rate limiting and throttling
+            - Request/response transformation
+            - Monitoring and analytics
+            """);
     }
     
     /**
@@ -143,11 +155,14 @@ public class MicroservicesConcepts {
             "budget", 1000000
         ));
         
-        System.out.println("\nEvent-Driven Benefits:");
-        System.out.println("- Loose coupling between services");
-        System.out.println("- Easy to add new functionality");
-        System.out.println("- Asynchronous processing");
-        System.out.println("- Scalable architecture");
+        System.out.println("""
+            
+            Event-Driven Benefits:
+            - Loose coupling between services
+            - Easy to add new functionality
+            - Asynchronous processing
+            - Scalable architecture
+            """);
     }
     
     /**
@@ -169,11 +184,14 @@ public class MicroservicesConcepts {
         configServer.updateConfiguration("employee-service", "database.pool.size", 20);
         System.out.println("✓ Updated employee-service database pool size");
         
-        System.out.println("\nConfiguration Benefits:");
-        System.out.println("- Environment-specific settings");
-        System.out.println("- Runtime configuration updates");
-        System.out.println("- Secret management");
-        System.out.println("- Audit trail for changes");
+        System.out.println("""
+            
+            Configuration Benefits:
+            - Environment-specific settings
+            - Runtime configuration updates
+            - Secret management
+            - Audit trail for changes
+            """);
     }
 }
 

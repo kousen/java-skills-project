@@ -152,6 +152,8 @@ class DepartmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MicroserviceDepartment> getDepartment(@PathVariable Long id) {
+        // Uncomment to simulate service failure:
+        // throw new RuntimeException("Department service is down");
         MicroserviceDepartment department = departmentService.findById(id);
         return department != null ? ResponseEntity.ok(department) : ResponseEntity.notFound().build();
     }
@@ -320,7 +322,7 @@ class MicroserviceConfiguration {
     @Bean
     public DepartmentHttpExchangeClient departmentHttpExchangeClient() {
         var webClient = WebClient.builder()
-            .baseUrl("http://localhost:8082")
+            .baseUrl("http://localhost:8081")  // Same port as this application for demo
             .build();
         var adapter = WebClientAdapter.create(webClient);
         var factory = HttpServiceProxyFactory.builderFor(adapter).build();

@@ -39,18 +39,28 @@ public class MicroservicesDemoRunner implements CommandLineRunner {
     }
 
     private void demonstrateServiceCommunication() {
-        System.out.println("\n--- Inter-Service Communication ---");
-        System.out.println("1. Employee Service calls Department Service");
-        System.out.println("2. Payroll Service calls both Employee and Department Services");
-        System.out.println("3. Circuit breaker handles service failures");
-        System.out.println("4. Load balancer distributes requests");
+        System.out.println("""
+            
+            --- Inter-Service Communication ---
+            1. Employee Service calls Department Service
+            2. Payroll Service calls both Employee and Department Services
+            3. Circuit breaker handles service failures
+            4. Load balancer distributes requests
+            """);
         
         // Demonstrate fetching all departments
-        System.out.println("\n--- Department Service Operations ---");
-        System.out.println("Simulating getAllDepartments() call via HTTP Exchange Interface:");
-        System.out.println("  GET /api/departments -> Returns list of all departments");
-        System.out.println("  Response: [Engineering, Marketing, HR, Finance]");
-        System.out.println("  This demonstrates bulk data retrieval across services");
+        System.out.println("""
+            
+            --- Department Service Operations ---
+            Simulating getAllDepartments() call via HTTP Exchange Interface:
+              GET /api/departments -> Returns list of all departments
+              Response: [Engineering, Marketing, HR, Finance]
+              This demonstrates bulk data retrieval across services
+            """);
+        
+        // Demonstrate Circuit Breaker Pattern
+        System.out.println("\n--- Circuit Breaker Demonstration ---");
+        demonstrateCircuitBreaker();
         
         // Demonstrate API Gateway functionality
         System.out.println("\n--- API Gateway Demonstration ---");
@@ -60,6 +70,30 @@ public class MicroservicesDemoRunner implements CommandLineRunner {
         gateway.routeToDepartmentService("/api/departments/1");
         gateway.routeToDepartmentService("/api/departments");  // Show getAllDepartments routing
         gateway.handleRateLimit();
+    }
+    
+    private void demonstrateCircuitBreaker() {
+        System.out.println("""
+            Simulating circuit breaker pattern:
+              Example: Service calls with circuit breaker protection
+              - Normal: Circuit stays CLOSED when services are healthy
+              - Failure: Circuit OPENS after threshold, returns fallback
+              - Recovery: Circuit goes HALF-OPEN to test, then CLOSED
+            
+            🎮 INTERACTIVE DEMO AVAILABLE!
+            Try the circuit breaker yourself with these endpoints:
+            
+              1. Check status:        GET  http://localhost:8081/api/demo/circuit-breaker/status
+              2. Toggle failures:     POST http://localhost:8081/api/demo/circuit-breaker/toggle-failure
+              3. Call service:        GET  http://localhost:8081/api/demo/circuit-breaker/call-service
+              4. Reset demo:          POST http://localhost:8081/api/demo/circuit-breaker/reset
+            
+              Try this sequence:
+              - Toggle failure mode ON
+              - Call service 3 times to trigger circuit breaker
+              - See fallback response when circuit opens
+              - Toggle failure mode OFF and call again to see recovery
+            """);
     }
     
     private void demonstrateConfigurationManagement() {
