@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;
 import java.util.List;
 
+import static com.oreilly.microservices.MicroserviceRecords.*;
+
 public interface DepartmentHttpExchangeClient {
 
     @GetExchange("/api/departments/{id}")

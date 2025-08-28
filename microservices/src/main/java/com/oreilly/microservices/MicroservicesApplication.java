@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import static com.oreilly.microservices.MicroserviceRecords.*;
+
 /**
  * Microservices Architecture Demonstration
  * Shows Spring Boot microservice patterns including
@@ -406,31 +408,4 @@ class ServiceHealthIndicator {
     }
 }
 
-// Data Transfer Objects and Entities
-record MicroserviceEmployee(
-    Long id,
-    String name,
-    String email,
-    Long departmentId,
-    Double salary
-) {}
-
-record MicroserviceDepartment(
-    Long id,
-    String name,
-    String description
-) {}
-
-record EmployeeWithDepartment(
-    MicroserviceEmployee employee,
-    MicroserviceDepartment department
-) {}
-
-record EmployeeCreatedEvent(
-        Long employeeId,
-        String employeeName,
-        Long departmentId,
-        LocalDateTime timestamp
-) {
-}
 

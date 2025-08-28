@@ -5,11 +5,13 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+import static com.oreilly.microservices.MicroserviceRecords.*;
+
 @Component
 public class MicroservicesDemoRunner implements CommandLineRunner {
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         System.out.println("=== Microservices Architecture Demonstration ===");
 
         // Simulate microservice startup
