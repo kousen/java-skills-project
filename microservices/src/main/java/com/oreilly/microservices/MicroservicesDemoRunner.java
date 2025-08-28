@@ -45,12 +45,20 @@ public class MicroservicesDemoRunner implements CommandLineRunner {
         System.out.println("3. Circuit breaker handles service failures");
         System.out.println("4. Load balancer distributes requests");
         
+        // Demonstrate fetching all departments
+        System.out.println("\n--- Department Service Operations ---");
+        System.out.println("Simulating getAllDepartments() call via HTTP Exchange Interface:");
+        System.out.println("  GET /api/departments -> Returns list of all departments");
+        System.out.println("  Response: [Engineering, Marketing, HR, Finance]");
+        System.out.println("  This demonstrates bulk data retrieval across services");
+        
         // Demonstrate API Gateway functionality
         System.out.println("\n--- API Gateway Demonstration ---");
         ApiGateway gateway = new ApiGateway();
         gateway.handleAuthentication();
         gateway.routeToEmployeeService("/api/employees/1");
         gateway.routeToDepartmentService("/api/departments/1");
+        gateway.routeToDepartmentService("/api/departments");  // Show getAllDepartments routing
         gateway.handleRateLimit();
     }
     
