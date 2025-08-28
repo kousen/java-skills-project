@@ -113,8 +113,8 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - **Topic 22**: Input validation and security with proper slide callouts
 - **Topic 23**: Cryptographic APIs with complete `SecurityService.java`
 - **Topic 24**: Git collaboration workflows with realistic conflict resolution and hands-on exercises
-- **Topic 25**: Microservices architecture with fixed slide references (28 slides)
-- **Topic 26**: Reactive programming with proper scene structure
+- **Topic 25**: ✅ Microservices architecture with interactive circuit breaker demo, comprehensive exercise documentation
+- **Topic 26**: ✅ Reactive programming with interactive demo endpoints, StepVerifier tests, 10 Mermaid diagrams
 
 #### **Production Improvements Made**:
 - **Fixed all slide reference mismatches** that would cause filming confusion
@@ -230,15 +230,22 @@ This is a multi-module Gradle project for creating Java skills video content. Th
 - **Professional security stack**: Spring Security 6.4, Jakarta Validation, Bouncy Castle
 - **REST endpoints**: /api/security/* for demonstrating security integration
 
-### 🆕 **microservices** - SEPARATE MODULE FOR SPRING CLOUD (TOPIC 25)
+### 🆕 **microservices** - COMPLETE & FULLY TESTED (TOPIC 25)
 - **Spring Cloud dependencies**: Eureka client, OpenFeign, load balancer, circuit breaker
-- **MicroservicesApplication**: Clean separation from web-services module
-- **Prevents context conflicts**: No more multiple @SpringBootApplication issues
+- **Interactive Circuit Breaker Demo**: REST endpoints for real-time circuit breaker state changes
+- **Comprehensive Exercise Documentation**: CIRCUIT_BREAKER_EXERCISE.md with step-by-step instructions
+- **Java 21 Records**: MicroserviceRecords.java with all data classes
+- **Text Block Refactoring**: Clean multi-line output using Java 21 features
+- **Tests**: CircuitBreakerControllerTest with complete coverage
 
-### 🚀 **reactive** - SEPARATE MODULE FOR WEBFLUX (TOPIC 26)  
+### 🚀 **reactive** - COMPLETE & FULLY TESTED (TOPIC 26)  
 - **Spring WebFlux dependencies**: Project Reactor, reactive web support
-- **ReactiveApplication**: Focused on reactive programming patterns
-- **Clean architecture**: Separate from traditional REST services
+- **Interactive Demo Controller**: Toggle errors/slowness, demonstrate backpressure
+- **Comprehensive Testing**: ReactiveEmployeeServiceTest and ReactiveDemoControllerTest with StepVerifier
+- **10 Mermaid Diagrams**: reactive_diagrams.md visualizing all reactive concepts
+- **Demo Scripts**: demo-scripts.sh for easier demonstration during recording
+- **Exercise Documentation**: REACTIVE_PROGRAMMING_EXERCISE.md with hands-on activities
+- **Event Streaming**: Server-Sent Events with reactive Sinks
 
 ### 📁 **Supporting Files & Documentation** - COMPLETE & ENHANCED
 Complete video production resources with recent improvements:
@@ -248,6 +255,10 @@ Complete video production resources with recent improvements:
 - **slides/**: Complete slide presentations for all 27 topics with transaction management content
 - **web-services/REST_API_Architecture.md**: Mermaid diagram showing three-layered architecture
 - **web-services/EMPLOYEE_SEARCH_EXERCISE.md**: Comprehensive Try It Out exercise instructions
+- **microservices/CIRCUIT_BREAKER_EXERCISE.md**: Interactive circuit breaker demonstration guide
+- **reactive/REACTIVE_PROGRAMMING_EXERCISE.md**: Hands-on reactive programming exercises
+- **reactive/reactive_diagrams.md**: 10 Mermaid diagrams for reactive concepts visualization
+- **reactive/demo-scripts.sh**: Shell script for easier reactive demos during recording
 - **README.md**: Updated with current project status and module documentation
 
 ### 🎯 **Module Architecture Summary**
@@ -456,18 +467,18 @@ testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 ### 🎬 Video Production Status (Updated January 2025)
 
 #### **✅ READY FOR RECORDING - NO BLOCKERS**
-All content verified and production-ready with major Topic 21 completion:
+All content verified and production-ready with Topics 25 & 26 completion:
 
 ```
 ✅ foundations:       13/13 tests passing (100%) - all concepts demonstrable
 ✅ oop-core:         15/15 tests passing (100%) - complete OOP + Try It Out exercises
 ✅ design-patterns:  12/15 tests passing (100%) - modern patterns working perfectly
 ✅ web-services:     83/83 tests passing (100%) - COMPLETE layered architecture
-✅ microservices:    Building successfully (100%) - Spring Cloud separation
-✅ reactive:         Building successfully (100%) - WebFlux separation  
+✅ microservices:    Complete with tests   (100%) - Interactive circuit breaker demo
+✅ reactive:         Complete with tests   (100%) - StepVerifier & interactive demos
 ✅ security:         Building successfully (100%) - validation & crypto
 ✅ ALL SCRIPTS:      Professional formatting (100%) - includes Try It Out sections
-✅ ALL SLIDES:       Content complete        (100%) - transaction management added
+✅ ALL SLIDES:       Content complete        (100%) - all 27 topics ready
 ```
 
 #### **⚠️ Minor Non-Blocking Issues**
