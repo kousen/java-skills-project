@@ -196,7 +196,8 @@ public class ReactiveDemoController {
             .delayElements(Duration.ofMillis(1))
             .take(50)
             .doOnNext(i -> processed.incrementAndGet())
-            .then(Mono.just(Map.of(
+            .collectList()  // Collect all items to ensure processing completes
+            .map(list -> Map.of(
                 "operation", "Backpressure Demo",
                 "itemsGenerated", 1000,
                 "itemsProcessed", processed.get(),
@@ -204,7 +205,7 @@ public class ReactiveDemoController {
                 "bufferSize", 10,
                 "strategy", "DROP_OLDEST",
                 "message", "Backpressure prevents overwhelming slow consumers"
-            )));
+            ));
     }
     
     /**
